@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from './src/theme';
 import { AntalyaLifeScreen } from './src/screens/AntalyaLifeScreen';
@@ -44,7 +44,7 @@ export default function App() {
         <View style={styles.appShell}>
           <View style={styles.content}>{screen}</View>
           <View style={styles.tabWrap}>
-            <View style={styles.tabBar}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabBarContent}>
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.key;
                 return (
@@ -54,7 +54,7 @@ export default function App() {
                   </TouchableOpacity>
                 );
               })}
-            </View>
+            </ScrollView>
           </View>
         </View>
       </SafeAreaView>
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   appShell: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   content: { flex: 1, backgroundColor: '#DFF5F6' },
-  tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 6, paddingBottom: 10 },
-  tabBar: { flexDirection: 'row', marginHorizontal: 6, padding: 5, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.94)', elevation: 12 },
-  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 6, borderRadius: 18 },
-  tabItemActive: { backgroundColor: theme.colors.aqua },
-  tabIcon: { fontSize: 15, marginBottom: 1 },
-  tabLabel: { color: theme.colors.slate, fontSize: 7, fontWeight: '800' },
+  tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 7, paddingBottom: 10, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)' },
+  tabBarContent: { paddingHorizontal: 10, gap: 7 },
+  tabItem: { width: 72, alignItems: 'center', justifyContent: 'center', paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.92)' },
+  tabItemActive: { width: 84, backgroundColor: theme.colors.aqua, elevation: 8 },
+  tabIcon: { fontSize: 17, marginBottom: 2 },
+  tabLabel: { color: theme.colors.slate, fontSize: 10, fontWeight: '900' },
   tabLabelActive: { color: theme.colors.oceanDeep },
 });
