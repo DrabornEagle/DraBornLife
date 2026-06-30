@@ -53,15 +53,15 @@ Karar: Ilk APK v1.0 surumunde alinacak. v0.2 gelistirmesi Expo Go ile devam eder
 - [x] Borc bitirme hedef tarihi duzenlenebilir
 - [x] Borc sifirlandi durumu eklendi
 
-## Siradaki adimlar
-
 ### v0.2.7 — Yedekleme iyilestirme
-- [ ] Yedek metnini daha kisa baslikli hale getir
-- [ ] Yedek olusturma sonrasi kopyalama talimati ekle
-- [ ] Ice aktarim oncesi onay uyarisi ekle
-- [ ] Eksik/bozuk yedek icin daha anlasilir hata mesaji
-- [ ] Yedek versiyon uyumlulugunu kontrol et
-- [ ] Google Drive yedegini v1.0 sonrasi opsiyonel not olarak birak
+- [x] Yedek metni daha kisa baslikli hale getirildi
+- [x] Yedek olusturma sonrasi kopyalama talimati eklendi
+- [x] Ice aktarim oncesi onay uyarisi eklendi
+- [x] Eksik/bozuk yedek icin daha anlasilir hata mesaji eklendi
+- [x] Yedek versiyon uyumlulugu kontrol edildi
+- [x] Google Drive yedegi v1.0 sonrasi opsiyonel not olarak birakildi
+
+## Siradaki adimlar
 
 ### v0.2.8 — Tasarim ve kullanim temizlikleri
 - [ ] Alt menu konumu
