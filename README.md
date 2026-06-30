@@ -29,11 +29,17 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.0.7 | General theme, empty states, cards, font sizes | Done |
 | v1.0.8 | Premium Home redesign | Done |
 | v1.0.9 | Final premium design fixes | Done |
-| v1.0.10 | v1.0 design closure | Next |
+| v1.0.10 | v1.0 design closure | Done |
 
-## Important v1.0 decision
+## v1.0 design phase
 
-Starting v1.0 does not mean APK build starts. APK build remains manual-only. Until then, development continues with Expo Go only.
+v1.0 design renewal is closed. Development continues with Expo Go only.
+
+APK build is still manual-only and must not start unless the user explicitly says: "APK almaya başlayalım".
+
+## Important APK decision
+
+Starting or closing v1.0 does not mean APK build starts. APK build remains manual-only. Until then, development continues with Expo Go only.
 
 ## Files
 
@@ -50,6 +56,7 @@ Starting v1.0 does not mean APK build starts. APK build remains manual-only. Unt
 - docs/V1_0_7_GENERAL_THEME_EMPTY_STATES.md
 - docs/V1_0_8_PREMIUM_HOME_REDESIGN.md
 - docs/V1_0_9_FINAL_PREMIUM_DESIGN_FIXES.md
+- docs/V1_0_10_DESIGN_CLOSURE.md
 
 ## Termux rule
 
