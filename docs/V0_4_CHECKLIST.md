@@ -13,20 +13,17 @@ v0.4 ana hedef: yil bazli hayat, tasinma, seyahat ve birikim hedef sistemi.
 - [x] v0.4.7 Yedek uyumlulugu
 - [x] v0.4.8 Ayarlar entegrasyonu
 - [x] v0.4.9 Tasarim temizligi
+- [x] v0.4.10 Final test hazirligi
 
-## v0.4.9 tamamlananlar
+## v0.4.10 tamamlananlar
 
-- [x] Alt menu kaydirma ipucu
-- [x] 8 sekme icin daha genis aktif sekme
-- [x] Alt menu sag bosluk
-- [x] Yillik finans paneli uzun deger tasma kontrolu
-- [x] Miami Ocean tema korunumu
-- [x] v0.4.9 test dosyasi
+- [x] v0.4 final test dokumani
+- [x] README final durumu
+- [x] appVersion v0.4.10
+- [x] app.config v0.4.10
+- [x] storage v0.4.10
+- [ ] Expo Go cihaz testi kullanici tarafinda yapilacak
 
 ## Next
 
-### v0.4.10 Final test
-- [ ] v0.4 final test dokumani
-- [ ] Expo Go cihaz testi
-- [ ] README final durumu
-- [ ] v0.4.10 surum dosyalari
+- v0.4 testleri temizse siradaki karar: v0.5 veya v1.0 hazirligi.
