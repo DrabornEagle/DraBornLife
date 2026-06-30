@@ -1,4 +1,6 @@
-export const BACKUP_VERSION = 'v0.0.10';
+import { APP_STATUS_CODE } from '../config/appVersion';
+
+export const BACKUP_VERSION = APP_STATUS_CODE;
 
 export function createBackupText(lifeData) {
   const backup = {
