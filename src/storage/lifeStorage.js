@@ -31,6 +31,7 @@ export async function resetLifeData() {
 
 export function normalizeLifeData(data) {
   const source = data || {};
+  const selectedYear = toPositiveYear(source.settings?.selectedYear, defaultLifeData.settings.selectedYear);
 
   return {
     ...defaultLifeData,
@@ -38,6 +39,7 @@ export function normalizeLifeData(data) {
     settings: {
       ...defaultLifeData.settings,
       ...(source.settings || {}),
+      selectedYear,
       currentVersionCode: STORAGE_VERSION,
     },
     goals: {
@@ -52,6 +54,7 @@ export function normalizeLifeData(data) {
         ...(source.goals?.motorcycle || {}),
       },
     },
+    yearlyPlans: normalizeYearlyPlans(source.yearlyPlans),
     lifePlans: {
       ...defaultLifeData.lifePlans,
       ...(source.lifePlans || {}),
@@ -89,4 +92,40 @@ function normalizeRooms(rooms) {
     isCore: room.isCore ?? false,
     items: Array.isArray(room.items) ? room.items : [],
   }));
+}
+
+function normalizeYearlyPlans(yearlyPlans) {
+  if (!Array.isArray(yearlyPlans) || yearlyPlans.length === 0) {
+    return defaultLifeData.yearlyPlans;
+  }
+
+  return yearlyPlans.map((plan) => {
+    const year = toPositiveYear(plan.year, defaultLifeData.settings.selectedYear);
+    return {
+      id: plan.id || `year_${year}_${Date.now()}`,
+      year,
+      title: plan.title || `${year} hedefi`,
+      goalType: plan.goalType || 'diger',
+      country: plan.country || '',
+      city: plan.city || '',
+      area: plan.area || '',
+      targetMonth: plan.targetMonth || '',
+      targetDate: plan.targetDate || '',
+      estimatedBudget: toNumber(plan.estimatedBudget),
+      savedAmount: toNumber(plan.savedAmount),
+      status: plan.status || 'planned',
+      note: plan.note || '',
+    };
+  });
+}
+
+function toPositiveYear(value, fallback) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 2020) return fallback;
+  return Math.round(parsed);
+}
+
+function toNumber(value) {
+  const parsed = Number(String(value).replace(',', '.'));
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
