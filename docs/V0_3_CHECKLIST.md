@@ -60,14 +60,15 @@ Ilk APK v1.0 surumunde alinacak. v0.3 Expo Go ile gelistirilecek.
 - [x] Tamamlandi durumu
 - [x] Hedef duzenle/sil
 - [x] Hedef sekmesi eklendi
-- [x] Surum dosyalari 0.3.7
-
-## Next
 
 ### v0.3.8 Yedek uyumlulugu
-- [ ] v0.3 veri alanlari yedege dahil olsun
-- [ ] Eski v0.2 yedeklerine guvenli varsayilan alanlar eklensin
-- [ ] Ayarlar ekraninda v0.3 yedek kapsami notu gorunsun
+- [x] v0.3 veri alanlari yedege dahil olsun
+- [x] Eski v0.2 yedeklerine guvenli varsayilan alanlar eklensin
+- [x] Ayarlar ekraninda v0.3 yedek kapsami notu gorunsun
+- [x] Yedek kapsami listesi eklendi
+- [x] Surum dosyalari 0.3.8
+
+## Next
 
 ### v0.3.9 Tasarim temizligi
 - [ ] Alt menu tasma kontrolu
