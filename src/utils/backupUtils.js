@@ -5,6 +5,7 @@ export const BACKUP_VERSION = APP_STATUS_CODE;
 export const BACKUP_SCOPE = [
   'settings',
   'goals',
+  'yearlyPlans',
   'lifePlans',
   'homeSetupRooms',
   'activities',
@@ -47,7 +48,7 @@ export function parseBackupText(text) {
 
     const backupVersion = parsed.backupVersion || 'bilinmiyor';
     const versionText = String(backupVersion);
-    const isCompatible = versionText.startsWith('v0.1') || versionText.startsWith('v0.2') || versionText.startsWith('v0.3');
+    const isCompatible = versionText.startsWith('v0.1') || versionText.startsWith('v0.2') || versionText.startsWith('v0.3') || versionText.startsWith('v0.4');
     const versionWarning = isCompatible ? '' : `Yedek surumu farkli gorunuyor: ${backupVersion}. Veri yapisi uygunsa yine de yuklenebilir.`;
     const scope = Array.isArray(parsed.backupScope) ? parsed.backupScope : [];
 
