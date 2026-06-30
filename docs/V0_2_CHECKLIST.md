@@ -35,12 +35,12 @@ v0.2, v0.1 temel lokal takip uygulamasını daha kullanışlı bir hayat planlam
 
 ## v0.2.4 — Gelir-gider düzenleme ve silme
 
-- [ ] Gelir-gider kaydını silme
-- [ ] Gelir-gider kaydını düzenleme
-- [ ] Kategoriye göre filtreleme
-- [ ] Gelir/gider tipine göre filtreleme
-- [ ] Son işlemler listesini daha okunur hale getir
-- [ ] Birikime ayrılan tutarı dashboarda net bağla
+- [x] Gelir-gider kaydını silme
+- [x] Gelir-gider kaydını düzenleme
+- [x] Kategoriye göre filtreleme
+- [x] Gelir/gider tipine göre filtreleme
+- [x] Son işlemler listesini daha okunur hale getir
+- [x] Birikime ayrılan tutarı dashboarda net bağla
 
 ## v0.2.5 — Alınacaklar düzenleme ve silme
 
