@@ -7,12 +7,11 @@ DraBornLife is a personal mobile app for planning the Antalya relocation and new
 - Expo / React Native
 - Test with Expo Go
 - First APK/AAB at v1.0
-- No web version
-- No Supabase or cloud database
+- Mobile app only
 - Local device data
 - Manual export/import backup
 - Optional Google Drive backup after v1.0
-- Android package: com.draborneagle.drabornlife
+- App id: com.draborneagle.drabornlife
 
 ## Current status
 
@@ -30,6 +29,8 @@ DraBornLife is a personal mobile app for planning the Antalya relocation and new
 | v0.3.8 | Backup compatibility | Done |
 | v0.3.9 | Design cleanup | Done |
 | v0.3.10 | v0.3 final test | Expo Go test ready |
+| v0.4.1 | v0.4 planning | Done |
+| v0.4.2 | Year based data model | Next |
 | v1.0 | First APK | Waiting |
 
 ## Checklist files
@@ -39,3 +40,4 @@ DraBornLife is a personal mobile app for planning the Antalya relocation and new
 - docs/V0_2_10_FINAL_TEST.md
 - docs/V0_3_CHECKLIST.md
 - docs/V0_3_10_FINAL_TEST.md
+- docs/V0_4_CHECKLIST.md
