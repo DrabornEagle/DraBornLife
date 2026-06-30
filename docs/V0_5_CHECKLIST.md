@@ -9,27 +9,19 @@
 - [x] v0.5.5 Backup experience
 - [x] v0.5.6 Home final summary
 - [x] v0.5.7 UX cleanup
+- [x] v0.5.8 Repo cleanup
 
-## v0.5.7
+## v0.5.8
 
-- [x] Empty state card
-- [x] Debt empty state
-- [x] Custom goals empty state
-- [x] Extra bottom padding
-- [x] 9-tab menu cleanup
-- [x] Keyboard touch cleanup
-- [x] Long TRY value wrapping
-- [x] Miami Ocean theme kept
+- [x] Old file search
+- [x] README check
+- [x] Checklist check
+- [x] appVersion/app.config/package/storage consistency
+- [x] Folder name note
+- [x] Repo cleanup doc
 - [x] Test doc added
 
 ## Next
-
-### v0.5.8 Repo cleanup
-- [ ] Old file check
-- [ ] README check
-- [ ] Checklist check
-- [ ] Version file consistency
-- [ ] Folder name note
 
 ### v0.5.9 v1.0 APK prep
 - [ ] APK file list
