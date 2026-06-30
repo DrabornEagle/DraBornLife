@@ -2,12 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from './src/theme';
-import { DebtScreen } from './src/screens/DebtScreen';
+import { DebtScreenSafe } from './src/screens/DebtScreenSafe';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LoadingScreen } from './src/screens/LoadingScreen';
 import { MoneyScreenSafe } from './src/screens/MoneyScreenSafe';
 import { SettingsScreenFixed } from './src/screens/SettingsScreenFixed';
-import { ShoppingScreen } from './src/screens/ShoppingScreen';
+import { ShoppingScreenSafe } from './src/screens/ShoppingScreenSafe';
 import { useLifeData } from './src/hooks/useLifeData';
 
 const tabs = [
@@ -26,8 +26,8 @@ export default function App() {
     if (isLoading || !lifeData) return <LoadingScreen />;
     if (activeTab === 'home') return <HomeScreen lifeData={lifeData} />;
     if (activeTab === 'money') return <MoneyScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
-    if (activeTab === 'shopping') return <ShoppingScreen lifeData={lifeData} onSave={updateLifeData} />;
-    if (activeTab === 'debt') return <DebtScreen lifeData={lifeData} onSave={updateLifeData} />;
+    if (activeTab === 'shopping') return <ShoppingScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
+    if (activeTab === 'debt') return <DebtScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
     return <SettingsScreenFixed lifeData={lifeData} onReset={resetLocalData} onRestore={updateLifeData} />;
   }, [activeTab, isLoading, lifeData, resetLocalData, updateLifeData]);
 
