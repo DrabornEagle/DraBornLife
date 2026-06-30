@@ -10,6 +10,7 @@ import { LoadingScreen } from './src/screens/LoadingScreen';
 import { MoneyScreenSafe } from './src/screens/MoneyScreenSafe';
 import { SettingsScreenFixed } from './src/screens/SettingsScreenFixed';
 import { ShoppingScreenSafe } from './src/screens/ShoppingScreenSafe';
+import { TestCenterScreen } from './src/screens/TestCenterScreen';
 import { YearPlanScreen } from './src/screens/YearPlanScreen';
 import { useLifeData } from './src/hooks/useLifeData';
 
@@ -17,6 +18,7 @@ const tabs = [
   { key: 'home', label: 'Ana', icon: '🌴' },
   { key: 'life', label: 'Life', icon: '🌊' },
   { key: 'year', label: 'Yıl', icon: '📅' },
+  { key: 'test', label: 'Test', icon: '🧪' },
   { key: 'goals', label: 'Hedef', icon: '🎯' },
   { key: 'money', label: 'Para', icon: '💸' },
   { key: 'shopping', label: 'Liste', icon: '🛋️' },
@@ -33,6 +35,7 @@ export default function App() {
     if (activeTab === 'home') return <HomeScreen lifeData={lifeData} />;
     if (activeTab === 'life') return <AntalyaLifeScreen lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'year') return <YearPlanScreen lifeData={lifeData} onSave={updateLifeData} />;
+    if (activeTab === 'test') return <TestCenterScreen lifeData={lifeData} />;
     if (activeTab === 'goals') return <CustomGoalsScreen lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'money') return <MoneyScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'shopping') return <ShoppingScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
