@@ -2,7 +2,7 @@
   "expo": {
     "name": "DraBornLife",
     "slug": "drabornlife",
-    "version": "0.0.3",
+    "version": "0.0.5",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "scheme": "drabornlife",
@@ -11,13 +11,13 @@
     ],
     "android": {
       "package": "com.draborneagle.drabornlife",
-      "versionCode": 3
+      "versionCode": 5
     },
     "ios": {
       "bundleIdentifier": "com.draborneagle.drabornlife"
     },
     "extra": {
-      "statusCode": "v0.0.3",
+      "statusCode": "v0.0.5",
       "storageMode": "local-only",
       "cloudDatabase": false
     }
