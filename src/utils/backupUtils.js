@@ -23,7 +23,7 @@ export function createBackupText(lifeData) {
     backupVersion: BACKUP_VERSION,
     backupScope: BACKUP_SCOPE,
     createdAt: new Date().toISOString(),
-    warning: 'Bu metni sakla. Yeni telefonda Ayarlar > Ice aktar alanina yapistirarak geri yukleyebilirsin.',
+    warning: 'Bu metni sakla. Yeni telefonda Ayarlar > İçe aktar alanına yapıştırarak geri yükleyebilirsin.',
     data: lifeData,
   };
 
@@ -32,28 +32,28 @@ export function createBackupText(lifeData) {
 
 export function parseBackupText(text) {
   if (!text || !text.trim()) {
-    return { ok: false, error: 'Yedek alani bos. Daha once olusturdugun DraBornLife yedek metnini buraya yapistirmalisin.' };
+    return { ok: false, error: 'Yedek alanı boş. Daha önce oluşturduğun DraBornLife yedek metnini buraya yapıştırmalısın.' };
   }
 
   try {
     const parsed = JSON.parse(text);
 
     if (parsed?.backupApp !== 'DraBornLife') {
-      return { ok: false, error: 'Bu metin DraBornLife yedegi gibi gorunmuyor. backupApp alani bulunamadi veya farkli.' };
+      return { ok: false, error: 'Bu metin DraBornLife yedeği gibi görünmüyor. backupApp alanı bulunamadı veya farklı.' };
     }
 
     if (!parsed?.data || typeof parsed.data !== 'object') {
-      return { ok: false, error: 'Yedek icinde geri yuklenecek veri bulunamadi.' };
+      return { ok: false, error: 'Yedek içinde geri yüklenecek veri bulunamadı.' };
     }
 
     const backupVersion = parsed.backupVersion || 'bilinmiyor';
     const versionText = String(backupVersion);
-    const isCompatible = versionText.startsWith('v0.1') || versionText.startsWith('v0.2') || versionText.startsWith('v0.3') || versionText.startsWith('v0.4');
-    const versionWarning = isCompatible ? '' : `Yedek surumu farkli gorunuyor: ${backupVersion}. Veri yapisi uygunsa yine de yuklenebilir.`;
+    const isCompatible = versionText.startsWith('v0.1') || versionText.startsWith('v0.2') || versionText.startsWith('v0.3') || versionText.startsWith('v0.4') || versionText.startsWith('v0.5') || versionText.startsWith('v1.0');
+    const versionWarning = isCompatible ? '' : `Yedek sürümü farklı görünüyor: ${backupVersion}. Veri yapısı uygunsa yine de yüklenebilir.`;
     const scope = Array.isArray(parsed.backupScope) ? parsed.backupScope : [];
 
     return { ok: true, data: parsed.data, backupVersion, versionWarning, scope };
   } catch (error) {
-    return { ok: false, error: 'Yedek metni okunamadi. Metnin tamamini kopyaladigindan ve JSON formatinin bozulmadigindan emin ol.' };
+    return { ok: false, error: 'Yedek metni okunamadı. Metnin tamamını kopyaladığından ve JSON formatının bozulmadığından emin ol.' };
   }
 }
