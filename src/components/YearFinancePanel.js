@@ -1,0 +1,39 @@
+import React from 'react';
+import { Text, View } from 'react-native';
+import { formatTRY } from '../utils/lifeSummary';
+import { getYearlyFinanceSummary } from '../utils/yearlyFinanceSummary';
+
+export function YearFinancePanel({ lifeData, selectedYear, compact = false }) {
+  const summary = getYearlyFinanceSummary(lifeData, selectedYear);
+
+  return (
+    <View style={{ marginTop: 14, padding: 16, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
+      <Text style={{ color: '#102A35', fontSize: compact ? 18 : 20, fontWeight: '900' }}>{summary.year} finans özeti</Text>
+      <Text style={{ marginTop: 5, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Seçili yılın gelir, gider, net birikim ve hedef bütçe ilerlemesi.</Text>
+      <View style={{ flexDirection: 'row', marginTop: 10 }}>
+        <Mini title="Gelir" value={formatTRY(summary.income)} />
+        <Mini title="Gider" value={formatTRY(summary.expense)} />
+      </View>
+      <View style={{ flexDirection: 'row', marginTop: 8 }}>
+        <Mini title="Net" value={formatTRY(summary.net)} />
+        <Mini title="İlerleme" value={`%${summary.progress}`} />
+      </View>
+      <View style={{ marginTop: 10, padding: 12, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#CFECEE' }}>
+        <Line label="Yıllık hedef bütçesi" value={formatTRY(summary.targetBudget)} />
+        <Line label="Hedeflere ayrılan/biriken" value={formatTRY(summary.yearlyAvailable)} />
+        <Line label="Yıllık hedefe kalan" value={formatTRY(summary.remaining)} />
+        <Line label="Alınacaklar kalan" value={formatTRY(summary.shoppingRemaining)} />
+        <Line label="Borç kalan" value={formatTRY(summary.debtRemaining)} />
+        <Line label="Özel hedef kalan" value={formatTRY(summary.customGoalRemaining)} />
+      </View>
+    </View>
+  );
+}
+
+function Mini({ title, value }) {
+  return <View style={{ flex: 1, marginHorizontal: 4, padding: 12, minHeight: 86, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#CFECEE' }}><Text style={{ color: '#315661', fontSize: 11, fontWeight: '900' }}>{title}</Text><Text style={{ marginTop: 7, color: '#102A35', fontSize: 17, fontWeight: '900' }}>{value}</Text></View>;
+}
+
+function Line({ label, value }) {
+  return <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#E2F4F5' }}><Text style={{ flex: 1, color: '#315661', fontSize: 12, fontWeight: '800' }}>{label}</Text><Text style={{ color: '#102A35', fontSize: 12, fontWeight: '900' }}>{value}</Text></View>;
+}
