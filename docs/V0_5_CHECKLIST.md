@@ -26,16 +26,18 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK v1.0'da alinacak.
 - [x] Genel saglik skoru
 - [x] Surum dosyalari v0.5.2 yapildi
 
-## Next
-
 ### v0.5.3 Veri saglik kontrolu
-- [ ] Eksik settings alanlari kontrolu
-- [ ] Eksik yearlyPlans kontrolu
-- [ ] Negatif fiyat/tutar kontrolu
-- [ ] Tarih format kontrolu
-- [ ] Bos baslikli hedef kontrolu
-- [ ] Motosiklet hedef baglantisi kontrolu
-- [ ] Otomatik duzeltilebilir uyarilar
+- [x] Eksik settings alanlari kontrolu
+- [x] Eksik yearlyPlans kontrolu
+- [x] Negatif fiyat/tutar kontrolu
+- [x] Tarih format kontrolu
+- [x] Bos baslikli hedef kontrolu
+- [x] Motosiklet hedef baglantisi kontrolu
+- [x] Otomatik duzeltilebilir uyarilar listesi
+- [x] Test Merkezi yeni saglik motoruna baglandi
+- [x] Surum dosyalari v0.5.3 yapildi
+
+## Next
 
 ### v0.5.4 Form dogrulama temizligi
 - [ ] Para ekraninda negatif ve bos veri kontrolu
