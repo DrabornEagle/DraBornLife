@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="draborn_bg">#101820</color>
+    <color name="draborn_card">#172635</color>
+    <color name="draborn_gold">#F4B942</color>
+    <color name="draborn_text">#FFFFFF</color>
+    <color name="draborn_muted">#B8C2CC</color>
+</resources>
