@@ -23,8 +23,8 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.0.1 | Design renewal plan and new UI checklist | Done |
 | v1.0.2 | New Home design | Done |
 | v1.0.3 | New bottom navigation design + Turkish UI text pass | Done |
-| v1.0.4 | New year screen design | Next |
-| v1.0.5 | New money / debt / list screens design | Waiting |
+| v1.0.4 | New year screen design | Done |
+| v1.0.5 | New money / debt / list screens design | Next |
 | v1.0.6 | New settings / backup / test center design | Waiting |
 | v1.0.7 | General theme, empty states, cards, font sizes | Waiting |
 | v1.0.8 | Expo Go design test | Waiting |
@@ -44,6 +44,7 @@ Starting v1.0 does not mean APK build starts. APK build remains manual-only. Unt
 - docs/V1_0_1_DESIGN_RENEWAL_PLAN.md
 - docs/V1_0_2_HOME_DESIGN.md
 - docs/V1_0_3_BOTTOM_NAV_TURKISH_TEXT.md
+- docs/V1_0_4_YEAR_SCREEN_DESIGN.md
 
 ## Termux rule
 
