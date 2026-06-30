@@ -1,18 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NoticeBox } from '../components/NoticeBox';
+import { YearFinancePanel } from '../components/YearFinancePanel';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatTRY } from '../utils/lifeSummary';
 
 const TYPES = ['tasinma', 'seyahat', 'ev', 'arac', 'oyun', 'aile', 'diger'];
-const STATUS = [
-  ['planned', 'Planli'],
-  ['active', 'Aktif'],
-  ['saving', 'Para birikiyor'],
-  ['done', 'Tamam'],
-  ['postponed', 'Ertelendi'],
-  ['cancelled', 'Iptal'],
-];
+const STATUS = [['planned', 'Planli'], ['active', 'Aktif'], ['saving', 'Para birikiyor'], ['done', 'Tamam'], ['postponed', 'Ertelendi'], ['cancelled', 'Iptal']];
 
 export function YearPlanScreen({ lifeData, onSave }) {
   const plans = Array.isArray(lifeData?.yearlyPlans) ? lifeData.yearlyPlans : [];
@@ -63,6 +57,7 @@ export function YearPlanScreen({ lifeData, onSave }) {
       <Panel title="Yil sec" note="Hedefleri yil yil ayir."><ScrollView horizontal showsHorizontalScrollIndicator={false}>{years.map((y) => <Chip key={y} label={String(y)} active={selectedYear === y} onPress={() => selectYear(y)} />)}</ScrollView></Panel>
       <Row><Mini title="Secili yil" value={String(selectedYear)} text={`${shown.length} hedef`} /><Mini title="Butce" value={formatTRY(total)} text={`${formatTRY(saved)} birikti`} /></Row>
       <Row><Mini title="Ilerleme" value={`%${progress}`} text={`${formatTRY(left)} kalan`} /><Mini title="En yakin" value={nearest.daysLabel} text={nearest.title} /></Row>
+      <YearFinancePanel lifeData={lifeData} selectedYear={selectedYear} />
       <GoalForm form={form} set={patchForm} editing={!!editingId} save={saveGoal} cancel={resetForm} />
       <Panel title="Birikim geri sayimi" note="Hedef tarihine gore kalan sure ve gerekli birikim hesaplanir."><Row><Mini title="Kalan butce" value={formatTRY(left)} text="Secili yil toplam" /><Mini title="Aylik lazim" value={formatTRY(nearest.monthlyNeed)} text="En yakin hedef" /></Row><Row><Mini title="Haftalik lazim" value={formatTRY(nearest.weeklyNeed)} text="En yakin hedef" /><Mini title="Tamam" value={`${done}/${shown.length}`} text="Hedef durumu" /></Row></Panel>
       <Panel title={`${selectedYear} hedefleri`} note="Hedefleri duzenle, sil veya durumunu degistir.">{shown.length === 0 ? <Text style={txt}>Bu yil icin henuz hedef yok.</Text> : shown.map((p) => <GoalCard key={p.id} plan={p} edit={editGoal} remove={removeGoal} setStatus={setStatus} />)}</Panel>
