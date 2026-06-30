@@ -12,24 +12,18 @@ v0.4 ana hedef: yil bazli hayat, tasinma, seyahat ve birikim hedef sistemi.
 - [x] v0.4.6 Yillik finans ozeti
 - [x] v0.4.7 Yedek uyumlulugu
 - [x] v0.4.8 Ayarlar entegrasyonu
+- [x] v0.4.9 Tasarim temizligi
 
-## v0.4.8 tamamlananlar
+## v0.4.9 tamamlananlar
 
-- [x] Varsayilan aktif yil ayari
-- [x] Antalya hedef tarih/ay/bolge ayarlari
-- [x] Antalya ana hedefini yearlyPlans ile senkronlama
-- [x] Motosiklet fiyatini Liste ve Yil hedefiyle baglama
-- [x] Surum dosyalari v0.4.8
-- [x] v0.4.8 test dosyasi
+- [x] Alt menu kaydirma ipucu
+- [x] 8 sekme icin daha genis aktif sekme
+- [x] Alt menu sag bosluk
+- [x] Yillik finans paneli uzun deger tasma kontrolu
+- [x] Miami Ocean tema korunumu
+- [x] v0.4.9 test dosyasi
 
 ## Next
-
-### v0.4.9 Tasarim temizligi
-- [ ] Yil kartlari tasma kontrolu
-- [ ] Alt menu kaydirma kontrolu
-- [ ] Uzun listelerde alt bosluk
-- [ ] Miami Ocean tema tutarliligi
-- [ ] Bos durum ekranlari
 
 ### v0.4.10 Final test
 - [ ] v0.4 final test dokumani
