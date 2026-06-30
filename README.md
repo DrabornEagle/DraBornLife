@@ -25,8 +25,8 @@ DraBornLife is a personal mobile app for planning the Antalya relocation and new
 | v0.3.3 | Antalya Life screen | Done |
 | v0.3.4 | Home setup by rooms | Done |
 | v0.3.5 | Family activity budget | Done |
-| v0.3.6 | Beach, aquapark, holiday goals | Next |
-| v0.3.7 | Custom goals | Waiting |
+| v0.3.6 | Beach, aquapark, holiday goals | Done |
+| v0.3.7 | Custom goals | Next |
 | v0.3.8 | Backup compatibility | Waiting |
 | v0.3.9 | Design cleanup | Waiting |
 | v0.3.10 | v0.3 final test | Waiting |
