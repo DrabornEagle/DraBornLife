@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from './src/theme';
+import { AntalyaLifeScreen } from './src/screens/AntalyaLifeScreen';
 import { DebtScreenSafe } from './src/screens/DebtScreenSafe';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LoadingScreen } from './src/screens/LoadingScreen';
@@ -11,11 +12,12 @@ import { ShoppingScreenSafe } from './src/screens/ShoppingScreenSafe';
 import { useLifeData } from './src/hooks/useLifeData';
 
 const tabs = [
-  { key: 'home', label: 'Ana Sayfa', icon: '🌴' },
-  { key: 'money', label: 'Gelir-Gider', icon: '💸' },
-  { key: 'shopping', label: 'Alınacaklar', icon: '🛋️' },
+  { key: 'home', label: 'Ana', icon: '🌴' },
+  { key: 'life', label: 'Life', icon: '🌊' },
+  { key: 'money', label: 'Para', icon: '💸' },
+  { key: 'shopping', label: 'Liste', icon: '🛋️' },
   { key: 'debt', label: 'Borç', icon: '📉' },
-  { key: 'settings', label: 'Ayarlar', icon: '⚙️' },
+  { key: 'settings', label: 'Ayar', icon: '⚙️' },
 ];
 
 export default function App() {
@@ -25,6 +27,7 @@ export default function App() {
   const screen = useMemo(() => {
     if (isLoading || !lifeData) return <LoadingScreen />;
     if (activeTab === 'home') return <HomeScreen lifeData={lifeData} />;
+    if (activeTab === 'life') return <AntalyaLifeScreen lifeData={lifeData} />;
     if (activeTab === 'money') return <MoneyScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'shopping') return <ShoppingScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'debt') return <DebtScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
@@ -61,10 +64,10 @@ const styles = StyleSheet.create({
   appShell: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   content: { flex: 1, backgroundColor: '#DFF5F6' },
   tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 6, paddingBottom: 10 },
-  tabBar: { flexDirection: 'row', marginHorizontal: 12, padding: 7, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.94)', elevation: 12 },
+  tabBar: { flexDirection: 'row', marginHorizontal: 8, padding: 6, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.94)', elevation: 12 },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 7, borderRadius: 20 },
   tabItemActive: { backgroundColor: theme.colors.aqua },
-  tabIcon: { fontSize: 17, marginBottom: 1 },
-  tabLabel: { color: theme.colors.slate, fontSize: 9, fontWeight: '800' },
+  tabIcon: { fontSize: 16, marginBottom: 1 },
+  tabLabel: { color: theme.colors.slate, fontSize: 8, fontWeight: '800' },
   tabLabelActive: { color: theme.colors.oceanDeep },
 });
