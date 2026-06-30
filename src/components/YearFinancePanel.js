@@ -8,23 +8,23 @@ export function YearFinancePanel({ lifeData, selectedYear, compact = false }) {
 
   return (
     <View style={{ marginTop: 14, padding: 16, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-      <Text style={{ color: '#102A35', fontSize: compact ? 18 : 20, fontWeight: '900' }}>{summary.year} finans ozeti</Text>
-      <Text style={{ marginTop: 5, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Secili yilin gelir, gider, net birikim ve hedef butce ilerlemesi.</Text>
+      <Text style={{ color: '#102A35', fontSize: compact ? 18 : 20, fontWeight: '900' }}>{summary.year} finans özeti</Text>
+      <Text style={{ marginTop: 5, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Seçili yılın gelir, gider, net birikim ve hedef bütçe ilerlemesi.</Text>
       <View style={{ flexDirection: 'row', marginTop: 10 }}>
         <Mini title="Gelir" value={formatTRY(summary.income)} />
         <Mini title="Gider" value={formatTRY(summary.expense)} />
       </View>
       <View style={{ flexDirection: 'row', marginTop: 8 }}>
         <Mini title="Net" value={formatTRY(summary.net)} />
-        <Mini title="Ilerleme" value={`%${summary.progress}`} />
+        <Mini title="İlerleme" value={`%${summary.progress}`} />
       </View>
       <View style={{ marginTop: 10, padding: 12, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#CFECEE' }}>
-        <Line label="Yillik hedef butcesi" value={formatTRY(summary.targetBudget)} />
-        <Line label="Hedeflere ayrilan/biriken" value={formatTRY(summary.yearlyAvailable)} />
-        <Line label="Yillik hedefe kalan" value={formatTRY(summary.remaining)} />
-        <Line label="Alinacaklar kalan" value={formatTRY(summary.shoppingRemaining)} />
-        <Line label="Borc kalan" value={formatTRY(summary.debtRemaining)} />
-        <Line label="Ozel hedef kalan" value={formatTRY(summary.customGoalRemaining)} />
+        <Line label="Yıllık hedef bütçesi" value={formatTRY(summary.targetBudget)} />
+        <Line label="Hedeflere ayrılan/biriken" value={formatTRY(summary.yearlyAvailable)} />
+        <Line label="Yıllık hedefe kalan" value={formatTRY(summary.remaining)} />
+        <Line label="Alınacaklar kalan" value={formatTRY(summary.shoppingRemaining)} />
+        <Line label="Borç kalan" value={formatTRY(summary.debtRemaining)} />
+        <Line label="Özel hedef kalan" value={formatTRY(summary.customGoalRemaining)} />
       </View>
     </View>
   );
