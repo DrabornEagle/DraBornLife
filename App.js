@@ -5,7 +5,7 @@ import { DebtScreen } from './src/screens/DebtScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LoadingScreen } from './src/screens/LoadingScreen';
 import { MoneyScreen } from './src/screens/MoneyScreen';
-import { SettingsScreen } from './src/screens/SettingsScreen';
+import { SettingsScreenFixed } from './src/screens/SettingsScreenFixed';
 import { ShoppingScreen } from './src/screens/ShoppingScreen';
 import { useLifeData } from './src/hooks/useLifeData';
 
@@ -27,7 +27,7 @@ export default function App() {
     if (activeTab === 'money') return <MoneyScreen lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'shopping') return <ShoppingScreen lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'debt') return <DebtScreen lifeData={lifeData} onSave={updateLifeData} />;
-    return <SettingsScreen lifeData={lifeData} onReset={resetLocalData} onRestore={updateLifeData} />;
+    return <SettingsScreenFixed lifeData={lifeData} onReset={resetLocalData} onRestore={updateLifeData} />;
   }, [activeTab, isLoading, lifeData, resetLocalData, updateLifeData]);
 
   return (
