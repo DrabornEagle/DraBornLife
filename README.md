@@ -7,7 +7,7 @@ DraBornLife, Antalya’ya sıfırdan yeni hayat kurma sürecini takip etmek içi
 - Geliştirme yönü: Expo / React Native
 - Test yöntemi: Expo Go
 - İlk APK / AAB çıktısı: v1.0
-- v0.1 ve v0.2 sürecinde APK alınmayacak
+- v0.1, v0.2 ve v0.3 sürecinde APK alınmayacak
 - Web sürüm yok
 - Supabase / cloud database yok
 - Veri saklama: cihaz içinde lokal veri
@@ -19,18 +19,18 @@ DraBornLife, Antalya’ya sıfırdan yeni hayat kurma sürecini takip etmek içi
 
 | Durum Kodu | Aşama | Durum |
 |---|---|---|
-| v0.0.12 | v0.1 öncesi temizlik ve Expo Go test hazırlığı | Tamamlandı |
-| v0.1 | Temel lokal takip prototipi | Expo Go ile tamamlandı kabul edilecek |
-| v0.2.1 | Sürüm planı ve APK kararını güncelle | Tamamlandı |
-| v0.2.2 | Hedef ve ayarlar düzenleme ekranı | Tamamlandı |
-| v0.2.3 | Dashboard kalan gün ve hedef hesapları | Tamamlandı |
-| v0.2.4 | Gelir-gider düzenleme ve silme | Tamamlandı |
-| v0.2.5 | Alınacaklar düzenleme ve silme | Tamamlandı |
-| v0.2.6 | Borç düzenleme ve silme | Tamamlandı |
-| v0.2.7 | Yedekleme iyileştirme | Tamamlandı |
-| v0.2.8 | Tasarım ve kullanım temizlikleri | Tamamlandı |
-| v0.2.9 | Veri güvenliği ve sıfırlama kontrolü | Tamamlandı |
-| v0.2.10 | v0.2 final test ve kapanış | Expo Go testine hazır |
+| v0.1 | Temel lokal takip prototipi | Tamamlandı |
+| v0.2 | Finans, hedef, yedek ve güvenlik geliştirmeleri | Expo Go testine hazır |
+| v0.3.1 | v0.3 planlama ve sürüm hazırlığı | Tamamlandı |
+| v0.3.2 | Yaşam veri modeli | Sıradaki adım |
+| v0.3.3 | Antalya Life ekranı | Bekliyor |
+| v0.3.4 | Ev kurulum oda oda takip | Bekliyor |
+| v0.3.5 | Aile aktivite bütçesi | Bekliyor |
+| v0.3.6 | Sahil, aquapark ve tatil hedefleri | Bekliyor |
+| v0.3.7 | Özel hedef ekleme sistemi | Bekliyor |
+| v0.3.8 | Yedek uyumluluğu | Bekliyor |
+| v0.3.9 | Tasarım ve kullanım temizliği | Bekliyor |
+| v0.3.10 | v0.3 final test | Bekliyor |
 | v1.0 | İlk APK / stabil Android paket | Bekliyor |
 
 ## Checklist dosyaları
@@ -38,6 +38,7 @@ DraBornLife, Antalya’ya sıfırdan yeni hayat kurma sürecini takip etmek içi
 - v0.1 listesi: docs/V0_1_CHECKLIST.md
 - v0.2 listesi: docs/V0_2_CHECKLIST.md
 - v0.2 final test: docs/V0_2_10_FINAL_TEST.md
+- v0.3 listesi: docs/V0_3_CHECKLIST.md
 
 ## Termux lokal eşitleme
 
