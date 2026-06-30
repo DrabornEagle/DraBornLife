@@ -16,7 +16,7 @@ import { useLifeData } from './src/hooks/useLifeData';
 
 const tabs = [
   { key: 'home', label: 'Ana', icon: '🌴' },
-  { key: 'life', label: 'Life', icon: '🌊' },
+  { key: 'life', label: 'Yaşam', icon: '🌊' },
   { key: 'year', label: 'Yıl', icon: '📅' },
   { key: 'test', label: 'Test', icon: '🧪' },
   { key: 'goals', label: 'Hedef', icon: '🎯' },
@@ -29,6 +29,7 @@ const tabs = [
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const { lifeData, isLoading, updateLifeData, resetLocalData } = useLifeData();
+  const activeTabInfo = tabs.find((tab) => tab.key === activeTab) || tabs[0];
 
   const screen = useMemo(() => {
     if (isLoading || !lifeData) return <LoadingScreen />;
@@ -50,13 +51,18 @@ export default function App() {
         <View style={styles.appShell}>
           <View style={styles.content}>{screen}</View>
           <View style={styles.tabWrap}>
-            <Text style={styles.dragHint}>Menüyü kaydır • 9 sekme</Text>
+            <View style={styles.navHeader}>
+              <Text style={styles.navTitle}>DraBornLife Menü</Text>
+              <Text style={styles.navHint}>Aktif: {activeTabInfo.label} • 9 bölüm</Text>
+            </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.tabBarContent}>
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.key;
                 return (
                   <TouchableOpacity key={tab.key} style={[styles.tabItem, isActive && styles.tabItemActive]} onPress={() => setActiveTab(tab.key)} activeOpacity={0.82}>
-                    <Text style={styles.tabIcon}>{tab.icon}</Text>
+                    <View style={[styles.iconBubble, isActive && styles.iconBubbleActive]}>
+                      <Text style={styles.tabIcon}>{tab.icon}</Text>
+                    </View>
                     <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]} numberOfLines={1}>{tab.label}</Text>
                   </TouchableOpacity>
                 );
@@ -72,13 +78,46 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   appShell: { flex: 1, backgroundColor: theme.colors.oceanDeep },
-  content: { flex: 1, backgroundColor: '#DFF5F6' },
-  tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 6, paddingBottom: 11, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)' },
-  dragHint: { marginLeft: 14, marginBottom: 5, color: 'rgba(221,248,250,0.82)', fontSize: 10, fontWeight: '900' },
-  tabBarContent: { paddingLeft: 10, paddingRight: 38 },
-  tabItem: { width: 74, marginRight: 7, alignItems: 'center', justifyContent: 'center', paddingVertical: 8, borderRadius: 21, backgroundColor: 'rgba(255,255,255,0.92)' },
-  tabItemActive: { width: 94, backgroundColor: theme.colors.aqua, elevation: 8 },
-  tabIcon: { fontSize: 17, marginBottom: 2 },
-  tabLabel: { color: theme.colors.slate, fontSize: 10, fontWeight: '900' },
+  content: { flex: 1, backgroundColor: '#F4FBF9' },
+  tabWrap: {
+    backgroundColor: theme.colors.oceanDeep,
+    paddingTop: 9,
+    paddingBottom: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(200,251,255,0.12)',
+    elevation: 12,
+  },
+  navHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 7 },
+  navTitle: { color: '#FFFFFF', fontSize: 12, fontWeight: '900', letterSpacing: 0.3 },
+  navHint: { color: 'rgba(221,248,250,0.78)', fontSize: 10, fontWeight: '800' },
+  tabBarContent: { paddingLeft: 12, paddingRight: 28 },
+  tabItem: {
+    width: 64,
+    marginRight: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 7,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.10)',
+  },
+  tabItemActive: {
+    width: 88,
+    backgroundColor: theme.colors.aqua,
+    borderColor: 'rgba(255,255,255,0.55)',
+    elevation: 8,
+  },
+  iconBubble: {
+    width: 31,
+    height: 31,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.88)',
+  },
+  iconBubbleActive: { backgroundColor: 'rgba(255,255,255,0.96)' },
+  tabIcon: { fontSize: 17 },
+  tabLabel: { marginTop: 4, color: 'rgba(255,255,255,0.82)', fontSize: 10, fontWeight: '900' },
   tabLabelActive: { color: theme.colors.oceanDeep },
 });
