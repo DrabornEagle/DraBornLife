@@ -17,13 +17,13 @@ Personal mobile app for Antalya relocation and future life goals.
 | v0.5.5 | Backup experience | Done |
 | v0.5.6 | Home final summary | Done |
 | v0.5.7 | UX cleanup | Done |
-| v0.5.8 | Repo cleanup | Next |
+| v0.5.8 | Repo cleanup | Done |
+| v0.5.9 | v1.0 APK prep | Next |
 | v1.0 | First APK | Waiting |
 
 ## Files
 
 - docs/V0_5_CHECKLIST.md
-- docs/V0_5_4_TEST.md
-- docs/V0_5_5_TEST.md
-- docs/V0_5_6_TEST.md
 - docs/V0_5_7_TEST.md
+- docs/V0_5_8_REPO_CLEANUP.md
+- docs/V0_5_8_TEST.md
