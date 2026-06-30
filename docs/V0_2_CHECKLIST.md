@@ -70,15 +70,15 @@ Karar: Ilk APK v1.0 surumunde alinacak. v0.2 gelistirmesi Expo Go ile devam eder
 - [x] Bos durum ekranlari daha okunur hale getirildi
 - [x] Telefon ekraninda tasma kontrolu icin kaydirma yapisi duzenlendi
 
-## Siradaki adimlar
-
 ### v0.2.9 — Veri guvenligi
-- [ ] Demo veriyi sifirla onayi
-- [ ] Veri sifirlama sonrasi mesaj
-- [ ] Kayit ekleme sonrasi mesaj
-- [ ] Yanlis tutar uyarisi
-- [ ] Negatif tutar engeli
-- [ ] Bos baslik engeli
+- [x] Demo veriyi sifirla onayi
+- [x] Veri sifirlama sonrasi mesaj
+- [x] Kayit ekleme sonrasi mesaj
+- [x] Yanlis tutar uyarisi
+- [x] Negatif tutar engeli
+- [x] Bos baslik engeli
+
+## Siradaki adimlar
 
 ### v0.2.10 — v0.2 final test
 - [ ] Ana Sayfa testi
