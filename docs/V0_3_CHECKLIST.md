@@ -49,12 +49,13 @@ v0.3, DraBornLife'i finans takip uygulamasindan Antalya yasam planlama paneline 
 
 ## v0.3.5 — Aile aktivite butcesi
 
-- [ ] Aktivite ekle
-- [ ] Aktivite duzenle/sil
-- [ ] Tahmini fiyat
-- [ ] Biriken tutar
-- [ ] Kalan tutar
-- [ ] Tamamlandi durumu
+- [x] Aktivite ekle
+- [x] Aktivite duzenle/sil
+- [x] Tahmini fiyat
+- [x] Biriken tutar
+- [x] Kalan tutar
+- [x] Tamamlandi durumu
+- [x] Surum dosyalarini v0.3.5 yap
 
 ## v0.3.6 — Sahil, aquapark ve tatil hedefleri
 
