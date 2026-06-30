@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { BACKUP_SCOPE } from '../utils/backupUtils';
 import { getDataHealthReport } from '../utils/dataHealthCheck';
-import { formatTRY, getLifeSummary } from '../utils/lifeSummary';
+import { formatMoney, getLifeSummary } from '../utils/lifeSummary';
 
 export function HomeFinalSummaryCard({ lifeData }) {
   const summary = getLifeSummary(lifeData);
@@ -12,26 +12,25 @@ export function HomeFinalSummaryCard({ lifeData }) {
   const selectedPlans = yearlyPlans.filter((plan) => Number(plan.year) === Number(selectedYear));
   const backupCount = BACKUP_SCOPE.length;
   const ready = health.failCount === 0;
+  const money = (value) => formatMoney(value, lifeData);
 
   return (
     <View style={card}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <View style={{ flex: 1, paddingRight: 12 }}>
-          <Text style={mini}>V1.0.4 YIL EKRANI</Text>
+          <Text style={mini}>V1.0.5 PARA BİRİMİ</Text>
           <Text style={title}>{ready ? 'Tasarım yenileme modu aktif' : 'Veri kontrolü gerekli'}</Text>
-          <Text style={desc}>APK yok. Ana sayfa, alt menü ve yıl ekranı Expo Go üzerinden okunabilirlik, ferahlık ve sahil hissi için test edilir.</Text>
+          <Text style={desc}>APK yok. Para birimi seçimi ve kategori kartları Expo Go üzerinden test edilir.</Text>
         </View>
         <View style={badge}><Text style={badgeText}>🌴</Text></View>
       </View>
-
       <View style={{ flexDirection: 'row', marginTop: 14 }}>
         <Pill label="Veri sağlığı" value={`%${health.score}`} good={ready} />
         <Pill label="Yedek kapsamı" value={`${backupCount} alan`} good />
       </View>
-
-      <Line label="Antalya hedefi" value={`${summary.daysLeft} gün / ${formatTRY(summary.targetRemaining)} kalan`} status="ok" />
+      <Line label="Antalya hedefi" value={`${summary.daysLeft} gün / ${money(summary.targetRemaining)} kalan`} status="ok" />
       <Line label="Yıllık hedef" value={`${selectedYear} - ${selectedPlans.length} hedef`} status={selectedPlans.length > 0 ? 'ok' : 'warn'} />
-      <Line label="Borç durumu" value={`${formatTRY(summary.debtLeft)} kalan`} status={summary.debtLeft <= 0 ? 'ok' : 'warn'} />
+      <Line label="Borç durumu" value={`${money(summary.debtLeft)} kalan`} status={summary.debtLeft <= 0 ? 'ok' : 'warn'} />
       <Line label="Test Merkezi" value={health.failCount ? `${health.failCount} hata` : `${health.warnCount} uyarı`} status={health.failCount ? 'fail' : health.warnCount ? 'warn' : 'ok'} />
     </View>
   );
@@ -40,13 +39,11 @@ export function HomeFinalSummaryCard({ lifeData }) {
 function Pill({ label, value, good }) {
   return <View style={{ flex: 1, marginRight: 8, padding: 12, borderRadius: 18, backgroundColor: good ? '#E4FAEE' : '#FFF1D6', borderWidth: 1, borderColor: good ? '#B5E9C8' : '#FFDCA0' }}><Text style={pillLabel}>{label}</Text><Text style={pillValue}>{value}</Text></View>;
 }
-
 function Line({ label, value, status }) {
   const color = status === 'ok' ? '#128C7E' : status === 'fail' ? '#C6283C' : '#FF7A59';
   const mark = status === 'ok' ? '✅' : status === 'fail' ? '⛔' : '⚠️';
   return <View style={line}><Text style={lineLeft}>{mark} {label}</Text><Text style={[lineRight, { color }]} numberOfLines={2}>{value}</Text></View>;
 }
-
 const card = { marginHorizontal: 16, marginTop: 14, padding: 18, borderRadius: 28, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E4F2F1', elevation: 3 };
 const mini = { color: '#FF7A59', fontSize: 11, fontWeight: '900', letterSpacing: 0.8 };
 const title = { marginTop: 6, color: '#102A35', fontSize: 21, lineHeight: 26, fontWeight: '900' };
