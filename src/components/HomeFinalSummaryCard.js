@@ -18,9 +18,9 @@ export function HomeFinalSummaryCard({ lifeData }) {
     <View style={card}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <View style={{ flex: 1, paddingRight: 12 }}>
-          <Text style={mini}>V1.0.5 PARA BİRİMİ</Text>
+          <Text style={mini}>V1.0.6 TEST MERKEZİ</Text>
           <Text style={title}>{ready ? 'Tasarım yenileme modu aktif' : 'Veri kontrolü gerekli'}</Text>
-          <Text style={desc}>APK yok. Para birimi seçimi ve kategori kartları Expo Go üzerinden test edilir.</Text>
+          <Text style={desc}>APK yok. Ayarlar, yedek ve Test Merkezi Expo Go üzerinden okunabilirlik için kontrol edilir.</Text>
         </View>
         <View style={badge}><Text style={badgeText}>🌴</Text></View>
       </View>
