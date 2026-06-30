@@ -10,9 +10,9 @@ v0.2, v0.1 temel lokal takip uygulamasını daha kullanışlı bir hayat planlam
 
 - [x] APK kararını v1.0 olarak güncelle
 - [x] v0.2 tam checklist dosyasını oluştur
-- [ ] README durum tablosunu v0.2 akışı için güncelle
-- [ ] Roadmap içinde v1.0 APK kararını net yaz
-- [ ] v0.2 için merkezi sürüm kodunu hazırla
+- [x] README durum tablosunu v0.2 akışı için güncelle
+- [x] Roadmap içinde v1.0 APK kararını net yaz
+- [x] v0.2 için merkezi sürüm kodunu hazırla
 
 ## v0.2.2 — Hedef ve ayarlar düzenleme ekranı
 
