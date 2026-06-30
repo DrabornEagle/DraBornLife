@@ -25,7 +25,9 @@ Personal mobile app for planning Antalya relocation and future life goals.
 | v0.4.4 | Saving countdown | Done |
 | v0.4.5 | Year goal actions | Done |
 | v0.4.6 | Year finance summary | Done |
-| v0.4.7 | Backup compatibility | Next |
+| v0.4.7 | Backup compatibility | Done |
+| v0.4.8 | Settings integration | Done |
+| v0.4.9 | Design cleanup | Next |
 | v1.0 | First APK | Waiting |
 
 ## Checklist files
@@ -36,3 +38,5 @@ Personal mobile app for planning Antalya relocation and future life goals.
 - docs/V0_3_CHECKLIST.md
 - docs/V0_3_10_FINAL_TEST.md
 - docs/V0_4_CHECKLIST.md
+- docs/V0_4_7_TEST.md
+- docs/V0_4_8_TEST.md
