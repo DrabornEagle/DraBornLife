@@ -1,109 +1,115 @@
 # DraBornLife v0.2 Yapılacaklar Listesi
 
-v0.2 hedefi: v1.0 APK sonrası DraBornLife'i daha kullanışlı, güvenli ve günlük kullanıma uygun hale getirmek.
+Karar: İlk APK v1.0 sürümünde alınacak. v0.2 geliştirmesi Expo Go ile devam eder.
 
-## v0.2.1 — APK sonrası düzeltmeler
+## v0.2 hedefi
 
-- [ ] v1.0 APK test geri bildirimlerini listele
-- [ ] Açılış hatalarını kontrol et
-- [ ] Android geri tuşu davranışını kontrol et
-- [ ] Alt menü taşma / klavye çakışma sorunlarını kontrol et
-- [ ] Küçük ekranlarda form alanlarını kontrol et
-- [ ] Yazım ve Türkçe metinleri temizle
+v0.2, v0.1 temel lokal takip uygulamasını daha kullanışlı bir hayat planlama paneline çevirir. Ana odak: hedef ayarları, kalan gün hesabı, düzenleme/silme, daha iyi dashboard, veri güvenliği ve v1.0 APK hazırlığına temiz zemin.
 
-## v0.2.2 — Kalan gün ve hedef tarihi sistemi
+## v0.2.1 — Sürüm planı ve APK kararını güncelle
 
-- [ ] Antalya hedef tarihini ayarlardan düzenlenebilir yap
-- [ ] Kalan gün sayısını hesapla
-- [ ] GTA 6 öncesi taşınma hatırlatıcısını dashboard'a ekle
-- [ ] Hedef ay metnini otomatik veya manuel seçilebilir yap
-- [ ] Hedef tarih değişince dashboard'u otomatik güncelle
+- [x] APK kararını v1.0 olarak güncelle
+- [x] v0.2 tam checklist dosyasını oluştur
+- [ ] README durum tablosunu v0.2 akışı için güncelle
+- [ ] Roadmap içinde v1.0 APK kararını net yaz
+- [ ] v0.2 için merkezi sürüm kodunu hazırla
 
-## v0.2.3 — Dashboard geliştirme
+## v0.2.2 — Hedef ve ayarlar düzenleme ekranı
 
-- [ ] Günlük gelir-gider özeti ekle
-- [ ] Haftalık gelir-gider özeti ekle
-- [ ] Aylık gelir-gider özeti ekle
-- [ ] Toplam alınacaklar kalan bütçesini göster
-- [ ] Toplam borç azaltma ilerlemesini daha görünür yap
-- [ ] Motosiklet hedef ilerlemesini dashboard'da daha net göster
-- [ ] Ana ekranı daha kompakt ve okunur hale getir
+- [ ] Antalya hedef tarihini düzenlenebilir yap
+- [ ] Hedef bölgeleri düzenlenebilir yap
+- [ ] Hedef toplam bütçeyi düzenlenebilir yap
+- [ ] Motosiklet tahmini fiyatını düzenlenebilir yap
+- [ ] Eski motosiklet satış tutarı alanını ekle
+- [ ] Para birimi TRY olarak sabit kalacak şekilde ayarla
+- [ ] Ayarlar ekranını daha düzenli bölümlere ayır
 
-## v0.2.4 — Gelir-Gider geliştirme
+## v0.2.3 — Dashboard kalan gün ve hedef hesapları
 
-- [ ] Gelir-gider kaydı silme
-- [ ] Gelir-gider kaydı düzenleme
-- [ ] Tarih seçimi
-- [ ] Kategori listesi düzenleme
-- [ ] Günlük / haftalık / aylık filtre
-- [ ] Birikime ayrılan tutarı dashboard ile daha net bağla
+- [ ] Antalya hedef tarihine kalan günü hesapla
+- [ ] GTA 6 öncesi taşınma hedef notunu göster
+- [ ] Hedef bütçe / mevcut birikim / kalan tutar kartlarını ekle
+- [ ] Borç bitirme yüzdesini ana ekrana daha net bağla
+- [ ] Alınacaklar toplam kalan bütçesini göster
+- [ ] Haftalık/aylık özet alanını dashboarda hazırla
 
-## v0.2.5 — Alınacaklar geliştirme
+## v0.2.4 — Gelir-gider düzenleme ve silme
 
-- [ ] Liste kalemi silme
-- [ ] Liste kalemi düzenleme
+- [ ] Gelir-gider kaydını silme
+- [ ] Gelir-gider kaydını düzenleme
 - [ ] Kategoriye göre filtreleme
-- [ ] Parası birikenler filtresi
-- [ ] Satın alınanlar filtresi
-- [ ] Kalan tutar hesaplama
-- [ ] Motosiklet fiyatını alınacaklar ekranından düzenlenebilir yap
+- [ ] Gelir/gider tipine göre filtreleme
+- [ ] Son işlemler listesini daha okunur hale getir
+- [ ] Birikime ayrılan tutarı dashboarda net bağla
 
-## v0.2.6 — Borç takip geliştirme
+## v0.2.5 — Alınacaklar düzenleme ve silme
 
-- [ ] Borç kaydı silme
-- [ ] Borç kaydı düzenleme
-- [ ] Ödeme geçmişi mantığı ekle
-- [ ] Borç kapanınca tamamlandı işareti
-- [ ] Borç bitiş hedef tarihi
-- [ ] Kalan aylık/haftalık ödeme önerisi
+- [ ] Alınacak kalemi silme
+- [ ] Alınacak kalemi düzenleme
+- [ ] Kategori filtresi
+- [ ] Parası Birikti filtresi
+- [ ] Satın Alındı / Kuruldu filtresi
+- [ ] Kalan tutarı kalem bazlı göster
+- [ ] Motosiklet kalemini motosiklet hedefiyle senkron düşün
 
-## v0.2.7 — Yedekleme geliştirme
+## v0.2.6 — Borç düzenleme ve silme
 
-- [ ] Yedek metnini daha okunur hale getir
-- [ ] Yedek oluşturma sonrası başarı mesajını iyileştir
-- [ ] İçe aktarma öncesi uyarı mesajı ekle
-- [ ] Bozuk yedek için daha anlaşılır hata mesajı
-- [ ] Manuel dosya dışa aktarma araştırması
-- [ ] Google Drive yedeğini v0.3+ opsiyon olarak not et
+- [ ] Borç kaydını silme
+- [ ] Borç kaydını düzenleme
+- [ ] Ödeme kaydı ekleme geçmişini hazırla
+- [ ] Kalan borcu daha net kartla göster
+- [ ] Borç bitirme hedef tarihini düzenlenebilir yap
+- [ ] Borç sıfırlandı durumunu göster
 
-## v0.2.8 — Ayarlar geliştirme
+## v0.2.7 — Yedekleme iyileştirme
 
-- [ ] Hedef şehir / bölge düzenleme
-- [ ] Para birimi ayarı
-- [ ] Motosiklet tahmini fiyatı düzenleme
-- [ ] Antalya hedef tarihi düzenleme
-- [ ] Verileri sıfırlama öncesi onay ekranı
-- [ ] Uygulama sürüm bilgisi ve veri sürüm bilgisini ayrı göster
+- [ ] Yedek metnini daha kısa başlıklı hale getir
+- [ ] Yedek oluşturma sonrası kopyalama talimatını ekle
+- [ ] İçe aktarım öncesi onay uyarısı ekle
+- [ ] Eksik/bozuk yedek için daha anlaşılır hata mesajı
+- [ ] Yedek versiyon uyumluluğunu kontrol et
+- [ ] Google Drive yedeğini v1.0 sonrası opsiyonel not olarak bırak
 
-## v0.2.9 — Tasarım ve kullanım iyileştirme
+## v0.2.8 — Tasarım ve kullanım temizlikleri
 
-- [ ] Miami Ocean tasarımını tüm ekranlarda tutarlı hale getir
-- [ ] Form alanlarında klavye davranışını iyileştir
-- [ ] Alt menünün ekranı kapatmasını azalt
-- [ ] Kart aralıklarını küçük ekranlara göre düzenle
-- [ ] Başlıkları ve metin boyutlarını gözden geçir
-- [ ] Daha profesyonel boş durum ekranları ekle
+- [ ] Alt menüyü ekranlarda daha dengeli konumlandır
+- [ ] Uzun formlarda butonların alt menünün arkasında kalmasını engelle
+- [ ] Miami Ocean temasını tüm ekranlarda tutarlı yap
+- [ ] Başlık kartlarını aynı tasarım diline çek
+- [ ] Form inputlarını daha okunur yap
+- [ ] Boş durum ekranlarını daha güzel hale getir
+- [ ] Telefon ekranında taşma/kayma kontrolü yap
 
-## v0.2.10 — v0.2 final test ve APK hazırlık
+## v0.2.9 — Veri güvenliği ve sıfırlama kontrolü
 
-- [ ] Expo Go tam test
-- [ ] Lokal veri kaydetme testi
-- [ ] Gelir-gider düzenleme/silme testi
-- [ ] Alınacaklar düzenleme/silme testi
-- [ ] Borç düzenleme/silme testi
-- [ ] Yedek dışa aktar/içe aktar testi
-- [ ] Android APK build hazırlığı
-- [ ] v0.2 sürüm notlarını yaz
+- [ ] Demo veriyi sıfırla butonuna onay ekle
+- [ ] Veri sıfırlama sonrası mesaj göster
+- [ ] Kayıt ekleme sonrası başarılı mesaj göster
+- [ ] Yanlış tutar girişlerinde uyarı göster
+- [ ] Negatif tutar girişini engelle
+- [ ] Boş başlıkla kayıt eklemeyi engelle
+
+## v0.2.10 — v0.2 final test ve kapanış
+
+- [ ] Ana Sayfa testi
+- [ ] Gelir-Gider ekle/düzenle/sil testi
+- [ ] Alınacaklar ekle/düzenle/sil testi
+- [ ] Borç ekle/düzenle/sil/ödeme testi
+- [ ] Yedek oluştur / geri yükle testi
+- [ ] Ayarlar ve hedef düzenleme testi
+- [ ] Sürüm kodları tek merkezden geliyor mu kontrolü
+- [ ] v0.2 tamamlandı notunu yaz
 
 ## v0.2 dışında bırakılanlar
 
-- Otomatik Google Drive yedek
-- Supabase / cloud sync
+- APK / AAB çıkarma
+- Google Play hazırlığı
+- Google Drive otomatik yedek
+- Supabase/cloud sync
 - Web panel
-- Çoklu kullanıcı hesabı
 - Bildirim sistemi
-- Gelişmiş grafikler
-- Antalya sonrası Dubai / Miami uzun vadeli yaşam rotası
+- Çoklu kullanıcı hesabı
+- Detaylı grafikler
 - Yıllık çoklu hedef sistemi
 
-Bunlar v0.3 ve sonraki sürümlerde değerlendirilecek.
+Bu başlıklar v1.0 ve sonrası için değerlendirilecek.
