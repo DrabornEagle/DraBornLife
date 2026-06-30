@@ -22,7 +22,8 @@ Personal mobile app for planning Antalya relocation and future life goals.
 | v0.4 | Year based goals | Expo Go ready |
 | v0.5.1 | Planning and checklist | Done |
 | v0.5.2 | Test Center | Done |
-| v0.5.3 | Data health check | Next |
+| v0.5.3 | Data health check | Done |
+| v0.5.4 | Form validation cleanup | Next |
 | v1.0 | First APK | Waiting |
 
 ## Checklist files
