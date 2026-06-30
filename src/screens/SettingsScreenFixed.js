@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NoticeBox } from '../components/NoticeBox';
 import { APP_STATUS_CODE } from '../config/appVersion';
-import { createBackupText, parseBackupText } from '../utils/backupUtils';
+import { BACKUP_SCOPE, createBackupText, parseBackupText } from '../utils/backupUtils';
 
 export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
   const settings = lifeData?.settings || {};
@@ -29,43 +29,44 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
     const nextTargetAmount = toNumber(targetAmount);
     const nextOldSale = toNumber(oldMotorcycleSaleAmount);
 
-    if (targetAmount.trim() && nextTargetAmount <= 0) return showError('Toplam hedef bütçe negatif veya hatalı olamaz.');
-    if (motorcyclePrice.trim() && nextMotorcyclePrice <= 0) return showError('Motosiklet fiyatı negatif veya hatalı olamaz.');
-    if (oldMotorcycleSaleAmount.trim() && nextOldSale < 0) return showError('Eski motosiklet satış tutarı negatif olamaz.');
+    if (targetAmount.trim() && nextTargetAmount <= 0) return showError('Toplam hedef butce negatif veya hatali olamaz.');
+    if (motorcyclePrice.trim() && nextMotorcyclePrice <= 0) return showError('Motosiklet fiyati negatif veya hatali olamaz.');
+    if (oldMotorcycleSaleAmount.trim() && nextOldSale < 0) return showError('Eski motosiklet satis tutari negatif olamaz.');
 
     const targetAreas = targetAreasText.split(',').map((x) => x.trim()).filter(Boolean);
     const nextData = {
       ...lifeData,
-      settings: { ...settings, targetAreas: targetAreas.length ? targetAreas : ['Muratpaşa', 'Lara', 'Konyaaltı'], targetMoveMonthText: targetMonthText.trim() || 'Ekim / Kasım 2026', currency: 'TRY' },
+      settings: { ...settings, targetAreas: targetAreas.length ? targetAreas : ['Muratpasa', 'Lara', 'Konyaalti'], targetMoveMonthText: targetMonthText.trim() || 'Ekim / Kasim 2026', currency: 'TRY' },
       goals: { ...goals, antalyaMove: { ...moveGoal, targetDate: targetDate.trim() || '2026-10-31', targetAmount: nextTargetAmount }, motorcycle: { ...motorcycle, estimatedPrice: nextMotorcyclePrice || 130000, oldMotorcycleSaleAmount: nextOldSale, isPriceEditable: true } },
       shoppingItems: (lifeData?.shoppingItems || []).map((item) => item.id === 'motorcycle' ? { ...item, estimatedPrice: nextMotorcyclePrice || 130000 } : item),
     };
 
     onRestore(nextData);
-    showInfo('Hedef ayarları kaydedildi. Ana ekranda yeni değerleri görebilirsin.');
+    showInfo('Hedef ayarlari kaydedildi. Ana ekranda yeni degerleri gorebilirsin.');
   }
 
   function handleExport() {
     setExportText(createBackupText(lifeData));
-    showInfo('Yedek metni hazır. Tamamını seçip kopyala, telefonunda not veya txt dosyası olarak sakla.');
+    showInfo('v0.3 yedek metni hazir. Finans, ev kurulum, aktiviteler, sahil/aquapark/tatil ve ozel hedefler dahil.');
   }
 
   function handleImport() {
-    if (!importText.trim()) return showError('İçe aktarım için önce yedek metnini kutuya yapıştırmalısın.');
+    if (!importText.trim()) return showError('Ice aktarim icin once yedek metnini kutuya yapistirmalisin.');
     const result = parseBackupText(importText);
     if (!result.ok) return showError(result.error);
     onRestore(result.data);
     const warning = result.versionWarning ? ` ${result.versionWarning}` : '';
-    showInfo(`Veriler geri yüklendi. Yedek sürümü: ${result.backupVersion}.${warning}`);
+    const scopeText = result.scope?.length ? ` Kapsam: ${result.scope.length} veri alani.` : ' Eski yedek algilandi; eksik v0.3 alanlari otomatik tamamlanacak.';
+    showInfo(`Veriler geri yuklendi. Yedek surumu: ${result.backupVersion}.${scopeText}${warning}`);
   }
 
   function confirmReset() {
     Alert.alert(
-      'Demo veriyi sıfırla?',
-      'Bu işlem mevcut lokal demo verinin üstüne yazar. Devam etmeden önce yedek alman önerilir.',
+      'Demo veriyi sifirla?',
+      'Bu islem mevcut lokal demo verinin ustune yazar. Devam etmeden once yedek alman onerilir.',
       [
-        { text: 'Vazgeç', style: 'cancel' },
-        { text: 'Sıfırla', style: 'destructive', onPress: () => { onReset(); showInfo('Demo veri sıfırlandı. Ana ekrandan kontrol edebilirsin.'); } },
+        { text: 'Vazgec', style: 'cancel' },
+        { text: 'Sifirla', style: 'destructive', onPress: () => { onReset(); showInfo('Demo veri sifirlandi. Ana ekrandan kontrol edebilirsin.'); } },
       ]
     );
   }
@@ -75,7 +76,7 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
       <View style={{ marginTop: 20, padding: 22, borderRadius: 30, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#FF7A59', fontSize: 12, fontWeight: '900' }}>HEDEF AYARLARI</Text>
         <Text style={{ marginTop: 8, color: '#102A35', fontSize: 32, fontWeight: '900' }}>Ayarlar</Text>
-        <Text style={{ marginTop: 12, color: '#315661', fontSize: 15, fontWeight: '800' }}>Uygulama sürümü: {APP_STATUS_CODE}</Text>
+        <Text style={{ marginTop: 12, color: '#315661', fontSize: 15, fontWeight: '800' }}>Uygulama surumu: {APP_STATUS_CODE}</Text>
         <Text style={{ marginTop: 8, color: '#315661', fontSize: 15, fontWeight: '800' }}>Para birimi: TRY</Text>
       </View>
 
@@ -84,38 +85,43 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Antalya hedefi</Text>
         <Input label="Hedef tarih" value={targetDate} onChangeText={setTargetDate} placeholder="2026-10-31" />
-        <Input label="Hedef ay metni" value={targetMonthText} onChangeText={setTargetMonthText} placeholder="Ekim / Kasım 2026" />
-        <Input label="Hedef bölgeler" value={targetAreasText} onChangeText={setTargetAreasText} placeholder="Muratpaşa, Lara, Konyaaltı" />
-        <Input label="Toplam hedef bütçe" value={targetAmount} onChangeText={setTargetAmount} placeholder="Örn: 500000" keyboardType="numeric" />
+        <Input label="Hedef ay metni" value={targetMonthText} onChangeText={setTargetMonthText} placeholder="Ekim / Kasim 2026" />
+        <Input label="Hedef bolgeler" value={targetAreasText} onChangeText={setTargetAreasText} placeholder="Muratpasa, Lara, Konyaalti" />
+        <Input label="Toplam hedef butce" value={targetAmount} onChangeText={setTargetAmount} placeholder="Orn: 500000" keyboardType="numeric" />
       </View>
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Motosiklet hedefi</Text>
-        <Input label="Sıfır motosiklet tahmini fiyat" value={motorcyclePrice} onChangeText={setMotorcyclePrice} placeholder="130000" keyboardType="numeric" />
-        <Input label="Eski motosiklet satış tutarı" value={oldMotorcycleSaleAmount} onChangeText={setOldMotorcycleSaleAmount} placeholder="Örn: 60000" keyboardType="numeric" />
-        <TouchableOpacity onPress={saveTargets} style={{ marginTop: 16, paddingVertical: 14, borderRadius: 18, backgroundColor: '#FFB347', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Hedef ayarlarını kaydet</Text></TouchableOpacity>
+        <Input label="Sifir motosiklet tahmini fiyat" value={motorcyclePrice} onChangeText={setMotorcyclePrice} placeholder="130000" keyboardType="numeric" />
+        <Input label="Eski motosiklet satis tutari" value={oldMotorcycleSaleAmount} onChangeText={setOldMotorcycleSaleAmount} placeholder="Orn: 60000" keyboardType="numeric" />
+        <TouchableOpacity onPress={saveTargets} style={{ marginTop: 16, paddingVertical: 14, borderRadius: 18, backgroundColor: '#FFB347', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Hedef ayarlarini kaydet</Text></TouchableOpacity>
       </View>
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Dışa aktar</Text>
-        <Text style={{ marginTop: 8, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Yedek oluşturunca metnin tamamını kopyala. Telefonunda not, txt dosyası veya güvenli bir klasörde sakla.</Text>
-        <TouchableOpacity onPress={handleExport} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: '#2DE2E6', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Yedek metni oluştur</Text></TouchableOpacity>
-        <TextInput multiline value={exportText} onChangeText={setExportText} placeholder="Dışa aktarım metni burada görünecek" placeholderTextColor="#7C969D" style={{ minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
+        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>v0.3 yedek kapsami</Text>
+        <Text style={{ marginTop: 8, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>{BACKUP_SCOPE.join(', ')}</Text>
       </View>
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>İçe aktar</Text>
-        <Text style={{ marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, fontWeight: '900' }}>Uyarı: Geri yükleme mevcut lokal verinin üstüne yazar. İşlemden önce güncel verini dışa aktarman önerilir.</Text>
-        <TextInput multiline value={importText} onChangeText={setImportText} placeholder="Kaydettiğin yedek metnini buraya yapıştır" placeholderTextColor="#7C969D" style={{ minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
-        <TouchableOpacity onPress={handleImport} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: '#FFB347', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Yedekten geri yükle</Text></TouchableOpacity>
+        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Disa aktar</Text>
+        <Text style={{ marginTop: 8, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Yedek metni tum lokal verileri kapsar. Yeni telefonda Ice aktar alanina yapistirarak geri yukleyebilirsin.</Text>
+        <TouchableOpacity onPress={handleExport} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: '#2DE2E6', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Yedek metni olustur</Text></TouchableOpacity>
+        <TextInput multiline value={exportText} onChangeText={setExportText} placeholder="Disa aktarim metni burada gorunecek" placeholderTextColor="#7C969D" style={{ minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
+      </View>
+
+      <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
+        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Ice aktar</Text>
+        <Text style={{ marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, fontWeight: '900' }}>Uyari: Geri yukleme mevcut lokal verinin ustune yazar. Eski v0.2 yedekleri yuklenirse yeni v0.3 alanlari otomatik tamamlanir.</Text>
+        <TextInput multiline value={importText} onChangeText={setImportText} placeholder="Kaydettigin yedek metnini buraya yapistir" placeholderTextColor="#7C969D" style={{ minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
+        <TouchableOpacity onPress={handleImport} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: '#FFB347', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Yedekten geri yukle</Text></TouchableOpacity>
       </View>
 
       <View style={{ marginTop: 14, padding: 16, borderRadius: 22, backgroundColor: '#FFF1D6', borderWidth: 1, borderColor: '#FFDCA0' }}>
         <Text style={{ color: '#102A35', fontSize: 17, fontWeight: '900' }}>Google Drive notu</Text>
-        <Text style={{ marginTop: 7, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Otomatik Google Drive yedeği v1.0 sonrası opsiyonel özellik olarak beklemede. Şimdilik manuel yedek metni kullanılacak.</Text>
+        <Text style={{ marginTop: 7, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Otomatik Google Drive yedegi v1.0 sonrasi opsiyonel ozellik olarak beklemede. Simdilik manuel yedek metni kullanilacak.</Text>
       </View>
 
-      <TouchableOpacity style={{ marginTop: 18, paddingVertical: 14, borderRadius: 20, backgroundColor: '#FFD0D8', alignItems: 'center' }} onPress={confirmReset}><Text style={{ color: '#7A1E2B', fontSize: 15, fontWeight: '900' }}>Demo veriyi sıfırla</Text></TouchableOpacity>
+      <TouchableOpacity style={{ marginTop: 18, paddingVertical: 14, borderRadius: 20, backgroundColor: '#FFD0D8', alignItems: 'center' }} onPress={confirmReset}><Text style={{ color: '#7A1E2B', fontSize: 15, fontWeight: '900' }}>Demo veriyi sifirla</Text></TouchableOpacity>
     </ScrollView>
   );
 }
