@@ -74,16 +74,14 @@ Ilk APK v1.0 surumunde alinacak. v0.3 Expo Go ile gelistirilecek.
 - [x] Miami Ocean tema tutarliligi
 - [x] Bos durum ekranlari korunuyor
 - [x] Telefon ekraninda kayma kontrolu icin daha genis tab yapisi
-- [x] Surum dosyalari 0.3.9
+
+### v0.3.10 Final test ve kapanis
+- [x] Final test dokumani olusturuldu
+- [x] Surum dosyalari 0.3.10 yapildi
+- [x] README final durumu guncellendi
+- [ ] Expo Go cihaz testi kullanici tarafinda yapilacak
+- [ ] Tum testler temizse v0.3 kapatilacak
 
 ## Next
 
-### v0.3.10 Final test
-- [ ] Ana Sayfa testi
-- [ ] Antalya Life testi
-- [ ] Ev kurulum testi
-- [ ] Aktivite testi
-- [ ] Sahil/aquapark/tatil testi
-- [ ] Ozel hedef testi
-- [ ] Yedek testi
-- [ ] v0.3 tamamlandi notu
+- v0.4 yil bazli hedef sistemi veya v1.0 APK hazirligi karari verilecek.
