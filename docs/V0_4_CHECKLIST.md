@@ -41,13 +41,15 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] Surum dosyalari v0.4.4 yapildi
 
 ### v0.4.5 Tasinma, seyahat ve hayat hedef kartlari
-- [ ] Hedef tipi: tasinma, seyahat, ev, arac, oyun, aile, diger
-- [ ] Ulke/sehir/bolge alanlari eklenecek
-- [ ] Hedef ay/yil ve tahmini butce alanlari eklenecek
-- [ ] Durumlar: planlandi, aktif, para birikiyor, tamamlandi, ertelendi
-- [ ] Antalya 2026 hedefi ana plan olarak korunacak
-- [ ] Dubai/Miami gibi uzun vadeli planlar opsiyonel hedef olarak desteklenecek
-- [ ] Hedef ekle/duzenle/sil akisi eklenecek
+- [x] Hedef tipi: tasinma, seyahat, ev, arac, oyun, aile, diger
+- [x] Ulke/sehir/bolge alanlari eklendi
+- [x] Hedef ay/yil ve tahmini butce alanlari eklendi
+- [x] Durumlar: planlandi, aktif, para birikiyor, tamamlandi, ertelendi, iptal
+- [x] Antalya 2026 hedefi ana plan olarak korunuyor
+- [x] Dubai/Miami gibi uzun vadeli planlar opsiyonel hedef olarak destekleniyor
+- [x] Hedef ekle/duzenle/sil akisi eklendi
+- [x] Hedef durumunu karttan degistirme eklendi
+- [x] Surum dosyalari v0.4.5 yapildi
 
 ### v0.4.6 Yillik finans ozeti
 - [ ] Secili yila ait gelir/gider/birikim ozeti hesaplanacak
@@ -87,4 +89,5 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] v0.4.2 veri modeli tamamlandi
 - [x] v0.4.3 Yil secici ve Yil Plani ekrani tamamlandi
 - [x] v0.4.4 Birikim geri sayim sistemi tamamlandi
-- [ ] Siradaki adim: v0.4.5 Tasinma, seyahat ve hayat hedef kartlari
+- [x] v0.4.5 Tasinma, seyahat ve hayat hedef kartlari tamamlandi
+- [ ] Siradaki adim: v0.4.6 Yillik finans ozeti
