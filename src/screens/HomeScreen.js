@@ -2,9 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { MetricCard } from '../components/MetricCard';
 import { ProgressCard } from '../components/ProgressCard';
-import { mockSummary, theme } from '../theme';
+import { theme } from '../theme';
+import { formatTRY, getLifeSummary } from '../utils/lifeSummary';
 
-export function HomeScreen() {
+export function HomeScreen({ lifeData }) {
+  const summary = getLifeSummary(lifeData);
+
   return (
     <View style={styles.screen}>
       <View style={styles.sunGlow} />
@@ -12,7 +15,7 @@ export function HomeScreen() {
 
       <View style={styles.hero}>
         <View style={styles.heroTopRow}>
-          <Text style={styles.badge}>v0.0.3 • Expo Go</Text>
+          <Text style={styles.badge}>v0.0.4 • Lokal veri</Text>
           <Text style={styles.palm}>🌴</Text>
         </View>
 
@@ -21,35 +24,35 @@ export function HomeScreen() {
 
         <View style={styles.locationCard}>
           <Text style={styles.locationLabel}>Hedef Bölge</Text>
-          <Text style={styles.locationValue}>{mockSummary.targetAreas}</Text>
-          <Text style={styles.locationHint}>{mockSummary.targetDateText} plan aralığı</Text>
+          <Text style={styles.locationValue}>{summary.targetAreas}</Text>
+          <Text style={styles.locationHint}>{summary.targetDateText} plan aralığı</Text>
         </View>
       </View>
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Bugünkü tablo</Text>
-        <Text style={styles.sectionSubtitle}>Şimdilik demo değerler. v0.0.4 ile lokal veri bağlanacak.</Text>
+        <Text style={styles.sectionSubtitle}>Veriler cihaz içinde lokal olarak hazırlanıyor.</Text>
       </View>
 
       <View style={styles.metricsGrid}>
-        <MetricCard label="Birikim" value={mockSummary.savedAmount} hint="Hedef bütçeye giden yol" accent={theme.colors.aqua} />
-        <MetricCard label="Borç" value={mockSummary.debtLeft} hint="Antalya’ya kadar azalt" accent={theme.colors.miamiPink} />
+        <MetricCard label="Birikim" value={formatTRY(summary.savedAmount)} hint="Gelir eksi gider" accent={theme.colors.aqua} />
+        <MetricCard label="Borç" value={formatTRY(summary.debtLeft)} hint="Kalan borç" accent={theme.colors.miamiPink} />
       </View>
 
       <ProgressCard
         title="Taşınma Hedefi"
         subtitle="Yeni ev, yeni düzen, yeni başlangıç"
-        percent={0}
-        leftLabel="Başlangıç"
-        rightLabel="v0.1 hedef"
+        percent={summary.savingPercent}
+        leftLabel={formatTRY(summary.savedAmount)}
+        rightLabel={formatTRY(summary.targetBudget)}
         color={theme.colors.aqua}
       />
 
       <ProgressCard
         title="Motosiklet Hedefi"
-        subtitle={`Sıfır motosiklet tahmini: ${mockSummary.motorcyclePrice}`}
-        percent={0}
-        leftLabel="Planlandı"
+        subtitle={`Sıfır motosiklet tahmini: ${formatTRY(summary.motorcyclePrice)}`}
+        percent={summary.motorcyclePercent}
+        leftLabel={formatTRY(summary.motorcycleSaved)}
         rightLabel="Fiyat düzenlenebilir"
         color={theme.colors.sunset}
       />
@@ -58,11 +61,11 @@ export function HomeScreen() {
         <Text style={styles.wideTitle}>Ana modüller</Text>
         <View style={styles.moduleRow}>
           <Text style={styles.moduleIcon}>🏠</Text>
-          <Text style={styles.moduleText}>Ev kurulum listesi</Text>
+          <Text style={styles.moduleText}>Ev kurulum listesi • {summary.shoppingCount} kalem</Text>
         </View>
         <View style={styles.moduleRow}>
           <Text style={styles.moduleIcon}>💰</Text>
-          <Text style={styles.moduleText}>Gelir, gider ve birikim</Text>
+          <Text style={styles.moduleText}>Gelir toplamı: {formatTRY(summary.incomeTotal)}</Text>
         </View>
         <View style={styles.moduleRow}>
           <Text style={styles.moduleIcon}>🎮</Text>
@@ -70,7 +73,7 @@ export function HomeScreen() {
         </View>
         <View style={styles.moduleRow}>
           <Text style={styles.moduleIcon}>🏍️</Text>
-          <Text style={styles.moduleText}>Yeni motosiklet hedefi</Text>
+          <Text style={styles.moduleText}>Yeni motosiklet hedefi: {formatTRY(summary.motorcyclePrice)}</Text>
         </View>
       </View>
     </View>
