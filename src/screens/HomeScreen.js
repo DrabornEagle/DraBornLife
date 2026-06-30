@@ -10,10 +10,13 @@ export function HomeScreen({ lifeData }) {
 
   return (
     <View style={styles.screen}>
+      <View style={styles.oceanBand} />
+      <View style={styles.sunDot} />
+
       <View style={styles.header}>
         <View style={styles.topRow}>
           <View>
-            <Text style={styles.eyebrow}>DraBornLife • v0.0.5</Text>
+            <Text style={styles.eyebrow}>DraBornLife • v0.0.6</Text>
             <Text style={styles.title}>Antalya planı</Text>
           </View>
           <View style={styles.palmCircle}>
@@ -21,20 +24,18 @@ export function HomeScreen({ lifeData }) {
           </View>
         </View>
 
-        <Text style={styles.subtitle}>Taşınma, birikim, borç ve yeni hayat hedeflerini tek yerden takip et.</Text>
+        <Text style={styles.subtitle}>Deniz havasında, sade ve anlaşılır yeni hayat paneli.</Text>
 
         <View style={styles.destinationCard}>
-          <View>
-            <Text style={styles.destinationLabel}>Hedef bölge</Text>
-            <Text style={styles.destinationTitle}>{summary.targetAreas}</Text>
-          </View>
+          <Text style={styles.destinationLabel}>Hedef bölge</Text>
+          <Text style={styles.destinationTitle}>{summary.targetAreas}</Text>
           <Text style={styles.destinationDate}>{summary.targetDateText}</Text>
         </View>
       </View>
 
       <View style={styles.sectionBlock}>
         <Text style={styles.sectionTitle}>Özet</Text>
-        <Text style={styles.sectionHint}>Lokal veriler cihaz içinde saklanıyor.</Text>
+        <Text style={styles.sectionHint}>Birikim, borç ve alınacaklar lokal veriden okunur.</Text>
       </View>
 
       <View style={styles.metricsGrid}>
@@ -66,8 +67,8 @@ export function HomeScreen({ lifeData }) {
       />
 
       <View style={styles.nextCard}>
-        <Text style={styles.nextTitle}>Sıradaki odak</Text>
-        <Text style={styles.nextText}>v0.0.6 ile gelir-gider ekleme ekranları açılacak. Bu dashboard daha sonra gerçek girişlerle otomatik dolacak.</Text>
+        <Text style={styles.nextTitle}>Miami Ocean modu</Text>
+        <Text style={styles.nextText}>Fazla beyaz ekran yerine deniz tonları, okunur kartlar ve palmiye hissi korunarak daha dengeli tasarım uygulandı.</Text>
       </View>
     </View>
   );
@@ -78,13 +79,33 @@ const styles = StyleSheet.create({
     minHeight: 900,
     paddingTop: 18,
     paddingBottom: 34,
-    backgroundColor: '#F4FBFC',
+    backgroundColor: '#DFF5F6',
+    overflow: 'hidden',
+  },
+  oceanBand: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 210,
+    backgroundColor: '#073B4C',
+  },
+  sunDot: {
+    position: 'absolute',
+    top: 62,
+    right: -18,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255, 179, 71, 0.25)',
   },
   header: {
     margin: 18,
     padding: 20,
     borderRadius: 30,
-    backgroundColor: theme.colors.oceanDeep,
+    backgroundColor: 'rgba(6, 32, 42, 0.96)',
+    borderWidth: 1,
+    borderColor: 'rgba(200, 251, 255, 0.16)',
   },
   topRow: {
     flexDirection: 'row',
@@ -107,7 +128,7 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 27,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgba(45, 226, 230, 0.14)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -119,13 +140,15 @@ const styles = StyleSheet.create({
     color: '#DDF8FA',
     fontSize: 15,
     lineHeight: 22,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   destinationCard: {
     marginTop: 18,
     padding: 16,
     borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ECFBFB',
+    borderWidth: 1,
+    borderColor: '#BEEDEF',
   },
   destinationLabel: {
     color: theme.colors.slate,
@@ -158,9 +181,9 @@ const styles = StyleSheet.create({
   },
   sectionHint: {
     marginTop: 4,
-    color: theme.colors.slate,
+    color: '#315661',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   metricsGrid: {
     flexDirection: 'row',
@@ -173,6 +196,8 @@ const styles = StyleSheet.create({
     padding: 18,
     borderRadius: 24,
     backgroundColor: '#FFF1D6',
+    borderWidth: 1,
+    borderColor: '#FFDCA0',
   },
   nextTitle: {
     color: theme.colors.textDark,
