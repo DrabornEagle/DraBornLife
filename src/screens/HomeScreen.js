@@ -25,33 +25,33 @@ export function HomeScreen({ lifeData }) {
           </View>
         </View>
 
-        <Text style={styles.subtitle}>Deniz havasında, sade ve anlaşılır yeni hayat paneli.</Text>
+        <Text style={styles.subtitle}>Hedefe kalan gün, bütçe ve borç durumunu tek ekranda takip et.</Text>
 
         <View style={styles.destinationCard}>
           <Text style={styles.destinationLabel}>Hedef bölge</Text>
           <Text style={styles.destinationTitle}>{summary.targetAreas}</Text>
-          <Text style={styles.destinationDate}>{summary.targetDateText}</Text>
+          <Text style={styles.destinationDate}>{summary.targetDateText} • {summary.daysLeft} gün kaldı</Text>
         </View>
       </View>
 
       <View style={styles.sectionBlock}>
-        <Text style={styles.sectionTitle}>Özet</Text>
-        <Text style={styles.sectionHint}>Birikim, borç ve alınacaklar lokal veriden okunur.</Text>
+        <Text style={styles.sectionTitle}>Hedef özeti</Text>
+        <Text style={styles.sectionHint}>{summary.preferredDeadlineText} • GTA 6 için {summary.gta6DaysLeft} gün</Text>
       </View>
 
       <View style={styles.metricsGrid}>
-        <CleanMetricCard label="Birikim" value={formatTRY(summary.savedAmount)} hint="Mevcut net" accent={theme.colors.aqua} />
-        <CleanMetricCard label="Borç" value={formatTRY(summary.debtLeft)} hint="Kalan tutar" accent={theme.colors.miamiPink} />
+        <CleanMetricCard label="Kalan gün" value={`${summary.daysLeft}`} hint={summary.targetDate} accent={theme.colors.aqua} />
+        <CleanMetricCard label="Kalan bütçe" value={formatTRY(summary.targetRemaining)} hint="Hedefe kalan" accent={theme.colors.miamiPink} />
       </View>
 
       <View style={styles.metricsGrid}>
-        <CleanMetricCard label="Alınacak" value={`${summary.shoppingCount} kalem`} hint="Ev kurulum" accent={theme.colors.palm} />
-        <CleanMetricCard label="Motor" value={formatTRY(summary.motorcyclePrice)} hint="Düzenlenebilir" accent={theme.colors.sunset} />
+        <CleanMetricCard label="Hedef bütçe" value={formatTRY(summary.targetBudget)} hint="Toplam hedef" accent={theme.colors.palm} />
+        <CleanMetricCard label="Mevcut" value={formatTRY(summary.savedAmount)} hint="Net birikim" accent={theme.colors.sunset} />
       </View>
 
       <CleanProgressCard
         title="Taşınma bütçesi"
-        subtitle="Birikim ilerlemesi"
+        subtitle="Hedef bütçeye giden yol"
         percent={summary.savingPercent}
         leftLabel={formatTRY(summary.savedAmount)}
         rightLabel={formatTRY(summary.targetBudget)}
@@ -59,17 +59,47 @@ export function HomeScreen({ lifeData }) {
       />
 
       <CleanProgressCard
+        title="Borç azaltma"
+        subtitle={`Kalan borç: ${formatTRY(summary.debtLeft)}`}
+        percent={summary.debtPercent}
+        leftLabel={formatTRY(summary.paidDebt)}
+        rightLabel={formatTRY(summary.totalDebt)}
+        color={theme.colors.miamiPink}
+      />
+
+      <CleanProgressCard
+        title="Alınacaklar bütçesi"
+        subtitle={`Kalan alınacak bütçesi: ${formatTRY(summary.shoppingRemaining)}`}
+        percent={summary.shoppingPercent}
+        leftLabel={formatTRY(summary.shoppingSaved)}
+        rightLabel={formatTRY(summary.shoppingTotal)}
+        color={theme.colors.palm}
+      />
+
+      <CleanProgressCard
         title="Motosiklet hedefi"
-        subtitle="Sıfır motosiklet için ayrılan tutar"
+        subtitle={`Eski motor satış hedefi: ${formatTRY(summary.motorcycleOldSale)}`}
         percent={summary.motorcyclePercent}
         leftLabel={formatTRY(summary.motorcycleSaved)}
         rightLabel={formatTRY(summary.motorcyclePrice)}
         color={theme.colors.sunset}
       />
 
+      <View style={styles.periodCard}>
+        <Text style={styles.periodTitle}>Haftalık / aylık özet</Text>
+        <View style={styles.periodRow}>
+          <Text style={styles.periodLabel}>Son 7 gün</Text>
+          <Text style={styles.periodValue}>{formatTRY(summary.weekSummary.net)}</Text>
+        </View>
+        <View style={styles.periodRow}>
+          <Text style={styles.periodLabel}>Son 30 gün</Text>
+          <Text style={styles.periodValue}>{formatTRY(summary.monthSummary.net)}</Text>
+        </View>
+      </View>
+
       <View style={styles.nextCard}>
-        <Text style={styles.nextTitle}>v0.1 öncesi temizlik</Text>
-        <Text style={styles.nextText}>v0.0.11 ile sürüm kodları merkezi hale getirildi. Bundan sonra tüm ekranlar aynı sürümü gösterir.</Text>
+        <Text style={styles.nextTitle}>Dashboard güçlendi</Text>
+        <Text style={styles.nextText}>v0.2.3 ile kalan gün, GTA 6 hedef notu, kalan bütçe, borç yüzdesi ve alınacaklar kalan bütçesi ana ekrana bağlandı.</Text>
       </View>
     </View>
   );
@@ -77,7 +107,7 @@ export function HomeScreen({ lifeData }) {
 
 const styles = StyleSheet.create({
   screen: {
-    minHeight: 900,
+    minHeight: 1180,
     paddingTop: 18,
     paddingBottom: 34,
     backgroundColor: '#DFF5F6',
@@ -190,6 +220,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 13,
     marginTop: 4,
+  },
+  periodCard: {
+    marginHorizontal: 18,
+    marginTop: 14,
+    padding: 18,
+    borderRadius: 24,
+    backgroundColor: '#E9FAFA',
+    borderWidth: 1,
+    borderColor: '#BEEDEF',
+  },
+  periodTitle: {
+    color: theme.colors.textDark,
+    fontSize: 18,
+    fontWeight: '900',
+    marginBottom: 10,
+  },
+  periodRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 7,
+  },
+  periodLabel: {
+    color: '#315661',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  periodValue: {
+    color: theme.colors.textDark,
+    fontSize: 14,
+    fontWeight: '900',
   },
   nextCard: {
     marginHorizontal: 18,
