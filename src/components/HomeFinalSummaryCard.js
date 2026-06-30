@@ -17,22 +17,22 @@ export function HomeFinalSummaryCard({ lifeData }) {
     <View style={card}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <View style={{ flex: 1, paddingRight: 12 }}>
-          <Text style={mini}>V1.0.2 ANA SAYFA</Text>
-          <Text style={title}>{ready ? 'Tasarim yenileme modu aktif' : 'Veri kontrolu gerekli'}</Text>
-          <Text style={desc}>APK yok. Yeni ana sayfa Expo Go uzerinden okunabilirlik, ferahlik ve sahil hissi icin test edilir.</Text>
+          <Text style={mini}>V1.0.3 ALT MENÜ</Text>
+          <Text style={title}>{ready ? 'Tasarım yenileme modu aktif' : 'Veri kontrolü gerekli'}</Text>
+          <Text style={desc}>APK yok. Yeni ana sayfa ve alt menü Expo Go üzerinden okunabilirlik, ferahlık ve sahil hissi için test edilir.</Text>
         </View>
         <View style={badge}><Text style={badgeText}>🌴</Text></View>
       </View>
 
       <View style={{ flexDirection: 'row', marginTop: 14 }}>
-        <Pill label="Veri sagligi" value={`%${health.score}`} good={ready} />
-        <Pill label="Yedek kapsami" value={`${backupCount} alan`} good />
+        <Pill label="Veri sağlığı" value={`%${health.score}`} good={ready} />
+        <Pill label="Yedek kapsamı" value={`${backupCount} alan`} good />
       </View>
 
-      <Line label="Antalya hedefi" value={`${summary.daysLeft} gun / ${formatTRY(summary.targetRemaining)} kalan`} status="ok" />
-      <Line label="Yillik hedef" value={`${selectedYear} - ${selectedPlans.length} hedef`} status={selectedPlans.length > 0 ? 'ok' : 'warn'} />
-      <Line label="Borc durumu" value={`${formatTRY(summary.debtLeft)} kalan`} status={summary.debtLeft <= 0 ? 'ok' : 'warn'} />
-      <Line label="Test Merkezi" value={health.failCount ? `${health.failCount} hata` : `${health.warnCount} uyari`} status={health.failCount ? 'fail' : health.warnCount ? 'warn' : 'ok'} />
+      <Line label="Antalya hedefi" value={`${summary.daysLeft} gün / ${formatTRY(summary.targetRemaining)} kalan`} status="ok" />
+      <Line label="Yıllık hedef" value={`${selectedYear} - ${selectedPlans.length} hedef`} status={selectedPlans.length > 0 ? 'ok' : 'warn'} />
+      <Line label="Borç durumu" value={`${formatTRY(summary.debtLeft)} kalan`} status={summary.debtLeft <= 0 ? 'ok' : 'warn'} />
+      <Line label="Test Merkezi" value={health.failCount ? `${health.failCount} hata` : `${health.warnCount} uyarı`} status={health.failCount ? 'fail' : health.warnCount ? 'warn' : 'ok'} />
     </View>
   );
 }
