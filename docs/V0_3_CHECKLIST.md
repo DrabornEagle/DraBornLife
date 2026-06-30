@@ -66,16 +66,17 @@ Ilk APK v1.0 surumunde alinacak. v0.3 Expo Go ile gelistirilecek.
 - [x] Eski v0.2 yedeklerine guvenli varsayilan alanlar eklensin
 - [x] Ayarlar ekraninda v0.3 yedek kapsami notu gorunsun
 - [x] Yedek kapsami listesi eklendi
-- [x] Surum dosyalari 0.3.8
-
-## Next
 
 ### v0.3.9 Tasarim temizligi
-- [ ] Alt menu tasma kontrolu
-- [ ] Uzun listelerde alt bosluk
-- [ ] Miami Ocean tema tutarliligi
-- [ ] Bos durum ekranlari
-- [ ] Telefon ekraninda kayma kontrolu
+- [x] Alt menu tasma kontrolu
+- [x] Alt menu yatay kaydirma
+- [x] Uzun listelerde alt bosluk korundu
+- [x] Miami Ocean tema tutarliligi
+- [x] Bos durum ekranlari korunuyor
+- [x] Telefon ekraninda kayma kontrolu icin daha genis tab yapisi
+- [x] Surum dosyalari 0.3.9
+
+## Next
 
 ### v0.3.10 Final test
 - [ ] Ana Sayfa testi
