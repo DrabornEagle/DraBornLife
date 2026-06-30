@@ -5,7 +5,7 @@ import { theme } from './src/theme';
 import { DebtScreen } from './src/screens/DebtScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LoadingScreen } from './src/screens/LoadingScreen';
-import { MoneyScreen } from './src/screens/MoneyScreen';
+import { MoneyScreenSafe } from './src/screens/MoneyScreenSafe';
 import { SettingsScreenFixed } from './src/screens/SettingsScreenFixed';
 import { ShoppingScreen } from './src/screens/ShoppingScreen';
 import { useLifeData } from './src/hooks/useLifeData';
@@ -25,7 +25,7 @@ export default function App() {
   const screen = useMemo(() => {
     if (isLoading || !lifeData) return <LoadingScreen />;
     if (activeTab === 'home') return <HomeScreen lifeData={lifeData} />;
-    if (activeTab === 'money') return <MoneyScreen lifeData={lifeData} onSave={updateLifeData} />;
+    if (activeTab === 'money') return <MoneyScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'shopping') return <ShoppingScreen lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'debt') return <DebtScreen lifeData={lifeData} onSave={updateLifeData} />;
     return <SettingsScreenFixed lifeData={lifeData} onReset={resetLocalData} onRestore={updateLifeData} />;
