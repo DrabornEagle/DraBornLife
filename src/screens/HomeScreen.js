@@ -11,12 +11,12 @@ import { formatTRY, getLifeSummary } from '../utils/lifeSummary';
 export function HomeScreen({ lifeData }) {
   const summary = getLifeSummary(lifeData);
   const selectedYear = lifeData?.settings?.selectedYear || 2026;
-  const targetAreasText = summary.targetAreas || 'Muratpasa • Lara • Konyaalti';
+  const targetAreasText = summary.targetAreas || 'Muratpaşa • Lara • Konyaaltı';
 
   const focusItems = [
-    { label: 'Birikim', value: `${summary.savingPercent}%`, hint: 'Tasinma hedefi', color: theme.colors.aqua },
-    { label: 'Borc', value: `${summary.debtPercent}%`, hint: 'Azaltma ilerlemesi', color: theme.colors.miamiPink },
-    { label: 'Liste', value: `${summary.shoppingReady}/${summary.shoppingCount}`, hint: 'Parasi hazir', color: theme.colors.palm },
+    { label: 'Birikim', value: `${summary.savingPercent}%`, hint: 'Taşınma hedefi', color: theme.colors.aqua },
+    { label: 'Borç', value: `${summary.debtPercent}%`, hint: 'Azaltma ilerlemesi', color: theme.colors.miamiPink },
+    { label: 'Liste', value: `${summary.shoppingReady}/${summary.shoppingCount}`, hint: 'Parası hazır', color: theme.colors.palm },
   ];
 
   return (
@@ -31,7 +31,7 @@ export function HomeScreen({ lifeData }) {
           <View style={styles.heroTextWrap}>
             <Text style={styles.eyebrow}>{APP_VERSION_LABEL} • Expo Go</Text>
             <Text style={styles.heroTitle}>Yeni hayat paneli</Text>
-            <Text style={styles.heroSubtitle}>Antalya'ya tasinma, aile hedefleri, borc ve birikim durumunu tek nefeslik sade ekranda takip et.</Text>
+            <Text style={styles.heroSubtitle}>Antalya'ya taşınma, aile hedefleri, borç ve birikim durumunu tek nefeslik sade ekranda takip et.</Text>
           </View>
           <View style={styles.palmBadge}>
             <Text style={styles.palmIcon}>🌴</Text>
@@ -39,27 +39,27 @@ export function HomeScreen({ lifeData }) {
         </View>
 
         <View style={styles.destinationCard}>
-          <Text style={styles.destinationLabel}>Hedef bolge</Text>
+          <Text style={styles.destinationLabel}>Hedef bölge</Text>
           <Text style={styles.destinationTitle}>{targetAreasText}</Text>
-          <Text style={styles.destinationDate}>{summary.targetDateText} • {summary.daysLeft} gun kaldi</Text>
+          <Text style={styles.destinationDate}>{summary.targetDateText} • {summary.daysLeft} gün kaldı</Text>
         </View>
 
         <View style={styles.heroStatsRow}>
-          <HeroStat label="Kalan" value={`${summary.daysLeft}`} hint="gun" />
+          <HeroStat label="Kalan" value={`${summary.daysLeft}`} hint="gün" />
           <HeroStat label="Birikim" value={formatTRY(summary.savedAmount)} hint="net" />
-          <HeroStat label="Kalan" value={formatTRY(summary.targetRemaining)} hint="butce" />
+          <HeroStat label="Kalan" value={formatTRY(summary.targetRemaining)} hint="bütçe" />
         </View>
       </View>
 
       <View style={styles.vibeCard}>
         <View style={styles.vibeHeaderRow}>
           <View>
-            <Text style={styles.sectionMini}>SAHIL MODU</Text>
-            <Text style={styles.vibeTitle}>Miami / Antalya temiz tasarim</Text>
+            <Text style={styles.sectionMini}>SAHİL MODU</Text>
+            <Text style={styles.vibeTitle}>Miami / Antalya temiz tasarım</Text>
           </View>
           <Text style={styles.vibeIcon}>🌊</Text>
         </View>
-        <Text style={styles.vibeText}>Bu ana sayfa v1.0 tasarim yenilemesinin ilk parcasidir. APK yok; sadece Expo Go ile gorunum ve okunabilirlik test edilecek.</Text>
+        <Text style={styles.vibeText}>Bu ana sayfa v1.0 tasarım yenilemesinin ilk parçasıdır. APK yok; sadece Expo Go ile görünüm ve okunabilirlik test edilecek.</Text>
         <View style={styles.focusGrid}>
           {focusItems.map((item) => (
             <FocusPill key={item.label} {...item} />
@@ -70,29 +70,29 @@ export function HomeScreen({ lifeData }) {
       <HomeFinalSummaryCard lifeData={lifeData} />
 
       <View style={styles.sectionBlock}>
-        <Text style={styles.sectionMini}>HEDEF OZETI</Text>
-        <Text style={styles.sectionTitle}>Tasınma yol haritasi</Text>
-        <Text style={styles.sectionHint}>{summary.preferredDeadlineText} • GTA 6 icin {summary.gta6DaysLeft} gun</Text>
+        <Text style={styles.sectionMini}>HEDEF ÖZETİ</Text>
+        <Text style={styles.sectionTitle}>Taşınma yol haritası</Text>
+        <Text style={styles.sectionHint}>{summary.preferredDeadlineText} • GTA 6 için {summary.gta6DaysLeft} gün</Text>
       </View>
 
       <View style={styles.metricsGrid}>
-        <CleanMetricCard label="Kalan gun" value={`${summary.daysLeft}`} hint={summary.targetDate} accent={theme.colors.aqua} />
-        <CleanMetricCard label="Kalan butce" value={formatTRY(summary.targetRemaining)} hint="Hedefe kalan" accent={theme.colors.miamiPink} />
+        <CleanMetricCard label="Kalan gün" value={`${summary.daysLeft}`} hint={summary.targetDate} accent={theme.colors.aqua} />
+        <CleanMetricCard label="Kalan bütçe" value={formatTRY(summary.targetRemaining)} hint="Hedefe kalan" accent={theme.colors.miamiPink} />
       </View>
       <View style={styles.metricsGrid}>
-        <CleanMetricCard label="Hedef butce" value={formatTRY(summary.targetBudget)} hint="Toplam hedef" accent={theme.colors.palm} />
+        <CleanMetricCard label="Hedef bütçe" value={formatTRY(summary.targetBudget)} hint="Toplam hedef" accent={theme.colors.palm} />
         <CleanMetricCard label="Mevcut" value={formatTRY(summary.savedAmount)} hint="Net birikim" accent={theme.colors.sunset} />
       </View>
 
       <View style={styles.progressSection}>
-        <Text style={styles.progressTitle}>Buyuk ilerleme kartlari</Text>
-        <Text style={styles.progressHint}>Birikim, borc, alinacaklar ve motosiklet hedefi tek ritimde.</Text>
+        <Text style={styles.progressTitle}>Büyük ilerleme kartları</Text>
+        <Text style={styles.progressHint}>Birikim, borç, alınacaklar ve motosiklet hedefi tek ritimde.</Text>
       </View>
 
-      <CleanProgressCard title="Tasinma butcesi" subtitle="Hedef butceye giden yol" percent={summary.savingPercent} leftLabel={formatTRY(summary.savedAmount)} rightLabel={formatTRY(summary.targetBudget)} color={theme.colors.aqua} />
-      <CleanProgressCard title="Borc azaltma" subtitle={`Kalan borc: ${formatTRY(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={formatTRY(summary.paidDebt)} rightLabel={formatTRY(summary.totalDebt)} color={theme.colors.miamiPink} />
-      <CleanProgressCard title="Alinacaklar butcesi" subtitle={`Kalan alinacak butcesi: ${formatTRY(summary.shoppingRemaining)}`} percent={summary.shoppingPercent} leftLabel={formatTRY(summary.shoppingSaved)} rightLabel={formatTRY(summary.shoppingTotal)} color={theme.colors.palm} />
-      <CleanProgressCard title="Motosiklet hedefi" subtitle={`Eski motor satis hedefi: ${formatTRY(summary.motorcycleOldSale)}`} percent={summary.motorcyclePercent} leftLabel={formatTRY(summary.motorcycleSaved)} rightLabel={formatTRY(summary.motorcyclePrice)} color={theme.colors.sunset} />
+      <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={formatTRY(summary.savedAmount)} rightLabel={formatTRY(summary.targetBudget)} color={theme.colors.aqua} />
+      <CleanProgressCard title="Borç azaltma" subtitle={`Kalan borç: ${formatTRY(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={formatTRY(summary.paidDebt)} rightLabel={formatTRY(summary.totalDebt)} color={theme.colors.miamiPink} />
+      <CleanProgressCard title="Alınacaklar bütçesi" subtitle={`Kalan alınacak bütçesi: ${formatTRY(summary.shoppingRemaining)}`} percent={summary.shoppingPercent} leftLabel={formatTRY(summary.shoppingSaved)} rightLabel={formatTRY(summary.shoppingTotal)} color={theme.colors.palm} />
+      <CleanProgressCard title="Motosiklet hedefi" subtitle={`Eski motor satış hedefi: ${formatTRY(summary.motorcycleOldSale)}`} percent={summary.motorcyclePercent} leftLabel={formatTRY(summary.motorcycleSaved)} rightLabel={formatTRY(summary.motorcyclePrice)} color={theme.colors.sunset} />
 
       <View style={styles.yearWrap}>
         <YearFinancePanel lifeData={lifeData} selectedYear={selectedYear} compact />
@@ -101,19 +101,19 @@ export function HomeScreen({ lifeData }) {
       <View style={styles.periodCard}>
         <View style={styles.periodHeaderRow}>
           <View>
-            <Text style={styles.sectionMini}>NAKIT AKISI</Text>
-            <Text style={styles.periodTitle}>Haftalik / aylik ozet</Text>
+            <Text style={styles.sectionMini}>NAKİT AKIŞI</Text>
+            <Text style={styles.periodTitle}>Haftalık / aylık özet</Text>
           </View>
           <Text style={styles.periodEmoji}>☀️</Text>
         </View>
-        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 7 gun net</Text><Text style={styles.periodValue}>{formatTRY(summary.weekSummary.net)}</Text></View>
-        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 30 gun net</Text><Text style={styles.periodValue}>{formatTRY(summary.monthSummary.net)}</Text></View>
+        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 7 gün net</Text><Text style={styles.periodValue}>{formatTRY(summary.weekSummary.net)}</Text></View>
+        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 30 gün net</Text><Text style={styles.periodValue}>{formatTRY(summary.monthSummary.net)}</Text></View>
       </View>
 
       <View style={styles.nextCard}>
-        <Text style={styles.nextMini}>SIRADAKI TASARIM ADIMI</Text>
-        <Text style={styles.nextTitle}>v1.0.3 • Alt menu / navigasyon</Text>
-        <Text style={styles.nextText}>Ana sayfa yeni sahil temasina alindi. Siradaki adimda 9 sekmeli alt menu daha sade, modern ve tek elle kullanimi rahat hale getirilecek.</Text>
+        <Text style={styles.nextMini}>SIRADAKİ TASARIM ADIMI</Text>
+        <Text style={styles.nextTitle}>v1.0.4 • Yıl ekranı</Text>
+        <Text style={styles.nextText}>Ana sayfa ve alt menü yeni sahil temasına alındı. Sıradaki adımda yıl ekranı daha sade, okunur ve hedef odaklı hale getirilecek.</Text>
       </View>
     </ScrollView>
   );
