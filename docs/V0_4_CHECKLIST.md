@@ -26,17 +26,19 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] Secili yila gore hedef ozeti gosteriliyor
 - [x] Secili yila gore hedef listesi gosteriliyor
 - [x] Yil secimi settings.selectedYear alanina kaydediliyor
-- [x] Yeni yil hedefi ekleme akisi v0.4.4'e birakildi
-- [x] Yil hedefi duzenleme/silme v0.4.4'e birakildi
 - [x] Surum dosyalari v0.4.3 yapildi
 
 ### v0.4.4 Birikim geri sayim sistemi
-- [ ] Hedef ay veya hedef tarih secimi yapilacak
-- [ ] Kalan gun / kalan ay hesabi gosterilecek
-- [ ] Toplam hedef butce ve biriken tutar hesaplanacak
-- [ ] Aylik gerekli birikim hesabi gosterilecek
-- [ ] Haftalik gerekli birikim hesabi gosterilecek
-- [ ] Eksik/hatali tarih girislerinde uygulama kirilmadan uyari verecek
+- [x] Hedef ay veya hedef tarih alanlari hesaplamada kullaniliyor
+- [x] Kalan gun hesabi gosteriliyor
+- [x] Kalan ay hesabi gosteriliyor
+- [x] Toplam hedef butce ve biriken tutar hesaplanıyor
+- [x] Kalan butce hesabi gosteriliyor
+- [x] Aylik gerekli birikim hesabi gosteriliyor
+- [x] Haftalik gerekli birikim hesabi gosteriliyor
+- [x] Eksik/hatali tarih girislerinde uygulama kirilmadan uyari veriyor
+- [x] Gecmis tarih uyarisi eklendi
+- [x] Surum dosyalari v0.4.4 yapildi
 
 ### v0.4.5 Tasinma, seyahat ve hayat hedef kartlari
 - [ ] Hedef tipi: tasinma, seyahat, ev, arac, oyun, aile, diger
@@ -45,6 +47,7 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [ ] Durumlar: planlandi, aktif, para birikiyor, tamamlandi, ertelendi
 - [ ] Antalya 2026 hedefi ana plan olarak korunacak
 - [ ] Dubai/Miami gibi uzun vadeli planlar opsiyonel hedef olarak desteklenecek
+- [ ] Hedef ekle/duzenle/sil akisi eklenecek
 
 ### v0.4.6 Yillik finans ozeti
 - [ ] Secili yila ait gelir/gider/birikim ozeti hesaplanacak
@@ -83,4 +86,5 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] v0.4.1 baslatildi
 - [x] v0.4.2 veri modeli tamamlandi
 - [x] v0.4.3 Yil secici ve Yil Plani ekrani tamamlandi
-- [ ] Siradaki adim: v0.4.4 Birikim geri sayim sistemi
+- [x] v0.4.4 Birikim geri sayim sistemi tamamlandi
+- [ ] Siradaki adim: v0.4.5 Tasinma, seyahat ve hayat hedef kartlari
