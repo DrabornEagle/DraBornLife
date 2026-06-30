@@ -6,12 +6,13 @@ import { HomeFinalSummaryCard } from '../components/HomeFinalSummaryCard';
 import { YearFinancePanel } from '../components/YearFinancePanel';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { theme } from '../theme';
-import { formatTRY, getLifeSummary } from '../utils/lifeSummary';
+import { formatMoney, getLifeSummary } from '../utils/lifeSummary';
 
 export function HomeScreen({ lifeData }) {
   const summary = getLifeSummary(lifeData);
   const selectedYear = lifeData?.settings?.selectedYear || 2026;
   const targetAreasText = summary.targetAreas || 'Muratpaşa • Lara • Konyaaltı';
+  const money = (value) => formatMoney(value, lifeData);
 
   const focusItems = [
     { label: 'Birikim', value: `${summary.savingPercent}%`, hint: 'Taşınma hedefi', color: theme.colors.aqua },
@@ -46,8 +47,8 @@ export function HomeScreen({ lifeData }) {
 
         <View style={styles.heroStatsRow}>
           <HeroStat label="Kalan" value={`${summary.daysLeft}`} hint="gün" />
-          <HeroStat label="Birikim" value={formatTRY(summary.savedAmount)} hint="net" />
-          <HeroStat label="Kalan" value={formatTRY(summary.targetRemaining)} hint="bütçe" />
+          <HeroStat label="Birikim" value={money(summary.savedAmount)} hint="net" />
+          <HeroStat label="Kalan" value={money(summary.targetRemaining)} hint="bütçe" />
         </View>
       </View>
 
@@ -77,11 +78,11 @@ export function HomeScreen({ lifeData }) {
 
       <View style={styles.metricsGrid}>
         <CleanMetricCard label="Kalan gün" value={`${summary.daysLeft}`} hint={summary.targetDate} accent={theme.colors.aqua} />
-        <CleanMetricCard label="Kalan bütçe" value={formatTRY(summary.targetRemaining)} hint="Hedefe kalan" accent={theme.colors.miamiPink} />
+        <CleanMetricCard label="Kalan bütçe" value={money(summary.targetRemaining)} hint="Hedefe kalan" accent={theme.colors.miamiPink} />
       </View>
       <View style={styles.metricsGrid}>
-        <CleanMetricCard label="Hedef bütçe" value={formatTRY(summary.targetBudget)} hint="Toplam hedef" accent={theme.colors.palm} />
-        <CleanMetricCard label="Mevcut" value={formatTRY(summary.savedAmount)} hint="Net birikim" accent={theme.colors.sunset} />
+        <CleanMetricCard label="Hedef bütçe" value={money(summary.targetBudget)} hint="Toplam hedef" accent={theme.colors.palm} />
+        <CleanMetricCard label="Mevcut" value={money(summary.savedAmount)} hint="Net birikim" accent={theme.colors.sunset} />
       </View>
 
       <View style={styles.progressSection}>
@@ -89,10 +90,10 @@ export function HomeScreen({ lifeData }) {
         <Text style={styles.progressHint}>Birikim, borç, alınacaklar ve motosiklet hedefi tek ritimde.</Text>
       </View>
 
-      <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={formatTRY(summary.savedAmount)} rightLabel={formatTRY(summary.targetBudget)} color={theme.colors.aqua} />
-      <CleanProgressCard title="Borç azaltma" subtitle={`Kalan borç: ${formatTRY(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={formatTRY(summary.paidDebt)} rightLabel={formatTRY(summary.totalDebt)} color={theme.colors.miamiPink} />
-      <CleanProgressCard title="Alınacaklar bütçesi" subtitle={`Kalan alınacak bütçesi: ${formatTRY(summary.shoppingRemaining)}`} percent={summary.shoppingPercent} leftLabel={formatTRY(summary.shoppingSaved)} rightLabel={formatTRY(summary.shoppingTotal)} color={theme.colors.palm} />
-      <CleanProgressCard title="Motosiklet hedefi" subtitle={`Eski motor satış hedefi: ${formatTRY(summary.motorcycleOldSale)}`} percent={summary.motorcyclePercent} leftLabel={formatTRY(summary.motorcycleSaved)} rightLabel={formatTRY(summary.motorcyclePrice)} color={theme.colors.sunset} />
+      <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={money(summary.savedAmount)} rightLabel={money(summary.targetBudget)} color={theme.colors.aqua} />
+      <CleanProgressCard title="Borç azaltma" subtitle={`Kalan borç: ${money(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={money(summary.paidDebt)} rightLabel={money(summary.totalDebt)} color={theme.colors.miamiPink} />
+      <CleanProgressCard title="Alınacaklar bütçesi" subtitle={`Kalan alınacak bütçesi: ${money(summary.shoppingRemaining)}`} percent={summary.shoppingPercent} leftLabel={money(summary.shoppingSaved)} rightLabel={money(summary.shoppingTotal)} color={theme.colors.palm} />
+      <CleanProgressCard title="Motosiklet hedefi" subtitle={`Eski motor satış hedefi: ${money(summary.motorcycleOldSale)}`} percent={summary.motorcyclePercent} leftLabel={money(summary.motorcycleSaved)} rightLabel={money(summary.motorcyclePrice)} color={theme.colors.sunset} />
 
       <View style={styles.yearWrap}>
         <YearFinancePanel lifeData={lifeData} selectedYear={selectedYear} compact />
@@ -106,14 +107,14 @@ export function HomeScreen({ lifeData }) {
           </View>
           <Text style={styles.periodEmoji}>☀️</Text>
         </View>
-        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 7 gün net</Text><Text style={styles.periodValue}>{formatTRY(summary.weekSummary.net)}</Text></View>
-        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 30 gün net</Text><Text style={styles.periodValue}>{formatTRY(summary.monthSummary.net)}</Text></View>
+        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 7 gün net</Text><Text style={styles.periodValue}>{money(summary.weekSummary.net)}</Text></View>
+        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 30 gün net</Text><Text style={styles.periodValue}>{money(summary.monthSummary.net)}</Text></View>
       </View>
 
       <View style={styles.nextCard}>
         <Text style={styles.nextMini}>SIRADAKİ TASARIM ADIMI</Text>
-        <Text style={styles.nextTitle}>v1.0.5 • Para / Borç / Liste ekranları</Text>
-        <Text style={styles.nextText}>Ana sayfa, alt menü ve yıl ekranı yeni sahil temasına alındı. Sıradaki adımda para, borç ve liste ekranları daha sade ve okunur hale getirilecek.</Text>
+        <Text style={styles.nextTitle}>v1.0.6 • Ayarlar / Yedek / Test Merkezi</Text>
+        <Text style={styles.nextText}>Para, borç ve liste ekranları kategori kartlarına alındı. Sıradaki adımda ayarlar, yedek ve test merkezi daha sade hale getirilecek.</Text>
       </View>
     </ScrollView>
   );
