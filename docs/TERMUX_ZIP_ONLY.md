@@ -32,4 +32,4 @@ ls
 
 ## Not
 
-APK üretimi için Termux içinde Python/JDK/Perl kurulumu yapılmayacak. APK build işlemi GitHub Actions üzerinden alınacak. Böylece telefonda ağır kurulum yapmadan sadece dosyalar takip edilebilir.
+v0.0.3 itibarıyla test yöntemi Expo Go olarak güncellendi. Termux içinde Python/JDK/Perl kurulumu yapılmayacak. Termux sadece zip indirme ve dosya kontrolü için kullanılacak. Expo Go testi için Node.js çalışan normal bir geliştirme ortamı gerekir.
