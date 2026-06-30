@@ -37,15 +37,19 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK v1.0'da alinacak.
 - [x] Test Merkezi yeni saglik motoruna baglandi
 - [x] Surum dosyalari v0.5.3 yapildi
 
-## Next
-
 ### v0.5.4 Form dogrulama temizligi
-- [ ] Para ekraninda negatif ve bos veri kontrolu
-- [ ] Liste ekraninda fiyat/adet kontrolu
-- [ ] Borc ekraninda negatif tutar kontrolu
-- [ ] Yil ekraninda tarih/yil/butce kontrolu
-- [ ] Hedef ekraninda butce ve baslik kontrolu
-- [ ] Ayar ekraninda aktif yil ve fiyat kontrolu
+- [x] Para ekraninda negatif ve bos veri kontrolu mevcut
+- [x] Liste ekraninda fiyat/adet kontrolu mevcut
+- [x] Borc ekraninda negatif tutar kontrolu guclendirildi
+- [x] Borc hedef tarih format kontrolu eklendi
+- [x] Borc odemesi kalan tutardan buyuk olamaz
+- [x] Yil ekraninda tarih/yil/butce kontrolu mevcut
+- [x] Hedef ekraninda butce ve baslik kontrolu guclendirildi
+- [x] Ayar ekraninda aktif yil ve fiyat kontrolu mevcut
+- [x] v0.5.4 test dosyasi eklendi
+- [x] Surum dosyalari v0.5.4 yapildi
+
+## Next
 
 ### v0.5.5 Yedek deneyimi iyilestirme
 - [ ] Yedek oncesi kisa ozet
