@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CleanMetricCard } from '../components/CleanMetricCard';
 import { CleanProgressCard } from '../components/CleanProgressCard';
+import { HomeFinalSummaryCard } from '../components/HomeFinalSummaryCard';
 import { YearFinancePanel } from '../components/YearFinancePanel';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { theme } from '../theme';
@@ -30,6 +31,8 @@ export function HomeScreen({ lifeData }) {
           <Text style={styles.destinationDate}>{summary.targetDateText} - {summary.daysLeft} gun kaldi</Text>
         </View>
       </View>
+
+      <HomeFinalSummaryCard lifeData={lifeData} />
 
       <View style={styles.sectionBlock}>
         <Text style={styles.sectionTitle}>Hedef ozeti</Text>
@@ -82,7 +85,7 @@ const styles = StyleSheet.create({
   destinationLabel: { color: theme.colors.slate, fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.8 },
   destinationTitle: { marginTop: 6, color: theme.colors.textDark, fontSize: 18, fontWeight: '900' },
   destinationDate: { marginTop: 8, color: theme.colors.coral, fontSize: 13, fontWeight: '800' },
-  sectionBlock: { marginHorizontal: 18, marginTop: 4, marginBottom: 6 },
+  sectionBlock: { marginHorizontal: 18, marginTop: 14, marginBottom: 6 },
   sectionTitle: { color: theme.colors.textDark, fontSize: 24, fontWeight: '900' },
   sectionHint: { marginTop: 4, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '700' },
   metricsGrid: { flexDirection: 'row', marginHorizontal: 13, marginTop: 4 },
