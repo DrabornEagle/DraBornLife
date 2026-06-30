@@ -112,8 +112,8 @@ export function HomeScreen({ lifeData }) {
 
       <View style={styles.nextCard}>
         <Text style={styles.nextMini}>SIRADAKİ TASARIM ADIMI</Text>
-        <Text style={styles.nextTitle}>v1.0.4 • Yıl ekranı</Text>
-        <Text style={styles.nextText}>Ana sayfa ve alt menü yeni sahil temasına alındı. Sıradaki adımda yıl ekranı daha sade, okunur ve hedef odaklı hale getirilecek.</Text>
+        <Text style={styles.nextTitle}>v1.0.5 • Para / Borç / Liste ekranları</Text>
+        <Text style={styles.nextText}>Ana sayfa, alt menü ve yıl ekranı yeni sahil temasına alındı. Sıradaki adımda para, borç ve liste ekranları daha sade ve okunur hale getirilecek.</Text>
       </View>
     </ScrollView>
   );
