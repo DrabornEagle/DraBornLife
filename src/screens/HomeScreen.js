@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { CleanMetricCard } from '../components/CleanMetricCard';
 import { CleanProgressCard } from '../components/CleanProgressCard';
+import { APP_VERSION_LABEL } from '../config/appVersion';
 import { theme } from '../theme';
 import { formatTRY, getLifeSummary } from '../utils/lifeSummary';
 
@@ -16,7 +17,7 @@ export function HomeScreen({ lifeData }) {
       <View style={styles.header}>
         <View style={styles.topRow}>
           <View>
-            <Text style={styles.eyebrow}>DraBornLife • v0.0.8</Text>
+            <Text style={styles.eyebrow}>{APP_VERSION_LABEL}</Text>
             <Text style={styles.title}>Antalya planı</Text>
           </View>
           <View style={styles.palmCircle}>
@@ -67,8 +68,8 @@ export function HomeScreen({ lifeData }) {
       />
 
       <View style={styles.nextCard}>
-        <Text style={styles.nextTitle}>Alınacaklar hazır</Text>
-        <Text style={styles.nextText}>v0.0.8 ile ev kurulum, GTA 6 seti ve motosiklet hedefleri liste ekranından takip edilebilir.</Text>
+        <Text style={styles.nextTitle}>v0.1 öncesi temizlik</Text>
+        <Text style={styles.nextText}>v0.0.11 ile sürüm kodları merkezi hale getirildi. Bundan sonra tüm ekranlar aynı sürümü gösterir.</Text>
       </View>
     </View>
   );
