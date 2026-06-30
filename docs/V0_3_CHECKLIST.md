@@ -50,18 +50,19 @@ Ilk APK v1.0 surumunde alinacak. v0.3 Expo Go ile gelistirilecek.
 - [x] Planlandi/gidildi durumlari
 - [x] Butce ve aile notu
 - [x] Liste filtreleri
-- [x] Surum dosyalari 0.3.6
-
-## Next
 
 ### v0.3.7 Ozel hedef ekleme sistemi
-- [ ] Hedef adi
-- [ ] Hedef kategorisi
-- [ ] Tahmini butce
-- [ ] Biriken tutar
-- [ ] Hedef ay veya tarih
-- [ ] Tamamlandi durumu
-- [ ] Hedef duzenle/sil
+- [x] Hedef adi
+- [x] Hedef kategorisi
+- [x] Tahmini butce
+- [x] Biriken tutar
+- [x] Hedef ay veya tarih
+- [x] Tamamlandi durumu
+- [x] Hedef duzenle/sil
+- [x] Hedef sekmesi eklendi
+- [x] Surum dosyalari 0.3.7
+
+## Next
 
 ### v0.3.8 Yedek uyumlulugu
 - [ ] v0.3 veri alanlari yedege dahil olsun
