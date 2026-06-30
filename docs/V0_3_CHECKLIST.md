@@ -18,12 +18,14 @@ v0.3, DraBornLife'i finans takip uygulamasindan Antalya yasam planlama paneline 
 
 ## v0.3.2 — Yasam veri modeli
 
-- [ ] lifePlans veri modelini ekle
-- [ ] homeSetupRooms veri modelini ekle
-- [ ] activities veri modelini ekle
-- [ ] beaches veri modelini ekle
-- [ ] customGoals veri modelini ekle
-- [ ] Varsayilan Antalya yasam verilerini ekle
+- [x] lifePlans veri modelini ekle
+- [x] homeSetupRooms veri modelini ekle
+- [x] activities veri modelini ekle
+- [x] beaches veri modelini ekle
+- [x] customGoals veri modelini ekle
+- [x] Varsayilan Antalya yasam verilerini ekle
+- [x] Eski v0.2 verileri icin normalize destek ekle
+- [x] Surum dosyalarini v0.3.2 yap
 
 ## v0.3.3 — Antalya Life ekrani
 
