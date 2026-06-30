@@ -18,11 +18,11 @@ export function HomeFinalSummaryCard({ lifeData }) {
     <View style={card}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <View style={{ flex: 1, paddingRight: 12 }}>
-          <Text style={mini}>V1.0.7 GENEL TEMA</Text>
-          <Text style={title}>{ready ? 'Tasarım standardı uygulanıyor' : 'Veri kontrolü gerekli'}</Text>
-          <Text style={desc}>APK yok. Kartlar, boş durumlar, yazı boyutları ve ortak tema Expo Go üzerinden kontrol edilir.</Text>
+          <Text style={mini}>V1.0.9 PREMIUM FİNAL</Text>
+          <Text style={title}>{ready ? 'Premium ana sayfa son rötuşta' : 'Veri kontrolü gerekli'}</Text>
+          <Text style={desc}>APK yok. Ana sayfa küçük ekran taşmaları, kart oranları ve premium dashboard dengesi için kontrol edilir.</Text>
         </View>
-        <View style={badge}><Text style={badgeText}>🌴</Text></View>
+        <View style={badge}><Text style={badgeText}>✓</Text></View>
       </View>
       <View style={{ flexDirection: 'row', marginTop: 14 }}>
         <Pill label="Veri sağlığı" value={`%${health.score}`} good={ready} />
@@ -49,7 +49,7 @@ const mini = { color: '#FF7A59', fontSize: 11, fontWeight: '900', letterSpacing:
 const title = { marginTop: 6, color: '#102A35', fontSize: 21, lineHeight: 26, fontWeight: '900' };
 const desc = { marginTop: 7, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' };
 const badge = { width: 46, height: 46, borderRadius: 23, backgroundColor: '#E7FBFC', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#BEEDEF' };
-const badgeText = { fontSize: 24 };
+const badgeText = { fontSize: 24, color: '#073B4C', fontWeight: '900' };
 const pillLabel = { color: '#315661', fontSize: 11, fontWeight: '900' };
 const pillValue = { marginTop: 5, color: '#102A35', fontSize: 18, fontWeight: '900' };
 const line = { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#EEF6F6' };
