@@ -1,9 +1,9 @@
-export const STORAGE_VERSION = 'v0.2.4';
+export const STORAGE_VERSION = 'v0.2.5';
 
 export const defaultLifeData = {
   settings: {
     appName: 'DraBornLife',
-    currentVersionCode: 'v0.2.4',
+    currentVersionCode: 'v0.2.5',
     targetCity: 'Antalya',
     targetAreas: ['Muratpaşa', 'Lara', 'Konyaaltı'],
     targetMoveMonthText: 'Ekim / Kasım 2026',
