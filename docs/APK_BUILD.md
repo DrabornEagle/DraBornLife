@@ -1,27 +1,26 @@
 # DraBornLife APK Build Notu
 
-v0.0.2 ile temel debug APK build altyapısı eklendi.
+v0.0.3 itibarıyla APK üretimi şimdilik durduruldu.
 
-## Build yöntemi
+## Güncel karar
 
-APK, telefonda ağır kurulum yapmadan GitHub Actions üzerinden üretilecek.
+- Şimdilik APK alınmayacak.
+- Testler Expo Go ile yapılacak.
+- APK üretimi v0.1 final test aşamasında tekrar açılacak.
+- Otomatik GitHub Actions APK workflow dosyası kaldırıldı.
 
-Workflow dosyası:
+## Şimdiki test yöntemi
 
-```text
-.github/workflows/android-debug-apk.yml
+```bash
+npm install
+npx expo start
 ```
 
-## APK alma adımları
+Sonra telefondan Expo Go ile QR kod okutulur.
 
-1. GitHub reposunu aç.
-2. `Actions` sekmesine gir.
-3. `Build Debug APK` workflow'unu aç.
-4. Son başarılı çalışmayı seç.
-5. `Artifacts` bölümünden `DraBornLife-v0.0.2-debug-apk` dosyasını indir.
-6. Zip içinden `app-debug.apk` dosyasını çıkar.
-7. Telefona yükle.
+## v0.1 finalde yapılacaklar
 
-## Not
-
-Bu APK debug sürümüdür. v0.1 finalde release hazırlığı ayrıca yapılacak.
+- Release hazırlığı
+- Android build akışı
+- APK veya AAB çıktısı
+- Telefonda gerçek kurulum testi
