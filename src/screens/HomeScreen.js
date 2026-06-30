@@ -11,24 +11,24 @@ export function HomeScreen({ lifeData }) {
   const selectedYear = lifeData?.settings?.selectedYear || 2026;
   const targetAreasText = summary.targetAreas || 'Muratpaşa • Lara • Konyaaltı';
   const money = (value) => formatMoney(value, lifeData);
-  const readiness = Math.round((summary.savingPercent + Math.min(100, summary.debtPercent) + Math.min(100, summary.shoppingPercent)) / 3);
+  const readiness = Math.max(0, Math.min(100, Math.round((summary.savingPercent + Math.min(100, summary.debtPercent) + Math.min(100, summary.shoppingPercent)) / 3)));
 
   return (
     <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.screen}>
       <View style={styles.premiumHeader}>
         <View style={styles.headerTop}>
-          <View>
+          <View style={{ flex: 1, paddingRight: 12 }}>
             <Text style={styles.brand}>DraBornLife</Text>
             <Text style={styles.version}>{APP_VERSION_LABEL} • Expo Go</Text>
           </View>
           <View style={styles.statusBadge}><Text style={styles.statusText}>APK YOK</Text></View>
         </View>
 
-        <Text style={styles.heroTitle}>Antalya yeni hayat kontrol merkezi</Text>
-        <Text style={styles.heroText}>Taşınma bütçesi, borç azaltma, alınacaklar ve aile hedefleri tek profesyonel panelde.</Text>
+        <Text style={styles.heroTitle}>Antalya yaşam kontrol merkezi</Text>
+        <Text style={styles.heroText}>Taşınma bütçesi, borç azaltma, alınacaklar ve aile hedefleri için premium mobil panel.</Text>
 
         <View style={styles.mainKpiCard}>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingRight: 12 }}>
             <Text style={styles.kpiLabel}>Hazırlık skoru</Text>
             <Text style={styles.kpiValue}>%{readiness}</Text>
             <Text style={styles.kpiHint}>{summary.targetDateText} • {summary.daysLeft} gün kaldı</Text>
@@ -39,9 +39,14 @@ export function HomeScreen({ lifeData }) {
 
       <View style={styles.overlapBlock}>
         <View style={styles.goalCard}>
-          <Text style={styles.sectionKicker}>ANA HEDEF</Text>
-          <Text style={styles.goalTitle}>Antalya yaşam kurulumu</Text>
-          <Text style={styles.goalMeta}>{targetAreasText}</Text>
+          <View style={styles.goalHeaderRow}>
+            <View style={{ flex: 1, paddingRight: 10 }}>
+              <Text style={styles.sectionKicker}>ANA HEDEF</Text>
+              <Text style={styles.goalTitle}>Antalya yaşam kurulumu</Text>
+              <Text style={styles.goalMeta}>{targetAreasText}</Text>
+            </View>
+            <View style={styles.daysBadge}><Text style={styles.daysBadgeText}>{summary.daysLeft}</Text><Text style={styles.daysBadgeSub}>gün</Text></View>
+          </View>
           <View style={styles.goalDivider} />
           <View style={styles.goalRow}>
             <PremiumStat label="Kalan bütçe" value={money(summary.targetRemaining)} />
@@ -52,7 +57,7 @@ export function HomeScreen({ lifeData }) {
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Finans görünümü</Text>
-        <Text style={styles.sectionSubtitle}>Gelir, gider, borç ve liste durumunun sade özeti.</Text>
+        <Text style={styles.sectionSubtitle}>Karar vermeyi kolaylaştıran kısa ve temiz özet.</Text>
       </View>
 
       <View style={styles.dashboardGrid}>
@@ -74,7 +79,7 @@ export function HomeScreen({ lifeData }) {
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>İlerleme planı</Text>
-        <Text style={styles.sectionSubtitle}>Ana hedefler kısa, okunur ve karar verilebilir kartlara ayrıldı.</Text>
+        <Text style={styles.sectionSubtitle}>Ana hedeflerin ilerleme durumu sade kartlarla takip edilir.</Text>
       </View>
 
       <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={money(summary.savedAmount)} rightLabel={money(summary.targetBudget)} color={theme.colors.aqua} />
@@ -85,9 +90,9 @@ export function HomeScreen({ lifeData }) {
       <HomeFinalSummaryCard lifeData={lifeData} />
 
       <View style={styles.nextCard}>
-        <Text style={styles.nextMini}>SIRADAKİ KONTROL</Text>
-        <Text style={styles.nextTitle}>v1.0.9 • Premium ana sayfa final düzeltmeleri</Text>
-        <Text style={styles.nextText}>Ana sayfa sıfırdan premium mobil dashboard mantığıyla yenilendi. Expo Go üzerinde görsel testten sonra son rötuşlar yapılacak.</Text>
+        <Text style={styles.nextMini}>SIRADAKİ KAPANIŞ</Text>
+        <Text style={styles.nextTitle}>v1.0.10 • v1.0 tasarım kapanışı</Text>
+        <Text style={styles.nextText}>Premium ana sayfa son rötuşları uygulandı. Sıradaki adımda tasarım süreci kapatılıp genel kontrol listesi tamamlanacak.</Text>
       </View>
     </ScrollView>
   );
@@ -118,7 +123,7 @@ function ExecutiveLine({ title, value, state }) {
     <View style={styles.executiveLine}>
       <View style={{ flex: 1, paddingRight: 10 }}>
         <Text style={styles.executiveTitle}>{title}</Text>
-        <Text style={styles.executiveValue}>{value}</Text>
+        <Text style={styles.executiveValue} numberOfLines={2}>{value}</Text>
       </View>
       <View style={styles.executiveBadge}><Text style={styles.executiveBadgeText}>{state}</Text></View>
     </View>
@@ -128,44 +133,48 @@ function ExecutiveLine({ title, value, state }) {
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#F3F6F8' },
   screen: { paddingBottom: 160, backgroundColor: '#F3F6F8' },
-  premiumHeader: { paddingTop: 22, paddingHorizontal: 18, paddingBottom: 72, backgroundColor: '#071A24', borderBottomLeftRadius: 34, borderBottomRightRadius: 34 },
+  premiumHeader: { paddingTop: 20, paddingHorizontal: 18, paddingBottom: 66, backgroundColor: '#071A24', borderBottomLeftRadius: 32, borderBottomRightRadius: 32 },
   headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   brand: { color: '#FFFFFF', fontSize: 24, lineHeight: 29, fontWeight: '900', letterSpacing: 0.2 },
   version: { marginTop: 4, color: 'rgba(255,255,255,0.62)', fontSize: 11, lineHeight: 16, fontWeight: '800' },
   statusBadge: { paddingHorizontal: 11, paddingVertical: 7, borderRadius: 999, backgroundColor: 'rgba(255,255,255,0.10)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)' },
   statusText: { color: '#C8FBFF', fontSize: 10, fontWeight: '900', letterSpacing: 0.6 },
-  heroTitle: { marginTop: 28, color: '#FFFFFF', fontSize: 34, lineHeight: 39, fontWeight: '900', letterSpacing: -0.5 },
-  heroText: { marginTop: 10, color: 'rgba(255,255,255,0.72)', fontSize: 14, lineHeight: 21, fontWeight: '700' },
-  mainKpiCard: { marginTop: 20, padding: 18, borderRadius: 28, backgroundColor: '#102F3D', borderWidth: 1, borderColor: 'rgba(200,251,255,0.16)', flexDirection: 'row', alignItems: 'center' },
+  heroTitle: { marginTop: 24, color: '#FFFFFF', fontSize: 31, lineHeight: 36, fontWeight: '900', letterSpacing: -0.4 },
+  heroText: { marginTop: 9, color: 'rgba(255,255,255,0.72)', fontSize: 14, lineHeight: 21, fontWeight: '700' },
+  mainKpiCard: { marginTop: 18, padding: 16, borderRadius: 26, backgroundColor: '#102F3D', borderWidth: 1, borderColor: 'rgba(200,251,255,0.16)', flexDirection: 'row', alignItems: 'center' },
   kpiLabel: { color: '#C8FBFF', fontSize: 11, fontWeight: '900', letterSpacing: 0.7 },
-  kpiValue: { marginTop: 4, color: '#FFFFFF', fontSize: 46, lineHeight: 52, fontWeight: '900', letterSpacing: -1.5 },
+  kpiValue: { marginTop: 4, color: '#FFFFFF', fontSize: 42, lineHeight: 48, fontWeight: '900', letterSpacing: -1.2 },
   kpiHint: { marginTop: 4, color: 'rgba(255,255,255,0.66)', fontSize: 12, lineHeight: 17, fontWeight: '800' },
-  kpiRing: { width: 72, height: 72, borderRadius: 36, backgroundColor: '#2DE2E6', alignItems: 'center', justifyContent: 'center', borderWidth: 5, borderColor: 'rgba(255,255,255,0.14)' },
-  kpiRingText: { color: '#06202A', fontSize: 18, fontWeight: '900' },
-  overlapBlock: { marginTop: -48, paddingHorizontal: 18 },
-  goalCard: { padding: 18, borderRadius: 30, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 8 },
+  kpiRing: { width: 66, height: 66, borderRadius: 33, backgroundColor: '#2DE2E6', alignItems: 'center', justifyContent: 'center', borderWidth: 5, borderColor: 'rgba(255,255,255,0.14)' },
+  kpiRingText: { color: '#06202A', fontSize: 17, fontWeight: '900' },
+  overlapBlock: { marginTop: -42, paddingHorizontal: 18 },
+  goalCard: { padding: 16, borderRadius: 28, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 8 },
+  goalHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   sectionKicker: { color: '#FF7A59', fontSize: 11, lineHeight: 15, fontWeight: '900', letterSpacing: 0.9 },
-  goalTitle: { marginTop: 7, color: '#102A35', fontSize: 24, lineHeight: 30, fontWeight: '900', letterSpacing: -0.2 },
+  goalTitle: { marginTop: 7, color: '#102A35', fontSize: 22, lineHeight: 28, fontWeight: '900', letterSpacing: -0.2 },
   goalMeta: { marginTop: 5, color: '#52616B', fontSize: 13, lineHeight: 18, fontWeight: '800' },
-  goalDivider: { height: 1, marginTop: 16, marginBottom: 12, backgroundColor: '#EEF2F4' },
+  daysBadge: { minWidth: 58, paddingVertical: 9, paddingHorizontal: 8, borderRadius: 18, backgroundColor: '#F1FAFB', borderWidth: 1, borderColor: '#BEEDEF', alignItems: 'center' },
+  daysBadgeText: { color: '#102A35', fontSize: 18, lineHeight: 22, fontWeight: '900' },
+  daysBadgeSub: { marginTop: 1, color: '#52616B', fontSize: 10, fontWeight: '900' },
+  goalDivider: { height: 1, marginTop: 15, marginBottom: 12, backgroundColor: '#EEF2F4' },
   goalRow: { flexDirection: 'row' },
-  premiumStat: { flex: 1, marginRight: 8, padding: 13, borderRadius: 20, backgroundColor: '#F6FAFB', borderWidth: 1, borderColor: '#E4F2F1' },
+  premiumStat: { flex: 1, marginRight: 8, padding: 12, minHeight: 84, borderRadius: 18, backgroundColor: '#F6FAFB', borderWidth: 1, borderColor: '#E4F2F1' },
   premiumStatLabel: { color: '#52616B', fontSize: 11, fontWeight: '900' },
-  premiumStatValue: { marginTop: 6, color: '#102A35', fontSize: 18, lineHeight: 23, fontWeight: '900' },
+  premiumStatValue: { marginTop: 6, color: '#102A35', fontSize: 16, lineHeight: 21, fontWeight: '900' },
   sectionHeader: { marginHorizontal: 18, marginTop: 22, marginBottom: 4 },
-  sectionTitle: { color: '#102A35', fontSize: 24, lineHeight: 30, fontWeight: '900', letterSpacing: -0.2 },
+  sectionTitle: { color: '#102A35', fontSize: 23, lineHeight: 29, fontWeight: '900', letterSpacing: -0.2 },
   sectionSubtitle: { marginTop: 5, color: '#52616B', fontSize: 13, lineHeight: 19, fontWeight: '700' },
   dashboardGrid: { flexDirection: 'row', paddingHorizontal: 13, marginTop: 8 },
-  dashCard: { flex: 1, marginHorizontal: 5, padding: 16, minHeight: 132, borderRadius: 24, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 2 },
+  dashCard: { flex: 1, marginHorizontal: 5, padding: 14, minHeight: 122, borderRadius: 22, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 2 },
   dashCardDark: { backgroundColor: '#102A35', borderColor: '#102A35' },
   dashLabel: { color: '#52616B', fontSize: 11, lineHeight: 16, fontWeight: '900', letterSpacing: 0.3 },
   dashLabelDark: { color: 'rgba(255,255,255,0.62)' },
-  dashValue: { marginTop: 10, color: '#102A35', fontSize: 22, lineHeight: 28, fontWeight: '900', letterSpacing: -0.3 },
+  dashValue: { marginTop: 8, color: '#102A35', fontSize: 19, lineHeight: 25, fontWeight: '900', letterSpacing: -0.2 },
   dashValueDark: { color: '#FFFFFF' },
-  dashNote: { marginTop: 7, color: '#52616B', fontSize: 12, lineHeight: 17, fontWeight: '800' },
+  dashNote: { marginTop: 6, color: '#52616B', fontSize: 12, lineHeight: 17, fontWeight: '800' },
   dashNoteDark: { color: '#C8FBFF' },
-  executiveCard: { marginHorizontal: 18, marginTop: 18, padding: 18, borderRadius: 28, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 2 },
-  executiveLine: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, marginTop: 8, borderTopWidth: 1, borderTopColor: '#EEF2F4' },
+  executiveCard: { marginHorizontal: 18, marginTop: 18, padding: 16, borderRadius: 26, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 2 },
+  executiveLine: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 11, marginTop: 7, borderTopWidth: 1, borderTopColor: '#EEF2F4' },
   executiveTitle: { color: '#102A35', fontSize: 14, lineHeight: 19, fontWeight: '900' },
   executiveValue: { marginTop: 3, color: '#52616B', fontSize: 12, lineHeight: 17, fontWeight: '800' },
   executiveBadge: { paddingHorizontal: 11, paddingVertical: 7, borderRadius: 999, backgroundColor: '#E7FBFC', borderWidth: 1, borderColor: '#BEEDEF' },
