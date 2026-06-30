@@ -1,3 +1,10 @@
+export const CURRENCY_OPTIONS = [
+  { key: 'TL', label: 'TL', symbol: 'TL' },
+  { key: 'DOLAR', label: 'DOLAR', symbol: '$' },
+  { key: 'EURO', label: 'EURO', symbol: '€' },
+  { key: 'AED', label: 'AED', symbol: 'AED' },
+];
+
 export function getLifeSummary(data) {
   const moneyEntries = data?.moneyEntries || [];
   const shoppingItems = data?.shoppingItems || [];
@@ -65,8 +72,31 @@ export function getLifeSummary(data) {
   };
 }
 
+export function normalizeCurrency(value) {
+  const raw = String(value || '').trim().toUpperCase();
+  if (raw === 'TRY' || raw === '₺' || raw === 'TL') return 'TL';
+  if (raw === 'USD' || raw === '$' || raw === 'DOLAR') return 'DOLAR';
+  if (raw === 'EUR' || raw === '€' || raw === 'EURO') return 'EURO';
+  if (raw === 'AED' || raw === 'DIRHAM') return 'AED';
+  return 'TL';
+}
+
+export function getCurrency(dataOrCurrency) {
+  if (typeof dataOrCurrency === 'string') return normalizeCurrency(dataOrCurrency);
+  return normalizeCurrency(dataOrCurrency?.settings?.currency);
+}
+
+export function formatMoney(value, dataOrCurrency = 'TL') {
+  const currency = getCurrency(dataOrCurrency);
+  const amount = Math.round(toNumber(value)).toLocaleString('tr-TR');
+  if (currency === 'DOLAR') return `${amount} $`;
+  if (currency === 'EURO') return `${amount} €`;
+  if (currency === 'AED') return `${amount} AED`;
+  return `${amount} TL`;
+}
+
 export function formatTRY(value) {
-  return `${Math.round(toNumber(value)).toLocaleString('tr-TR')} TL`;
+  return formatMoney(value, 'TL');
 }
 
 function getDaysLeft(dateText) {
