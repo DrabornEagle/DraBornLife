@@ -29,11 +29,12 @@ v0.3, DraBornLife'i finans takip uygulamasindan Antalya yasam planlama paneline 
 
 ## v0.3.3 — Antalya Life ekrani
 
-- [ ] Yeni Antalya Life sekmesi ekle
-- [ ] Ev kurulum yuzdesi karti ekle
-- [ ] Aile aktivite butcesi karti ekle
-- [ ] Sahil ve aquapark hedef ozeti ekle
-- [ ] Ozel hedefler ozet karti ekle
+- [x] Yeni Antalya Life sekmesi ekle
+- [x] Ev kurulum yuzdesi karti ekle
+- [x] Aile aktivite butcesi karti ekle
+- [x] Sahil ve aquapark hedef ozeti ekle
+- [x] Ozel hedefler ozet karti ekle
+- [x] Surum dosyalarini v0.3.3 yap
 
 ## v0.3.4 — Ev kurulum oda oda takip
 
