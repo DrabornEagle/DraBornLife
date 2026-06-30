@@ -50,8 +50,8 @@ export default function App() {
         <View style={styles.appShell}>
           <View style={styles.content}>{screen}</View>
           <View style={styles.tabWrap}>
-            <Text style={styles.dragHint}>Menüyü kaydır</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabBarContent}>
+            <Text style={styles.dragHint}>Menüyü kaydır • 9 sekme</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.tabBarContent}>
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.key;
                 return (
@@ -73,11 +73,11 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   appShell: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   content: { flex: 1, backgroundColor: '#DFF5F6' },
-  tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 6, paddingBottom: 10, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)' },
-  dragHint: { marginLeft: 14, marginBottom: 5, color: 'rgba(221,248,250,0.78)', fontSize: 10, fontWeight: '900' },
-  tabBarContent: { paddingLeft: 10, paddingRight: 28 },
-  tabItem: { width: 76, marginRight: 7, alignItems: 'center', justifyContent: 'center', paddingVertical: 8, borderRadius: 21, backgroundColor: 'rgba(255,255,255,0.92)' },
-  tabItemActive: { width: 92, backgroundColor: theme.colors.aqua, elevation: 8 },
+  tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 6, paddingBottom: 11, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)' },
+  dragHint: { marginLeft: 14, marginBottom: 5, color: 'rgba(221,248,250,0.82)', fontSize: 10, fontWeight: '900' },
+  tabBarContent: { paddingLeft: 10, paddingRight: 38 },
+  tabItem: { width: 74, marginRight: 7, alignItems: 'center', justifyContent: 'center', paddingVertical: 8, borderRadius: 21, backgroundColor: 'rgba(255,255,255,0.92)' },
+  tabItemActive: { width: 94, backgroundColor: theme.colors.aqua, elevation: 8 },
   tabIcon: { fontSize: 17, marginBottom: 2 },
   tabLabel: { color: theme.colors.slate, fontSize: 10, fontWeight: '900' },
   tabLabelActive: { color: theme.colors.oceanDeep },
