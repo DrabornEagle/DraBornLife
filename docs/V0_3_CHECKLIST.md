@@ -1,6 +1,6 @@
 # DraBornLife v0.3 Checklist
 
-Ilk APK v1.0 surumunde alinacak. v0.3 Expo Go ile gelistirilecek.
+Ilk APK v1.0 surumunde alinacak. v0.3 Expo Go ile gelistirildi.
 
 ## Done
 
@@ -84,4 +84,5 @@ Ilk APK v1.0 surumunde alinacak. v0.3 Expo Go ile gelistirilecek.
 
 ## Next
 
-- v0.4 yil bazli hedef sistemi veya v1.0 APK hazirligi karari verilecek.
+- v0.4 baslatildi: yil bazli hedef sistemi.
+- Siradaki teknik adim: v0.4.2 yil bazli veri modeli.
