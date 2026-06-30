@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from './src/theme';
 import { DebtScreen } from './src/screens/DebtScreen';
@@ -36,17 +36,19 @@ export default function App() {
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
         <StatusBar barStyle="light-content" backgroundColor={theme.colors.oceanDeep} />
         <View style={styles.appShell}>
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>{screen}</ScrollView>
-          <View style={styles.tabBar}>
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.key;
-              return (
-                <TouchableOpacity key={tab.key} style={[styles.tabItem, isActive && styles.tabItemActive]} onPress={() => setActiveTab(tab.key)} activeOpacity={0.82}>
-                  <Text style={styles.tabIcon}>{tab.icon}</Text>
-                  <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]} numberOfLines={1}>{tab.label}</Text>
-                </TouchableOpacity>
-              );
-            })}
+          <View style={styles.content}>{screen}</View>
+          <View style={styles.tabWrap}>
+            <View style={styles.tabBar}>
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.key;
+                return (
+                  <TouchableOpacity key={tab.key} style={[styles.tabItem, isActive && styles.tabItemActive]} onPress={() => setActiveTab(tab.key)} activeOpacity={0.82}>
+                    <Text style={styles.tabIcon}>{tab.icon}</Text>
+                    <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]} numberOfLines={1}>{tab.label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
         </View>
       </SafeAreaView>
@@ -57,11 +59,12 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   appShell: { flex: 1, backgroundColor: theme.colors.oceanDeep },
-  content: { flex: 1 },
-  tabBar: { flexDirection: 'row', marginHorizontal: 14, marginBottom: 12, padding: 8, borderRadius: 28, backgroundColor: 'rgba(255, 255, 255, 0.92)', elevation: 12 },
-  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 8, borderRadius: 22 },
+  content: { flex: 1, backgroundColor: '#DFF5F6' },
+  tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 6, paddingBottom: 10 },
+  tabBar: { flexDirection: 'row', marginHorizontal: 12, padding: 7, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.94)', elevation: 12 },
+  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 7, borderRadius: 20 },
   tabItemActive: { backgroundColor: theme.colors.aqua },
-  tabIcon: { fontSize: 18, marginBottom: 2 },
-  tabLabel: { color: theme.colors.slate, fontSize: 10, fontWeight: '700' },
+  tabIcon: { fontSize: 17, marginBottom: 1 },
+  tabLabel: { color: theme.colors.slate, fontSize: 9, fontWeight: '800' },
   tabLabelActive: { color: theme.colors.oceanDeep },
 });
