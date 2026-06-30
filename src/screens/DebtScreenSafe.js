@@ -30,13 +30,15 @@ export function DebtScreenSafe({ lifeData, onSave }) {
     const title = form.title.trim();
     const total = n(form.totalDebt);
     const paid = n(form.paidAmount);
+    const date = form.targetFinishDate.trim() || '2026-10-31';
     if (!title) return error('Borç adı boş olamaz.');
-    if (!form.totalDebt.trim() || total <= 0) return error('Toplam borç 0’dan büyük olmalı. Negatif veya hatalı tutar kaydedilmez.');
+    if (!form.totalDebt.trim() || total <= 0) return error('Toplam borç 0’dan büyük olmalı.');
     if (form.paidAmount.trim() && paid < 0) return error('Ödenen tutar negatif olamaz.');
     if (paid > total) return error('Ödenen tutar toplam borçtan büyük olamaz.');
+    if (!validDate(date)) return error('Hedef bitiş tarihi YYYY-MM-DD formatında olmalı. Örnek: 2026-10-31');
 
     const old = debts.find(x => x.id === editingId);
-    const next = { id: editingId || `debt_${Date.now()}`, title, totalDebt: total, paidAmount: paid, targetFinishDate: form.targetFinishDate.trim() || '2026-10-31', note: form.note.trim(), paymentHistory: old?.paymentHistory || [], updatedAt: editingId ? new Date().toISOString() : undefined };
+    const next = { id: editingId || `debt_${Date.now()}`, title, totalDebt: total, paidAmount: paid, targetFinishDate: date, note: form.note.trim(), paymentHistory: old?.paymentHistory || [], updatedAt: editingId ? new Date().toISOString() : undefined };
     const nextDebts = editingId ? debts.map(x => x.id === editingId ? next : x) : [next, ...debts];
     onSave({ ...lifeData, debtEntries: nextDebts });
     info(editingId ? 'Borç kaydı güncellendi.' : 'Borç kaydı eklendi.');
@@ -58,10 +60,14 @@ export function DebtScreenSafe({ lifeData, onSave }) {
   function addPayment(id, value) {
     const payment = n(value);
     if (payment <= 0) return error('Ödeme tutarı 0’dan büyük olmalı.');
+    const debt = debts.find(x => x.id === id);
+    const left = Math.max(0, n(debt?.totalDebt) - n(debt?.paidAmount));
+    if (!debt) return error('Borç kaydı bulunamadı.');
+    if (left <= 0) return error('Bu borç zaten kapanmış görünüyor.');
+    if (payment > left) return error(`Ödeme kalan borçtan büyük olamaz. Kalan: ${formatTRY(left)}`);
     const nextDebts = debts.map(x => {
       if (x.id !== id) return x;
-      const total = n(x.totalDebt);
-      const nextPaid = Math.min(total, n(x.paidAmount) + payment);
+      const nextPaid = n(x.paidAmount) + payment;
       return { ...x, paidAmount: nextPaid, paymentHistory: [{ id: `pay_${Date.now()}`, amount: payment, date: new Date().toISOString() }, ...(x.paymentHistory || [])] };
     });
     onSave({ ...lifeData, debtEntries: nextDebts });
@@ -108,3 +114,4 @@ function Input(props) { return <View style={{ marginTop: 14 }}><Text style={{ ma
 function Button({ label, onPress, color }) { return <TouchableOpacity onPress={onPress} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: color, alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>{label}</Text></TouchableOpacity>; }
 function Small({ label, active, danger, onPress }) { return <TouchableOpacity onPress={onPress} style={{ flex: 1, marginRight: 8, paddingVertical: 10, borderRadius: 16, backgroundColor: danger ? '#FFD0D8' : active ? '#2DE2E6' : '#CFECEE', alignItems: 'center' }}><Text style={{ color: danger ? '#7A1E2B' : '#06202A', fontSize: 12, fontWeight: '900' }}>{label}</Text></TouchableOpacity>; }
 function n(value) { const parsed = Number(String(value).replace(',', '.')); return Number.isFinite(parsed) ? parsed : 0; }
+function validDate(value) { return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '')); }
