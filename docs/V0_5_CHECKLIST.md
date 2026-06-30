@@ -59,15 +59,17 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK v1.0'da alinacak.
 - [x] v0.5.5 test dosyasi eklendi
 - [x] Surum dosyalari v0.5.5 yapildi
 
-## Next
-
 ### v0.5.6 Ana Sayfa final ozeti
-- [ ] v1.0 oncesi genel durum karti
-- [ ] Antalya ana hedef durumu
-- [ ] Yillik hedef durumu
-- [ ] Borc durumu
-- [ ] Yedek durumu
-- [ ] Test merkezi durumu
+- [x] v1.0 oncesi genel durum karti
+- [x] Antalya ana hedef durumu
+- [x] Yillik hedef durumu
+- [x] Borc durumu
+- [x] Yedek durumu
+- [x] Test merkezi durumu
+- [x] v0.5.6 test dosyasi eklendi
+- [x] Surum dosyalari v0.5.6 yapildi
+
+## Next
 
 ### v0.5.7 Kullanici deneyimi temizligi
 - [ ] Bos durum metinleri
