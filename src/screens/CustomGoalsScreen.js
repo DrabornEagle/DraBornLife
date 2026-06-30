@@ -5,7 +5,7 @@ import { APP_VERSION_LABEL } from '../config/appVersion';
 
 export function CustomGoalsScreen({ lifeData, onSave }) {
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#DFF5F6' }} showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 18, paddingBottom: 160 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#DFF5F6' }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 18, paddingBottom: 190 }}>
       <View style={{ padding: 20, borderRadius: 30, backgroundColor: '#06202A' }}>
         <Text style={{ color: '#C8FBFF', fontSize: 12, fontWeight: '900' }}>{APP_VERSION_LABEL}</Text>
         <Text style={{ marginTop: 8, color: 'white', fontSize: 31, fontWeight: '900' }}>Ozel Hedefler</Text>
