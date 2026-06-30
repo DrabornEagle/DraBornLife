@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CleanMetricCard } from '../components/CleanMetricCard';
 import { CleanProgressCard } from '../components/CleanProgressCard';
 import { APP_VERSION_LABEL } from '../config/appVersion';
@@ -10,13 +10,13 @@ export function HomeScreen({ lifeData }) {
   const summary = getLifeSummary(lifeData);
 
   return (
-    <View style={styles.screen}>
+    <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.screen}>
       <View style={styles.oceanBand} />
       <View style={styles.sunDot} />
 
       <View style={styles.header}>
         <View style={styles.topRow}>
-          <View>
+          <View style={{ flex: 1, paddingRight: 12 }}>
             <Text style={styles.eyebrow}>{APP_VERSION_LABEL}</Text>
             <Text style={styles.title}>Antalya planı</Text>
           </View>
@@ -49,41 +49,10 @@ export function HomeScreen({ lifeData }) {
         <CleanMetricCard label="Mevcut" value={formatTRY(summary.savedAmount)} hint="Net birikim" accent={theme.colors.sunset} />
       </View>
 
-      <CleanProgressCard
-        title="Taşınma bütçesi"
-        subtitle="Hedef bütçeye giden yol"
-        percent={summary.savingPercent}
-        leftLabel={formatTRY(summary.savedAmount)}
-        rightLabel={formatTRY(summary.targetBudget)}
-        color={theme.colors.aqua}
-      />
-
-      <CleanProgressCard
-        title="Borç azaltma"
-        subtitle={`Kalan borç: ${formatTRY(summary.debtLeft)}`}
-        percent={summary.debtPercent}
-        leftLabel={formatTRY(summary.paidDebt)}
-        rightLabel={formatTRY(summary.totalDebt)}
-        color={theme.colors.miamiPink}
-      />
-
-      <CleanProgressCard
-        title="Alınacaklar bütçesi"
-        subtitle={`Kalan alınacak bütçesi: ${formatTRY(summary.shoppingRemaining)}`}
-        percent={summary.shoppingPercent}
-        leftLabel={formatTRY(summary.shoppingSaved)}
-        rightLabel={formatTRY(summary.shoppingTotal)}
-        color={theme.colors.palm}
-      />
-
-      <CleanProgressCard
-        title="Motosiklet hedefi"
-        subtitle={`Eski motor satış hedefi: ${formatTRY(summary.motorcycleOldSale)}`}
-        percent={summary.motorcyclePercent}
-        leftLabel={formatTRY(summary.motorcycleSaved)}
-        rightLabel={formatTRY(summary.motorcyclePrice)}
-        color={theme.colors.sunset}
-      />
+      <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={formatTRY(summary.savedAmount)} rightLabel={formatTRY(summary.targetBudget)} color={theme.colors.aqua} />
+      <CleanProgressCard title="Borç azaltma" subtitle={`Kalan borç: ${formatTRY(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={formatTRY(summary.paidDebt)} rightLabel={formatTRY(summary.totalDebt)} color={theme.colors.miamiPink} />
+      <CleanProgressCard title="Alınacaklar bütçesi" subtitle={`Kalan alınacak bütçesi: ${formatTRY(summary.shoppingRemaining)}`} percent={summary.shoppingPercent} leftLabel={formatTRY(summary.shoppingSaved)} rightLabel={formatTRY(summary.shoppingTotal)} color={theme.colors.palm} />
+      <CleanProgressCard title="Motosiklet hedefi" subtitle={`Eski motor satış hedefi: ${formatTRY(summary.motorcycleOldSale)}`} percent={summary.motorcyclePercent} leftLabel={formatTRY(summary.motorcycleSaved)} rightLabel={formatTRY(summary.motorcyclePrice)} color={theme.colors.sunset} />
 
       <View style={styles.periodCard}>
         <Text style={styles.periodTitle}>Haftalık / aylık özet</Text>
@@ -98,178 +67,39 @@ export function HomeScreen({ lifeData }) {
       </View>
 
       <View style={styles.nextCard}>
-        <Text style={styles.nextTitle}>Dashboard güçlendi</Text>
-        <Text style={styles.nextText}>v0.2.3 ile kalan gün, GTA 6 hedef notu, kalan bütçe, borç yüzdesi ve alınacaklar kalan bütçesi ana ekrana bağlandı.</Text>
+        <Text style={styles.nextTitle}>Tasarım temizliği</Text>
+        <Text style={styles.nextText}>v0.2.8 ile alt menü, kaydırma yapısı ve telefon ekranında taşma kontrolleri iyileştirildi.</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    minHeight: 1180,
-    paddingTop: 18,
-    paddingBottom: 34,
-    backgroundColor: '#DFF5F6',
-    overflow: 'hidden',
-  },
-  oceanBand: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 210,
-    backgroundColor: '#073B4C',
-  },
-  sunDot: {
-    position: 'absolute',
-    top: 62,
-    right: -18,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(255, 179, 71, 0.25)',
-  },
-  header: {
-    margin: 18,
-    padding: 20,
-    borderRadius: 30,
-    backgroundColor: 'rgba(6, 32, 42, 0.96)',
-    borderWidth: 1,
-    borderColor: 'rgba(200, 251, 255, 0.16)',
-  },
-  topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  eyebrow: {
-    color: theme.colors.aquaSoft,
-    fontSize: 12,
-    fontWeight: '900',
-  },
-  title: {
-    marginTop: 8,
-    color: theme.colors.white,
-    fontSize: 32,
-    lineHeight: 36,
-    fontWeight: '900',
-  },
-  palmCircle: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: 'rgba(45, 226, 230, 0.14)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  palm: {
-    fontSize: 28,
-  },
-  subtitle: {
-    marginTop: 14,
-    color: '#DDF8FA',
-    fontSize: 15,
-    lineHeight: 22,
-    fontWeight: '700',
-  },
-  destinationCard: {
-    marginTop: 18,
-    padding: 16,
-    borderRadius: 22,
-    backgroundColor: '#ECFBFB',
-    borderWidth: 1,
-    borderColor: '#BEEDEF',
-  },
-  destinationLabel: {
-    color: theme.colors.slate,
-    fontSize: 11,
-    fontWeight: '900',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-  },
-  destinationTitle: {
-    marginTop: 6,
-    color: theme.colors.textDark,
-    fontSize: 18,
-    fontWeight: '900',
-  },
-  destinationDate: {
-    marginTop: 8,
-    color: theme.colors.coral,
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  sectionBlock: {
-    marginHorizontal: 18,
-    marginTop: 4,
-    marginBottom: 6,
-  },
-  sectionTitle: {
-    color: theme.colors.textDark,
-    fontSize: 24,
-    fontWeight: '900',
-  },
-  sectionHint: {
-    marginTop: 4,
-    color: '#315661',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  metricsGrid: {
-    flexDirection: 'row',
-    marginHorizontal: 13,
-    marginTop: 4,
-  },
-  periodCard: {
-    marginHorizontal: 18,
-    marginTop: 14,
-    padding: 18,
-    borderRadius: 24,
-    backgroundColor: '#E9FAFA',
-    borderWidth: 1,
-    borderColor: '#BEEDEF',
-  },
-  periodTitle: {
-    color: theme.colors.textDark,
-    fontSize: 18,
-    fontWeight: '900',
-    marginBottom: 10,
-  },
-  periodRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 7,
-  },
-  periodLabel: {
-    color: '#315661',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  periodValue: {
-    color: theme.colors.textDark,
-    fontSize: 14,
-    fontWeight: '900',
-  },
-  nextCard: {
-    marginHorizontal: 18,
-    marginTop: 14,
-    padding: 18,
-    borderRadius: 24,
-    backgroundColor: '#FFF1D6',
-    borderWidth: 1,
-    borderColor: '#FFDCA0',
-  },
-  nextTitle: {
-    color: theme.colors.textDark,
-    fontSize: 18,
-    fontWeight: '900',
-  },
-  nextText: {
-    marginTop: 8,
-    color: theme.colors.slate,
-    fontSize: 14,
-    lineHeight: 21,
-    fontWeight: '700',
-  },
+  scroll: { flex: 1, backgroundColor: '#DFF5F6' },
+  screen: { paddingTop: 18, paddingBottom: 150, backgroundColor: '#DFF5F6', overflow: 'hidden' },
+  oceanBand: { position: 'absolute', top: 0, left: 0, right: 0, height: 210, backgroundColor: '#073B4C' },
+  sunDot: { position: 'absolute', top: 62, right: -18, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(255, 179, 71, 0.25)' },
+  header: { margin: 18, padding: 20, borderRadius: 30, backgroundColor: 'rgba(6, 32, 42, 0.96)', borderWidth: 1, borderColor: 'rgba(200, 251, 255, 0.16)' },
+  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  eyebrow: { color: theme.colors.aquaSoft, fontSize: 12, fontWeight: '900' },
+  title: { marginTop: 8, color: theme.colors.white, fontSize: 31, lineHeight: 36, fontWeight: '900' },
+  palmCircle: { width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(45, 226, 230, 0.14)', alignItems: 'center', justifyContent: 'center' },
+  palm: { fontSize: 28 },
+  subtitle: { marginTop: 14, color: '#DDF8FA', fontSize: 15, lineHeight: 22, fontWeight: '700' },
+  destinationCard: { marginTop: 18, padding: 16, borderRadius: 22, backgroundColor: '#ECFBFB', borderWidth: 1, borderColor: '#BEEDEF' },
+  destinationLabel: { color: theme.colors.slate, fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.8 },
+  destinationTitle: { marginTop: 6, color: theme.colors.textDark, fontSize: 18, fontWeight: '900' },
+  destinationDate: { marginTop: 8, color: theme.colors.coral, fontSize: 13, fontWeight: '800' },
+  sectionBlock: { marginHorizontal: 18, marginTop: 4, marginBottom: 6 },
+  sectionTitle: { color: theme.colors.textDark, fontSize: 24, fontWeight: '900' },
+  sectionHint: { marginTop: 4, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '700' },
+  metricsGrid: { flexDirection: 'row', marginHorizontal: 13, marginTop: 4 },
+  periodCard: { marginHorizontal: 18, marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' },
+  periodTitle: { color: theme.colors.textDark, fontSize: 18, fontWeight: '900', marginBottom: 10 },
+  periodRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 7 },
+  periodLabel: { color: '#315661', fontSize: 13, fontWeight: '800' },
+  periodValue: { color: theme.colors.textDark, fontSize: 14, fontWeight: '900' },
+  nextCard: { marginHorizontal: 18, marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#FFF1D6', borderWidth: 1, borderColor: '#FFDCA0' },
+  nextTitle: { color: theme.colors.textDark, fontSize: 18, fontWeight: '900' },
+  nextText: { marginTop: 8, color: theme.colors.slate, fontSize: 14, lineHeight: 21, fontWeight: '700' },
 });
