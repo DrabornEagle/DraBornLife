@@ -6,12 +6,10 @@ const LIFE_DATA_KEY = '@DraBornLife:lifeData';
 export async function loadLifeData() {
   try {
     const rawValue = await AsyncStorage.getItem(LIFE_DATA_KEY);
-
     if (!rawValue) {
       await saveLifeData(defaultLifeData);
       return defaultLifeData;
     }
-
     const parsedValue = JSON.parse(rawValue);
     return normalizeLifeData(parsedValue);
   } catch (error) {
@@ -32,24 +30,63 @@ export async function resetLifeData() {
 }
 
 export function normalizeLifeData(data) {
+  const source = data || {};
+
   return {
     ...defaultLifeData,
-    ...data,
+    ...source,
     settings: {
       ...defaultLifeData.settings,
-      ...(data?.settings || {}),
+      ...(source.settings || {}),
       currentVersionCode: STORAGE_VERSION,
     },
     goals: {
       ...defaultLifeData.goals,
-      ...(data?.goals || {}),
+      ...(source.goals || {}),
+      antalyaMove: {
+        ...defaultLifeData.goals.antalyaMove,
+        ...(source.goals?.antalyaMove || {}),
+      },
       motorcycle: {
         ...defaultLifeData.goals.motorcycle,
-        ...(data?.goals?.motorcycle || {}),
+        ...(source.goals?.motorcycle || {}),
       },
     },
-    moneyEntries: Array.isArray(data?.moneyEntries) ? data.moneyEntries : [],
-    shoppingItems: Array.isArray(data?.shoppingItems) ? data.shoppingItems : defaultLifeData.shoppingItems,
-    debtEntries: Array.isArray(data?.debtEntries) ? data.debtEntries : [],
+    lifePlans: {
+      ...defaultLifeData.lifePlans,
+      ...(source.lifePlans || {}),
+      homeSetup: {
+        ...defaultLifeData.lifePlans.homeSetup,
+        ...(source.lifePlans?.homeSetup || {}),
+      },
+      familyActivities: {
+        ...defaultLifeData.lifePlans.familyActivities,
+        ...(source.lifePlans?.familyActivities || {}),
+      },
+      antalyaFun: {
+        ...defaultLifeData.lifePlans.antalyaFun,
+        ...(source.lifePlans?.antalyaFun || {}),
+      },
+    },
+    homeSetupRooms: normalizeRooms(source.homeSetupRooms),
+    activities: Array.isArray(source.activities) ? source.activities : defaultLifeData.activities,
+    beaches: Array.isArray(source.beaches) ? source.beaches : defaultLifeData.beaches,
+    customGoals: Array.isArray(source.customGoals) ? source.customGoals : defaultLifeData.customGoals,
+    moneyEntries: Array.isArray(source.moneyEntries) ? source.moneyEntries : [],
+    shoppingItems: Array.isArray(source.shoppingItems) ? source.shoppingItems : defaultLifeData.shoppingItems,
+    debtEntries: Array.isArray(source.debtEntries) ? source.debtEntries : [],
   };
+}
+
+function normalizeRooms(rooms) {
+  if (!Array.isArray(rooms) || rooms.length === 0) {
+    return defaultLifeData.homeSetupRooms;
+  }
+
+  return rooms.map((room) => ({
+    id: room.id || `room_${Date.now()}`,
+    title: room.title || 'Oda',
+    isCore: room.isCore ?? false,
+    items: Array.isArray(room.items) ? room.items : [],
+  }));
 }
