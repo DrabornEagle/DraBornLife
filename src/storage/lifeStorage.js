@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { defaultLifeData, STORAGE_VERSION } from '../data/defaultLifeData';
+import { normalizeCurrency } from '../utils/lifeSummary';
 
 const LIFE_DATA_KEY = '@DraBornLife:lifeData';
 
@@ -40,6 +41,7 @@ export function normalizeLifeData(data) {
       ...defaultLifeData.settings,
       ...(source.settings || {}),
       selectedYear,
+      currency: normalizeCurrency(source.settings?.currency || defaultLifeData.settings.currency),
       currentVersionCode: STORAGE_VERSION,
     },
     goals: {
