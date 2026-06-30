@@ -1,9 +1,9 @@
-export const STORAGE_VERSION = 'v0.0.4';
+export const STORAGE_VERSION = 'v0.0.8';
 
 export const defaultLifeData = {
   settings: {
     appName: 'DraBornLife',
-    currentVersionCode: 'v0.0.4',
+    currentVersionCode: 'v0.0.8',
     targetCity: 'Antalya',
     targetAreas: ['Muratpaşa', 'Lara', 'Konyaaltı'],
     targetMoveMonthText: 'Ekim / Kasım 2026',
@@ -32,6 +32,10 @@ export const defaultLifeData = {
     { id: 'rent_deposit', category: 'Kira / Depozito', title: 'Kira ve depozito', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
     { id: 'white_goods', category: 'Beyaz eşya', title: 'Beyaz eşya seti', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
     { id: 'furniture', category: 'Mobilya', title: 'Mobilya seti', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
+    { id: 'kitchen_home', category: 'Mutfak / ev temel', title: 'Mutfak ve ev temel seti', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
+    { id: 'child_room', category: 'Çocuk odası', title: 'Çocuk odası', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
+    { id: 'first_month', category: 'İlk ay yaşam', title: 'İlk ay yaşam bütçesi', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
+    { id: 'antalya_fun', category: 'Antalya eğlence', title: 'Antalya aile eğlence bütçesi', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
     { id: 'gta6_setup', category: 'GTA 6 seti', title: 'PS5 Pro + TV', estimatedPrice: 0, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: '' },
     { id: 'motorcycle', category: 'Motosiklet', title: 'Sıfır motosiklet', estimatedPrice: 130000, quantity: 1, savedAmount: 0, isMoneyReady: false, isPurchasedOrInstalled: false, note: 'Fiyat düzenlenebilir.' },
   ],
