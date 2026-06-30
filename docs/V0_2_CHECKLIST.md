@@ -78,17 +78,13 @@ Karar: Ilk APK v1.0 surumunde alinacak. v0.2 gelistirmesi Expo Go ile devam eder
 - [x] Negatif tutar engeli
 - [x] Bos baslik engeli
 
-## Siradaki adimlar
-
-### v0.2.10 — v0.2 final test
-- [ ] Ana Sayfa testi
-- [ ] Gelir-Gider ekle/duzenle/sil testi
-- [ ] Alinacaklar ekle/duzenle/sil testi
-- [ ] Borc ekle/duzenle/sil/odeme testi
-- [ ] Yedek olustur / geri yukle testi
-- [ ] Ayarlar ve hedef duzenleme testi
-- [ ] Surum kodlari tek merkezden geliyor mu kontrolu
-- [ ] v0.2 tamamlandi notu
+### v0.2.10 — v0.2 final test ve kapanis
+- [x] Final test dokumani olusturuldu
+- [x] README final durumu guncellendi
+- [x] package.json surumu 0.2.10 yapildi
+- [x] app.config.js surumu 0.2.10 yapildi
+- [ ] Expo Go cihaz testi kullanici tarafinda yapilacak
+- [ ] Ekranda gorunen merkezi surum kodu kontrol edilecek
 
 ## v0.2 disinda
 
