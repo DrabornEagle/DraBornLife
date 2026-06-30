@@ -45,20 +45,20 @@ Karar: Ilk APK v1.0 surumunde alinacak. v0.2 gelistirmesi Expo Go ile devam eder
 - [x] Kalem bazli kalan tutar
 - [x] Motosiklet kalemi motosiklet hedefiyle senkron
 
-## Sıradaki adimlar
-
 ### v0.2.6 — Borc duzenleme ve silme
-- [ ] Borc kaydini silme
-- [ ] Borc kaydini duzenleme
-- [ ] Odeme kaydi ekleme gecmisini hazirla
-- [ ] Kalan borcu daha net kartla goster
-- [ ] Borc bitirme hedef tarihini duzenlenebilir yap
-- [ ] Borc sifirlandi durumunu goster
+- [x] Borc kaydi silme
+- [x] Borc kaydi duzenleme
+- [x] Odeme gecmisi hazirlandi
+- [x] Kalan borc karti netlestirildi
+- [x] Borc bitirme hedef tarihi duzenlenebilir
+- [x] Borc sifirlandi durumu eklendi
+
+## Siradaki adimlar
 
 ### v0.2.7 — Yedekleme iyilestirme
 - [ ] Yedek metnini daha kisa baslikli hale getir
 - [ ] Yedek olusturma sonrasi kopyalama talimati ekle
-- [ ] Içe aktarim oncesi onay uyarisi ekle
+- [ ] Ice aktarim oncesi onay uyarisi ekle
 - [ ] Eksik/bozuk yedek icin daha anlasilir hata mesaji
 - [ ] Yedek versiyon uyumlulugunu kontrol et
 - [ ] Google Drive yedegini v1.0 sonrasi opsiyonel not olarak birak
