@@ -26,12 +26,12 @@ v0.2, v0.1 temel lokal takip uygulamasını daha kullanışlı bir hayat planlam
 
 ## v0.2.3 — Dashboard kalan gün ve hedef hesapları
 
-- [ ] Antalya hedef tarihine kalan günü hesapla
-- [ ] GTA 6 öncesi taşınma hedef notunu göster
-- [ ] Hedef bütçe / mevcut birikim / kalan tutar kartlarını ekle
-- [ ] Borç bitirme yüzdesini ana ekrana daha net bağla
-- [ ] Alınacaklar toplam kalan bütçesini göster
-- [ ] Haftalık/aylık özet alanını dashboarda hazırla
+- [x] Antalya hedef tarihine kalan günü hesapla
+- [x] GTA 6 öncesi taşınma hedef notunu göster
+- [x] Hedef bütçe / mevcut birikim / kalan tutar kartlarını ekle
+- [x] Borç bitirme yüzdesini ana ekrana daha net bağla
+- [x] Alınacaklar toplam kalan bütçesini göster
+- [x] Haftalık/aylık özet alanını dashboarda hazırla
 
 ## v0.2.4 — Gelir-gider düzenleme ve silme
 
