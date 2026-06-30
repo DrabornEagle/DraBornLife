@@ -3,6 +3,7 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity
 import { theme } from './src/theme';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LoadingScreen } from './src/screens/LoadingScreen';
+import { MoneyScreen } from './src/screens/MoneyScreen';
 import { MoreScreen } from './src/screens/MoreScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { useLifeData } from './src/hooks/useLifeData';
@@ -17,7 +18,7 @@ const tabs = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
-  const { lifeData, isLoading, resetLocalData } = useLifeData();
+  const { lifeData, isLoading, updateLifeData, resetLocalData } = useLifeData();
 
   const screen = useMemo(() => {
     if (isLoading || !lifeData) {
@@ -28,24 +29,26 @@ export default function App() {
       return <HomeScreen lifeData={lifeData} />;
     }
 
+    if (activeTab === 'money') {
+      return <MoneyScreen lifeData={lifeData} onSave={updateLifeData} />;
+    }
+
     if (activeTab === 'settings') {
       return <SettingsScreen lifeData={lifeData} onReset={resetLocalData} />;
     }
 
     const titles = {
-      money: 'Gelir-Gider',
       shopping: 'Alınacaklar',
       debt: 'Borç Takibi',
     };
 
     const subtitles = {
-      money: 'v0.0.6 içinde gelir, gider ve birikime ayrılan tutarlar burada yönetilecek.',
-      shopping: 'v0.0.7 içinde ev, beyaz eşya, mobilya, GTA 6 seti ve motosiklet hedefleri burada olacak.',
-      debt: 'v0.0.8 içinde toplam borç, ödenen borç ve Antalya hedefli borç azaltma barı burada olacak.',
+      shopping: 'v0.0.8 içinde ev, beyaz eşya, mobilya, GTA 6 seti ve motosiklet hedefleri burada olacak.',
+      debt: 'v0.0.9 içinde toplam borç, ödenen borç ve Antalya hedefli borç azaltma barı burada olacak.',
     };
 
     return <MoreScreen title={titles[activeTab]} subtitle={subtitles[activeTab]} />;
-  }, [activeTab, isLoading, lifeData, resetLocalData]);
+  }, [activeTab, isLoading, lifeData, resetLocalData, updateLifeData]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
