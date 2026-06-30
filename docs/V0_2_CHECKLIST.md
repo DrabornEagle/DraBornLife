@@ -61,16 +61,16 @@ Karar: Ilk APK v1.0 surumunde alinacak. v0.2 gelistirmesi Expo Go ile devam eder
 - [x] Yedek versiyon uyumlulugu kontrol edildi
 - [x] Google Drive yedegi v1.0 sonrasi opsiyonel not olarak birakildi
 
-## Siradaki adimlar
-
 ### v0.2.8 — Tasarim ve kullanim temizlikleri
-- [ ] Alt menu konumu
-- [ ] Uzun formlarda alt menu cakismasi
-- [ ] Miami Ocean tema tutarliligi
-- [ ] Baslik kartlari tutarliligi
-- [ ] Form input okunurlugu
-- [ ] Bos durum ekranlari
-- [ ] Telefon ekraninda tasma kontrolu
+- [x] Alt menu konumu iyilestirildi
+- [x] Uzun formlarda alt menu cakismasi azaltildi
+- [x] Miami Ocean tema tutarliligi korundu
+- [x] Baslik kartlari daha tutarli hale getirildi
+- [x] Form input okunurlugu korundu
+- [x] Bos durum ekranlari daha okunur hale getirildi
+- [x] Telefon ekraninda tasma kontrolu icin kaydirma yapisi duzenlendi
+
+## Siradaki adimlar
 
 ### v0.2.9 — Veri guvenligi
 - [ ] Demo veriyi sifirla onayi
