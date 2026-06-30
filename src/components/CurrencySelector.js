@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { textPresets, theme } from '../theme';
 import { CURRENCY_OPTIONS, getCurrency } from '../utils/lifeSummary';
 
 export function CurrencySelector({ lifeData, onSave }) {
@@ -19,8 +20,8 @@ export function CurrencySelector({ lifeData, onSave }) {
     <View style={card}>
       <Text style={mini}>PARA BİRİMİ</Text>
       <Text style={title}>Gösterilecek para birimi</Text>
-      <Text style={desc}>Tüm tutarlar aynı kayıt değerleriyle gösterilir; sadece ekrandaki para birimi etiketi değişir.</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
+      <Text style={desc}>Tutarlar aynı kalır; ekranda görünen para birimi etiketi değişir.</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 11 }}>
         {CURRENCY_OPTIONS.map((item) => {
           const active = activeCurrency === item.key;
           return (
@@ -34,11 +35,11 @@ export function CurrencySelector({ lifeData, onSave }) {
   );
 }
 
-const card = { marginTop: 14, padding: 16, borderRadius: 24, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E4F2F1' };
-const mini = { color: '#FF7A59', fontSize: 11, fontWeight: '900', letterSpacing: 0.8 };
-const title = { marginTop: 5, color: '#102A35', fontSize: 19, fontWeight: '900' };
-const desc = { marginTop: 6, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' };
-const chip = { marginRight: 8, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 18, backgroundColor: '#E7F4F4', borderWidth: 1, borderColor: '#CFECEE' };
-const chipActive = { backgroundColor: '#2DE2E6', borderColor: '#2DE2E6' };
-const chipText = { color: '#06202A', fontSize: 12, fontWeight: '900' };
-const chipTextActive = { color: '#06202A' };
+const card = { marginTop: 14, padding: 16, borderRadius: theme.radius.lg, backgroundColor: theme.colors.card, borderWidth: 1, borderColor: theme.colors.borderSoft, ...theme.shadow.card };
+const mini = { ...textPresets.eyebrow, fontSize: 11 };
+const title = { ...textPresets.sectionTitle, marginTop: 5, fontSize: 19, lineHeight: 24 };
+const desc = { ...textPresets.body, marginTop: 6 };
+const chip = { marginRight: 8, paddingHorizontal: 14, paddingVertical: 10, borderRadius: theme.radius.md, backgroundColor: '#E7F4F4', borderWidth: 1, borderColor: '#CFECEE' };
+const chipActive = { backgroundColor: theme.colors.aqua, borderColor: theme.colors.aqua };
+const chipText = { color: theme.colors.oceanDeep, fontSize: theme.fontSize.label, fontWeight: theme.fontWeight.black };
+const chipTextActive = { color: theme.colors.oceanDeep };
