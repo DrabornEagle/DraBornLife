@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from './src/theme';
 import { DebtScreen } from './src/screens/DebtScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
@@ -31,23 +32,25 @@ export default function App() {
   }, [activeTab, isLoading, lifeData, resetLocalData, updateLifeData]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor={theme.colors.oceanDeep} />
-      <View style={styles.appShell}>
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>{screen}</ScrollView>
-        <View style={styles.tabBar}>
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <TouchableOpacity key={tab.key} style={[styles.tabItem, isActive && styles.tabItemActive]} onPress={() => setActiveTab(tab.key)} activeOpacity={0.82}>
-                <Text style={styles.tabIcon}>{tab.icon}</Text>
-                <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]} numberOfLines={1}>{tab.label}</Text>
-              </TouchableOpacity>
-            );
-          })}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <StatusBar barStyle="light-content" backgroundColor={theme.colors.oceanDeep} />
+        <View style={styles.appShell}>
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>{screen}</ScrollView>
+          <View style={styles.tabBar}>
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.key;
+              return (
+                <TouchableOpacity key={tab.key} style={[styles.tabItem, isActive && styles.tabItemActive]} onPress={() => setActiveTab(tab.key)} activeOpacity={0.82}>
+                  <Text style={styles.tabIcon}>{tab.icon}</Text>
+                  <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]} numberOfLines={1}>{tab.label}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
