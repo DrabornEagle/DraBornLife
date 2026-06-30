@@ -1,13 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { theme } from '../theme';
+import { textPresets, theme } from '../theme';
 
 export function LoadingScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.logo}>🌴</Text>
-      <Text style={styles.title}>DraBornLife</Text>
-      <Text style={styles.subtitle}>Lokal veriler hazırlanıyor...</Text>
+      <View style={styles.card}>
+        <Text style={styles.logo}>🌴</Text>
+        <Text style={styles.title}>DraBornLife</Text>
+        <Text style={styles.subtitle}>Lokal veriler hazırlanıyor...</Text>
+      </View>
     </View>
   );
 }
@@ -17,22 +19,30 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.oceanDeep,
+    backgroundColor: theme.colors.page,
     padding: 24,
+  },
+  card: {
+    width: '100%',
+    alignItems: 'center',
+    padding: 28,
+    borderRadius: theme.radius.xl,
+    backgroundColor: theme.colors.card,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    ...theme.shadow.hero,
   },
   logo: {
     fontSize: 56,
     marginBottom: 14,
   },
   title: {
-    color: theme.colors.white,
-    fontSize: 34,
-    fontWeight: '900',
+    ...textPresets.title,
+    textAlign: 'center',
   },
   subtitle: {
+    ...textPresets.body,
     marginTop: 10,
-    color: theme.colors.aquaSoft,
-    fontSize: 16,
-    fontWeight: '700',
+    textAlign: 'center',
   },
 });
