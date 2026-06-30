@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.draborneagle.drabornlife'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.draborneagle.drabornlife'
+        minSdk 23
+        targetSdk 35
+        versionCode 2
+        versionName 'v0.0.2'
+    }
+}
