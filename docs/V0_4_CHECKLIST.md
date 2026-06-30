@@ -21,11 +21,14 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] Eski v0.3 verileri guvenli sekilde normalize edilecek
 
 ### v0.4.3 Yil secici ve Yil Plani ekrani
-- [ ] Alt menude veya Hedef ekrani icinde yil secici eklenecek
-- [ ] 2026, 2027, 2028 gibi yil kartlari listelenecek
-- [ ] Secili yila gore hedef ozeti gosterilecek
-- [ ] Yeni yil hedefi ekleme akisi yapilacak
-- [ ] Yil hedefi duzenleme/silme guvenli hale getirilecek
+- [x] Alt menude Yil sekmesi eklendi
+- [x] 2026, 2027, 2028 gibi yil kartlari listelenecek yapi eklendi
+- [x] Secili yila gore hedef ozeti gosteriliyor
+- [x] Secili yila gore hedef listesi gosteriliyor
+- [x] Yil secimi settings.selectedYear alanina kaydediliyor
+- [x] Yeni yil hedefi ekleme akisi v0.4.4'e birakildi
+- [x] Yil hedefi duzenleme/silme v0.4.4'e birakildi
+- [x] Surum dosyalari v0.4.3 yapildi
 
 ### v0.4.4 Birikim geri sayim sistemi
 - [ ] Hedef ay veya hedef tarih secimi yapilacak
@@ -79,4 +82,5 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 
 - [x] v0.4.1 baslatildi
 - [x] v0.4.2 veri modeli tamamlandi
-- [ ] Siradaki adim: v0.4.3 Yil secici ve Yil Plani ekrani
+- [x] v0.4.3 Yil secici ve Yil Plani ekrani tamamlandi
+- [ ] Siradaki adim: v0.4.4 Birikim geri sayim sistemi
