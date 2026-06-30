@@ -14,11 +14,11 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] v0.3.10 sonrasi siradaki adim netlestirildi
 
 ### v0.4.2 Yil bazli veri modeli
-- [ ] yearlyPlans veri alani eklenecek
-- [ ] activeYear / selectedYear ayari eklenecek
-- [ ] Varsayilan 2026 Antalya plani korunacak
-- [ ] 2027+ gelecek planlari icin bos/duzenlenebilir yapi hazirlanacak
-- [ ] Eski v0.3 verileri guvenli sekilde normalize edilecek
+- [x] yearlyPlans veri alani eklenecek
+- [x] activeYear / selectedYear ayari eklenecek
+- [x] Varsayilan 2026 Antalya plani korunacak
+- [x] 2027+ gelecek planlari icin bos/duzenlenebilir yapi hazirlanacak
+- [x] Eski v0.3 verileri guvenli sekilde normalize edilecek
 
 ### v0.4.3 Yil secici ve Yil Plani ekrani
 - [ ] Alt menude veya Hedef ekrani icinde yil secici eklenecek
@@ -78,4 +78,5 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 ## Su anki durum
 
 - [x] v0.4.1 baslatildi
-- [ ] Siradaki adim: v0.4.2 Yil bazli veri modeli
+- [x] v0.4.2 veri modeli tamamlandi
+- [ ] Siradaki adim: v0.4.3 Yil secici ve Yil Plani ekrani
