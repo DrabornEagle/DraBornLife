@@ -10,26 +10,31 @@ Bu liste, DraBornLife v0.1 tamamlanana kadar adım adım takip edilecek ana kont
 - [x] Durum kodu sistemini `v0.0.x` formatına çevir
 - [x] v0.1 final hedefini belirle
 
-## v0.0.2 — Android proje iskeleti
+## v0.0.2 — İlk proje başlangıcı
 
 - [x] Android uygulama klasör yapısını oluştur
 - [x] Paket adını belirle: `com.draborneagle.drabornlife`
 - [x] Uygulama adını belirle: `DraBornLife`
 - [x] Minimum çalışan ana ekranı oluştur
-- [x] APK build için temel GitHub Actions akışını hazırla
-- [x] İlk boş APK üretimini hedefle
 - [x] Termux zip klasör adını `DraBornLife` olacak şekilde güncelle
+- [x] v0.0.3 ile Expo Go yönüne geçme kararını hazırla
 
-## v0.0.3 — Tema, navigasyon ve temel arayüz
+## v0.0.3 — Expo Go, tema, navigasyon ve temel arayüz
 
-- [ ] Türkçe mobil arayüz yapısını kur
-- [ ] Ana ekran / dashboard alanını hazırla
-- [ ] Alt veya kart tabanlı navigasyon kararını uygula
-- [ ] Antalya hedef kartı tasarla
-- [ ] Birikim kartı tasarla
-- [ ] Borç kartı tasarla
-- [ ] Alınacaklar kartı tasarla
-- [ ] Gelir-gider kartı tasarla
+- [x] Projeyi Expo / React Native yönüne çevir
+- [x] Şimdilik APK üretimini durdur
+- [x] Expo Go test notlarını ekle
+- [x] Türkçe mobil arayüz yapısını kur
+- [x] Miami / palmiye / deniz tasarım dilini oluştur
+- [x] Renk paletini oluştur
+- [x] Ana ekran / dashboard alanını hazırla
+- [x] Alt sekmeli navigasyon kararını uygula
+- [x] Antalya hedef kartı tasarla
+- [x] Birikim kartı tasarla
+- [x] Borç kartı tasarla
+- [x] Alınacaklar sekmesini placeholder olarak hazırla
+- [x] Gelir-gider sekmesini placeholder olarak hazırla
+- [x] Motosiklet hedef kartını ana ekrana ekle
 
 ## v0.0.4 — Lokal veri modeli ve cihaz içi kayıt
 
@@ -102,12 +107,12 @@ Bu liste, DraBornLife v0.1 tamamlanana kadar adım adım takip edilecek ana kont
 
 ## v0.0.10 — Test, son temizlik ve hazırlık
 
-- [ ] Uygulama açılış testi
+- [ ] Expo Go açılış testi
 - [ ] Veri kaydetme testi
 - [ ] Veri silme/düzenleme testi
 - [ ] Yedek dışa aktar/içe aktar testi
 - [ ] Dashboard hesaplama testi
-- [ ] APK üretim testi
+- [ ] v0.1 final APK üretim testi
 - [ ] Görsel temizlik
 - [ ] Kullanıcı metinleri ve Türkçe kontrolü
 
