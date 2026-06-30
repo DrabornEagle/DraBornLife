@@ -16,13 +16,13 @@ v0.2, v0.1 temel lokal takip uygulamasını daha kullanışlı bir hayat planlam
 
 ## v0.2.2 — Hedef ve ayarlar düzenleme ekranı
 
-- [ ] Antalya hedef tarihini düzenlenebilir yap
-- [ ] Hedef bölgeleri düzenlenebilir yap
-- [ ] Hedef toplam bütçeyi düzenlenebilir yap
-- [ ] Motosiklet tahmini fiyatını düzenlenebilir yap
-- [ ] Eski motosiklet satış tutarı alanını ekle
-- [ ] Para birimi TRY olarak sabit kalacak şekilde ayarla
-- [ ] Ayarlar ekranını daha düzenli bölümlere ayır
+- [x] Antalya hedef tarihini düzenlenebilir yap
+- [x] Hedef bölgeleri düzenlenebilir yap
+- [x] Hedef toplam bütçeyi düzenlenebilir yap
+- [x] Motosiklet tahmini fiyatını düzenlenebilir yap
+- [x] Eski motosiklet satış tutarı alanını ekle
+- [x] Para birimi TRY olarak sabit kalacak şekilde ayarla
+- [x] Ayarlar ekranını daha düzenli bölümlere ayır
 
 ## v0.2.3 — Dashboard kalan gün ve hedef hesapları
 
