@@ -38,13 +38,14 @@ v0.3, DraBornLife'i finans takip uygulamasindan Antalya yasam planlama paneline 
 
 ## v0.3.4 — Ev kurulum oda oda takip
 
-- [ ] Salon bolumu
-- [ ] Mutfak bolumu
-- [ ] Yatak odasi bolumu
-- [ ] Cocuk odasi bolumu
-- [ ] Banyo ve temel ev bolumu
-- [ ] Oda esyasi ekle/duzenle/sil
-- [ ] Oda tamamlanma yuzdesi
+- [x] Salon bolumu
+- [x] Mutfak bolumu
+- [x] Yatak odasi bolumu
+- [x] Cocuk odasi bolumu
+- [x] Banyo ve temel ev bolumu
+- [x] Oda esyasi ekle/duzenle/sil
+- [x] Oda tamamlanma yuzdesi
+- [x] Surum dosyalarini v0.3.4 yap
 
 ## v0.3.5 — Aile aktivite butcesi
 
