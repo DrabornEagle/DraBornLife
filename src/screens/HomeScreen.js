@@ -2,73 +2,65 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CleanMetricCard } from '../components/CleanMetricCard';
 import { CleanProgressCard } from '../components/CleanProgressCard';
+import { YearFinancePanel } from '../components/YearFinancePanel';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { theme } from '../theme';
 import { formatTRY, getLifeSummary } from '../utils/lifeSummary';
 
 export function HomeScreen({ lifeData }) {
   const summary = getLifeSummary(lifeData);
+  const selectedYear = lifeData?.settings?.selectedYear || 2026;
 
   return (
     <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.screen}>
       <View style={styles.oceanBand} />
       <View style={styles.sunDot} />
-
       <View style={styles.header}>
         <View style={styles.topRow}>
           <View style={{ flex: 1, paddingRight: 12 }}>
             <Text style={styles.eyebrow}>{APP_VERSION_LABEL}</Text>
-            <Text style={styles.title}>Antalya planı</Text>
+            <Text style={styles.title}>Antalya plani</Text>
           </View>
-          <View style={styles.palmCircle}>
-            <Text style={styles.palm}>🌴</Text>
-          </View>
+          <View style={styles.palmCircle}><Text style={styles.palm}>🌴</Text></View>
         </View>
-
-        <Text style={styles.subtitle}>Hedefe kalan gün, bütçe ve borç durumunu tek ekranda takip et.</Text>
-
+        <Text style={styles.subtitle}>Hedefe kalan gun, butce ve borc durumunu tek ekranda takip et.</Text>
         <View style={styles.destinationCard}>
-          <Text style={styles.destinationLabel}>Hedef bölge</Text>
+          <Text style={styles.destinationLabel}>Hedef bolge</Text>
           <Text style={styles.destinationTitle}>{summary.targetAreas}</Text>
-          <Text style={styles.destinationDate}>{summary.targetDateText} • {summary.daysLeft} gün kaldı</Text>
+          <Text style={styles.destinationDate}>{summary.targetDateText} - {summary.daysLeft} gun kaldi</Text>
         </View>
       </View>
 
       <View style={styles.sectionBlock}>
-        <Text style={styles.sectionTitle}>Hedef özeti</Text>
-        <Text style={styles.sectionHint}>{summary.preferredDeadlineText} • GTA 6 için {summary.gta6DaysLeft} gün</Text>
+        <Text style={styles.sectionTitle}>Hedef ozeti</Text>
+        <Text style={styles.sectionHint}>{summary.preferredDeadlineText} - GTA 6 icin {summary.gta6DaysLeft} gun</Text>
       </View>
 
       <View style={styles.metricsGrid}>
-        <CleanMetricCard label="Kalan gün" value={`${summary.daysLeft}`} hint={summary.targetDate} accent={theme.colors.aqua} />
-        <CleanMetricCard label="Kalan bütçe" value={formatTRY(summary.targetRemaining)} hint="Hedefe kalan" accent={theme.colors.miamiPink} />
+        <CleanMetricCard label="Kalan gun" value={`${summary.daysLeft}`} hint={summary.targetDate} accent={theme.colors.aqua} />
+        <CleanMetricCard label="Kalan butce" value={formatTRY(summary.targetRemaining)} hint="Hedefe kalan" accent={theme.colors.miamiPink} />
       </View>
-
       <View style={styles.metricsGrid}>
-        <CleanMetricCard label="Hedef bütçe" value={formatTRY(summary.targetBudget)} hint="Toplam hedef" accent={theme.colors.palm} />
+        <CleanMetricCard label="Hedef butce" value={formatTRY(summary.targetBudget)} hint="Toplam hedef" accent={theme.colors.palm} />
         <CleanMetricCard label="Mevcut" value={formatTRY(summary.savedAmount)} hint="Net birikim" accent={theme.colors.sunset} />
       </View>
 
-      <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={formatTRY(summary.savedAmount)} rightLabel={formatTRY(summary.targetBudget)} color={theme.colors.aqua} />
-      <CleanProgressCard title="Borç azaltma" subtitle={`Kalan borç: ${formatTRY(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={formatTRY(summary.paidDebt)} rightLabel={formatTRY(summary.totalDebt)} color={theme.colors.miamiPink} />
-      <CleanProgressCard title="Alınacaklar bütçesi" subtitle={`Kalan alınacak bütçesi: ${formatTRY(summary.shoppingRemaining)}`} percent={summary.shoppingPercent} leftLabel={formatTRY(summary.shoppingSaved)} rightLabel={formatTRY(summary.shoppingTotal)} color={theme.colors.palm} />
-      <CleanProgressCard title="Motosiklet hedefi" subtitle={`Eski motor satış hedefi: ${formatTRY(summary.motorcycleOldSale)}`} percent={summary.motorcyclePercent} leftLabel={formatTRY(summary.motorcycleSaved)} rightLabel={formatTRY(summary.motorcyclePrice)} color={theme.colors.sunset} />
+      <CleanProgressCard title="Tasinma butcesi" subtitle="Hedef butceye giden yol" percent={summary.savingPercent} leftLabel={formatTRY(summary.savedAmount)} rightLabel={formatTRY(summary.targetBudget)} color={theme.colors.aqua} />
+      <CleanProgressCard title="Borc azaltma" subtitle={`Kalan borc: ${formatTRY(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={formatTRY(summary.paidDebt)} rightLabel={formatTRY(summary.totalDebt)} color={theme.colors.miamiPink} />
+      <CleanProgressCard title="Alinacaklar butcesi" subtitle={`Kalan alinacak butcesi: ${formatTRY(summary.shoppingRemaining)}`} percent={summary.shoppingPercent} leftLabel={formatTRY(summary.shoppingSaved)} rightLabel={formatTRY(summary.shoppingTotal)} color={theme.colors.palm} />
+      <CleanProgressCard title="Motosiklet hedefi" subtitle={`Eski motor satis hedefi: ${formatTRY(summary.motorcycleOldSale)}`} percent={summary.motorcyclePercent} leftLabel={formatTRY(summary.motorcycleSaved)} rightLabel={formatTRY(summary.motorcyclePrice)} color={theme.colors.sunset} />
+
+      <View style={styles.yearWrap}><YearFinancePanel lifeData={lifeData} selectedYear={selectedYear} compact /></View>
 
       <View style={styles.periodCard}>
-        <Text style={styles.periodTitle}>Haftalık / aylık özet</Text>
-        <View style={styles.periodRow}>
-          <Text style={styles.periodLabel}>Son 7 gün</Text>
-          <Text style={styles.periodValue}>{formatTRY(summary.weekSummary.net)}</Text>
-        </View>
-        <View style={styles.periodRow}>
-          <Text style={styles.periodLabel}>Son 30 gün</Text>
-          <Text style={styles.periodValue}>{formatTRY(summary.monthSummary.net)}</Text>
-        </View>
+        <Text style={styles.periodTitle}>Haftalik / aylik ozet</Text>
+        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 7 gun</Text><Text style={styles.periodValue}>{formatTRY(summary.weekSummary.net)}</Text></View>
+        <View style={styles.periodRow}><Text style={styles.periodLabel}>Son 30 gun</Text><Text style={styles.periodValue}>{formatTRY(summary.monthSummary.net)}</Text></View>
       </View>
 
       <View style={styles.nextCard}>
-        <Text style={styles.nextTitle}>Tasarım temizliği</Text>
-        <Text style={styles.nextText}>v0.2.8 ile alt menü, kaydırma yapısı ve telefon ekranında taşma kontrolleri iyileştirildi.</Text>
+        <Text style={styles.nextTitle}>Yillik hedef sistemi</Text>
+        <Text style={styles.nextText}>v0.4 ile secili yil, yillik hedef butcesi, finans ozeti ve buyuk hayat hedefleri ayni akista takip edilir.</Text>
       </View>
     </ScrollView>
   );
@@ -94,6 +86,7 @@ const styles = StyleSheet.create({
   sectionTitle: { color: theme.colors.textDark, fontSize: 24, fontWeight: '900' },
   sectionHint: { marginTop: 4, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '700' },
   metricsGrid: { flexDirection: 'row', marginHorizontal: 13, marginTop: 4 },
+  yearWrap: { marginHorizontal: 4 },
   periodCard: { marginHorizontal: 18, marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' },
   periodTitle: { color: theme.colors.textDark, fontSize: 18, fontWeight: '900', marginBottom: 10 },
   periodRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 7 },
