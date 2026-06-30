@@ -54,21 +54,28 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
 
   function handleExport() {
     setExportText(createBackupText(lifeData));
-    setMessage('Dışa aktarım metni hazırlandı. Kopyalayıp saklayabilirsin.');
+    setMessage('Yedek metni hazır. Tamamını seçip kopyala, telefonunda not veya txt dosyası olarak sakla.');
   }
 
   function handleImport() {
+    if (!importText.trim()) {
+      setMessage('İçe aktarım için önce yedek metnini kutuya yapıştırmalısın.');
+      return;
+    }
+
     const result = parseBackupText(importText);
     if (!result.ok) {
       setMessage(result.error);
       return;
     }
+
     onRestore(result.data);
-    setMessage('Veriler geri yüklendi. Ana ekrandan kontrol edebilirsin.');
+    const warning = result.versionWarning ? ` ${result.versionWarning}` : '';
+    setMessage(`Veriler geri yüklendi. Yedek sürümü: ${result.backupVersion}.${warning}`);
   }
 
   return (
-    <View style={{ flex: 1, minHeight: 1280, padding: 18, backgroundColor: '#06202A' }}>
+    <View style={{ flex: 1, minHeight: 1360, padding: 18, backgroundColor: '#06202A' }}>
       <View style={{ marginTop: 20, padding: 22, borderRadius: 30, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#FF7A59', fontSize: 12, fontWeight: '900' }}>HEDEF AYARLARI</Text>
         <Text style={{ marginTop: 8, color: '#102A35', fontSize: 32, fontWeight: '900' }}>Ayarlar</Text>
@@ -95,18 +102,25 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Dışa aktar</Text>
+        <Text style={{ marginTop: 8, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Yedek oluşturunca metnin tamamını kopyala. Telefonunda not, txt dosyası veya güvenli bir klasörde sakla.</Text>
         <TouchableOpacity onPress={handleExport} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: '#2DE2E6', alignItems: 'center' }}>
-          <Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Metni oluştur</Text>
+          <Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Yedek metni oluştur</Text>
         </TouchableOpacity>
-        <TextInput multiline value={exportText} onChangeText={setExportText} placeholder="Dışa aktarım metni" placeholderTextColor="#7C969D" style={{ minHeight: 110, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
+        <TextInput multiline value={exportText} onChangeText={setExportText} placeholder="Dışa aktarım metni burada görünecek" placeholderTextColor="#7C969D" style={{ minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
       </View>
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>İçe aktar</Text>
-        <TextInput multiline value={importText} onChangeText={setImportText} placeholder="Kaydettiğin metni buraya yapıştır" placeholderTextColor="#7C969D" style={{ minHeight: 110, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
+        <Text style={{ marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, fontWeight: '900' }}>Uyarı: Geri yükleme mevcut lokal verinin üstüne yazar. İşlemden önce güncel verini dışa aktarman önerilir.</Text>
+        <TextInput multiline value={importText} onChangeText={setImportText} placeholder="Kaydettiğin yedek metnini buraya yapıştır" placeholderTextColor="#7C969D" style={{ minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
         <TouchableOpacity onPress={handleImport} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: '#FFB347', alignItems: 'center' }}>
-          <Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Geri yükle</Text>
+          <Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Yedekten geri yükle</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={{ marginTop: 14, padding: 16, borderRadius: 22, backgroundColor: '#FFF1D6', borderWidth: 1, borderColor: '#FFDCA0' }}>
+        <Text style={{ color: '#102A35', fontSize: 17, fontWeight: '900' }}>Google Drive notu</Text>
+        <Text style={{ marginTop: 7, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Otomatik Google Drive yedeği v1.0 sonrası opsiyonel özellik olarak beklemede. Şimdilik manuel yedek metni kullanılacak.</Text>
       </View>
 
       {!!message && <Text style={{ marginTop: 12, color: '#DDF8FA', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>{message}</Text>}
