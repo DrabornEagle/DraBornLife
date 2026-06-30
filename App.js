@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { theme } from './src/theme';
+import { DebtScreen } from './src/screens/DebtScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LoadingScreen } from './src/screens/LoadingScreen';
 import { MoneyScreen } from './src/screens/MoneyScreen';
-import { MoreScreen } from './src/screens/MoreScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { ShoppingScreen } from './src/screens/ShoppingScreen';
 import { useLifeData } from './src/hooks/useLifeData';
@@ -38,11 +38,11 @@ export default function App() {
       return <ShoppingScreen lifeData={lifeData} onSave={updateLifeData} />;
     }
 
-    if (activeTab === 'settings') {
-      return <SettingsScreen lifeData={lifeData} onReset={resetLocalData} />;
+    if (activeTab === 'debt') {
+      return <DebtScreen lifeData={lifeData} onSave={updateLifeData} />;
     }
 
-    return <MoreScreen title="Borç Takibi" subtitle="v0.0.9 içinde toplam borç, ödenen borç ve Antalya hedefli borç azaltma barı burada olacak." />;
+    return <SettingsScreen onReset={resetLocalData} />;
   }, [activeTab, isLoading, lifeData, resetLocalData, updateLifeData]);
 
   return (
