@@ -2,7 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { theme } from './src/theme';
 import { HomeScreen } from './src/screens/HomeScreen';
+import { LoadingScreen } from './src/screens/LoadingScreen';
 import { MoreScreen } from './src/screens/MoreScreen';
+import { SettingsScreen } from './src/screens/SettingsScreen';
+import { useLifeData } from './src/hooks/useLifeData';
 
 const tabs = [
   { key: 'home', label: 'Ana Sayfa', icon: '🌴' },
@@ -14,28 +17,35 @@ const tabs = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const { lifeData, isLoading, resetLocalData } = useLifeData();
 
   const screen = useMemo(() => {
+    if (isLoading || !lifeData) {
+      return <LoadingScreen />;
+    }
+
     if (activeTab === 'home') {
-      return <HomeScreen />;
+      return <HomeScreen lifeData={lifeData} />;
+    }
+
+    if (activeTab === 'settings') {
+      return <SettingsScreen lifeData={lifeData} onReset={resetLocalData} />;
     }
 
     const titles = {
       money: 'Gelir-Gider',
       shopping: 'Alınacaklar',
       debt: 'Borç Takibi',
-      settings: 'Ayarlar',
     };
 
     const subtitles = {
       money: 'v0.0.6 içinde gelir, gider ve birikime ayrılan tutarlar burada yönetilecek.',
       shopping: 'v0.0.7 içinde ev, beyaz eşya, mobilya, GTA 6 seti ve motosiklet hedefleri burada olacak.',
       debt: 'v0.0.8 içinde toplam borç, ödenen borç ve Antalya hedefli borç azaltma barı burada olacak.',
-      settings: 'v0.0.4 sonrası hedef tarih, para birimi, yedekleme ve lokal veri ayarları burada olacak.',
     };
 
     return <MoreScreen title={titles[activeTab]} subtitle={subtitles[activeTab]} />;
-  }, [activeTab]);
+  }, [activeTab, isLoading, lifeData, resetLocalData]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
