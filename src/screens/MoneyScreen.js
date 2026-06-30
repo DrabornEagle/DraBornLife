@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatTRY } from '../utils/lifeSummary';
 
 const categories = ['Maaş', 'Ek gelir', 'Ev', 'Market', 'Ulaşım', 'Borç', 'Eğlence', 'Diğer'];
@@ -36,11 +37,7 @@ export function MoneyScreen({ lifeData, onSave }) {
       savingPartAmount: type === 'income' ? toNumber(savingPartAmount) : 0,
     };
 
-    onSave({
-      ...lifeData,
-      moneyEntries: [nextEntry, ...entries],
-    });
-
+    onSave({ ...lifeData, moneyEntries: [nextEntry, ...entries] });
     setTitle('');
     setAmount('');
     setSavingPartAmount('');
@@ -50,7 +47,7 @@ export function MoneyScreen({ lifeData, onSave }) {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#DFF5F6' }} contentContainerStyle={{ padding: 18, paddingBottom: 120 }}>
       <View style={{ padding: 20, borderRadius: 30, backgroundColor: '#06202A' }}>
-        <Text style={{ color: '#C8FBFF', fontSize: 12, fontWeight: '900' }}>DraBornLife • v0.0.7</Text>
+        <Text style={{ color: '#C8FBFF', fontSize: 12, fontWeight: '900' }}>{APP_VERSION_LABEL}</Text>
         <Text style={{ marginTop: 8, color: 'white', fontSize: 32, fontWeight: '900' }}>Gelir-Gider</Text>
         <Text style={{ marginTop: 10, color: '#DDF8FA', fontSize: 15, lineHeight: 22, fontWeight: '700' }}>Antalya hedefi için gelir, gider ve birikime ayrılan tutarı kaydet.</Text>
       </View>
@@ -72,10 +69,7 @@ export function MoneyScreen({ lifeData, onSave }) {
 
         <Input label="Başlık" value={title} onChangeText={setTitle} placeholder="Örn: Günlük kazanç" />
         <Input label="Tutar" value={amount} onChangeText={setAmount} placeholder="Örn: 1500" keyboardType="numeric" />
-
-        {type === 'income' && (
-          <Input label="Birikime ayrılan" value={savingPartAmount} onChangeText={setSavingPartAmount} placeholder="Örn: 500" keyboardType="numeric" />
-        )}
+        {type === 'income' && <Input label="Birikime ayrılan" value={savingPartAmount} onChangeText={setSavingPartAmount} placeholder="Örn: 500" keyboardType="numeric" />}
 
         <Text style={{ marginTop: 14, color: '#315661', fontSize: 12, fontWeight: '900' }}>Kategori</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
@@ -87,7 +81,6 @@ export function MoneyScreen({ lifeData, onSave }) {
         </ScrollView>
 
         <Input label="Not" value={note} onChangeText={setNote} placeholder="İsteğe bağlı" />
-
         <TouchableOpacity onPress={addEntry} style={{ marginTop: 16, paddingVertical: 15, borderRadius: 20, backgroundColor: '#FFB347', alignItems: 'center' }}>
           <Text style={{ color: '#06202A', fontSize: 16, fontWeight: '900' }}>Kaydet</Text>
         </TouchableOpacity>
@@ -95,53 +88,27 @@ export function MoneyScreen({ lifeData, onSave }) {
 
       <View style={{ marginTop: 16 }}>
         <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Son işlemler</Text>
-        {entries.length === 0 ? (
-          <Text style={{ marginTop: 8, color: '#315661', fontSize: 14, fontWeight: '700' }}>Henüz gelir-gider kaydı yok.</Text>
-        ) : (
-          entries.slice(0, 8).map((entry) => <EntryRow key={entry.id} entry={entry} />)
-        )}
+        {entries.length === 0 ? <Text style={{ marginTop: 8, color: '#315661', fontSize: 14, fontWeight: '700' }}>Henüz gelir-gider kaydı yok.</Text> : entries.slice(0, 8).map((entry) => <EntryRow key={entry.id} entry={entry} />)}
       </View>
     </ScrollView>
   );
 }
 
 function SummaryCard({ label, value }) {
-  return (
-    <View style={{ flex: 1, marginHorizontal: 4, padding: 14, borderRadius: 20, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-      <Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{label}</Text>
-      <Text style={{ marginTop: 6, color: '#102A35', fontSize: 20, fontWeight: '900' }}>{value}</Text>
-    </View>
-  );
+  return <View style={{ flex: 1, marginHorizontal: 4, padding: 14, borderRadius: 20, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}><Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{label}</Text><Text style={{ marginTop: 6, color: '#102A35', fontSize: 20, fontWeight: '900' }}>{value}</Text></View>;
 }
 
 function TypeButton({ label, active, onPress }) {
-  return (
-    <TouchableOpacity onPress={onPress} style={{ flex: 1, paddingVertical: 13, borderRadius: 18, backgroundColor: active ? '#2DE2E6' : '#CFECEE', alignItems: 'center' }}>
-      <Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>{label}</Text>
-    </TouchableOpacity>
-  );
+  return <TouchableOpacity onPress={onPress} style={{ flex: 1, paddingVertical: 13, borderRadius: 18, backgroundColor: active ? '#2DE2E6' : '#CFECEE', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>{label}</Text></TouchableOpacity>;
 }
 
 function Input(props) {
-  return (
-    <View style={{ marginTop: 14 }}>
-      <Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{props.label}</Text>
-      <TextInput {...props} style={{ marginTop: 7, padding: 14, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 16, fontWeight: '700' }} placeholderTextColor="#7C969D" />
-    </View>
-  );
+  return <View style={{ marginTop: 14 }}><Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{props.label}</Text><TextInput {...props} style={{ marginTop: 7, padding: 14, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 16, fontWeight: '700' }} placeholderTextColor="#7C969D" /></View>;
 }
 
 function EntryRow({ entry }) {
   const isIncome = entry.type === 'income';
-  return (
-    <View style={{ marginTop: 9, padding: 14, borderRadius: 18, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ flex: 1, color: '#102A35', fontSize: 15, fontWeight: '900' }}>{entry.title}</Text>
-        <Text style={{ color: isIncome ? '#128C7E' : '#FF5E7E', fontSize: 15, fontWeight: '900' }}>{isIncome ? '+' : '-'} {formatTRY(entry.amount)}</Text>
-      </View>
-      <Text style={{ marginTop: 5, color: '#315661', fontSize: 12, fontWeight: '700' }}>{entry.category}</Text>
-    </View>
-  );
+  return <View style={{ marginTop: 9, padding: 14, borderRadius: 18, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}><View style={{ flexDirection: 'row', justifyContent: 'space-between' }}><Text style={{ flex: 1, color: '#102A35', fontSize: 15, fontWeight: '900' }}>{entry.title}</Text><Text style={{ color: isIncome ? '#128C7E' : '#FF5E7E', fontSize: 15, fontWeight: '900' }}>{isIncome ? '+' : '-'} {formatTRY(entry.amount)}</Text></View><Text style={{ marginTop: 5, color: '#315661', fontSize: 12, fontWeight: '700' }}>{entry.category}</Text></View>;
 }
 
 function toNumber(value) {
