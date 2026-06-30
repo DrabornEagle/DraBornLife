@@ -49,15 +49,17 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK v1.0'da alinacak.
 - [x] v0.5.4 test dosyasi eklendi
 - [x] Surum dosyalari v0.5.4 yapildi
 
-## Next
-
 ### v0.5.5 Yedek deneyimi iyilestirme
-- [ ] Yedek oncesi kisa ozet
-- [ ] Yedek sonrasi kopyalama notu
-- [ ] Ice aktar oncesi uyarilar
-- [ ] Ice aktar sonrasi hangi alanlar geldi bilgisi
-- [ ] Eski yedek yukleme testi
-- [ ] v0.5 yedek kapsam notu
+- [x] Yedek oncesi kisa ozet
+- [x] Yedek sonrasi kopyalama notu
+- [x] Ice aktar oncesi uyarilar
+- [x] Ice aktar sonrasi hangi alanlar geldi bilgisi
+- [x] Eski yedek yukleme notu
+- [x] v0.5 yedek kapsam notu
+- [x] v0.5.5 test dosyasi eklendi
+- [x] Surum dosyalari v0.5.5 yapildi
+
+## Next
 
 ### v0.5.6 Ana Sayfa final ozeti
 - [ ] v1.0 oncesi genel durum karti
