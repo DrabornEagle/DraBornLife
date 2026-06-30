@@ -23,8 +23,8 @@ DraBornLife, Antalya’ya sıfırdan yeni hayat kurma sürecini takip etmek içi
 | v0.2 | Finans, hedef, yedek ve güvenlik geliştirmeleri | Expo Go testine hazır |
 | v0.3.1 | v0.3 planlama ve sürüm hazırlığı | Tamamlandı |
 | v0.3.2 | Yaşam veri modeli | Tamamlandı |
-| v0.3.3 | Antalya Life ekranı | Sıradaki adım |
-| v0.3.4 | Ev kurulum oda oda takip | Bekliyor |
+| v0.3.3 | Antalya Life ekranı | Tamamlandı |
+| v0.3.4 | Ev kurulum oda oda takip | Sıradaki adım |
 | v0.3.5 | Aile aktivite bütçesi | Bekliyor |
 | v0.3.6 | Sahil, aquapark ve tatil hedefleri | Bekliyor |
 | v0.3.7 | Özel hedef ekleme sistemi | Bekliyor |
