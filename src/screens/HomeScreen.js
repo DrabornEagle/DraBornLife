@@ -16,7 +16,7 @@ export function HomeScreen({ lifeData }) {
       <View style={styles.header}>
         <View style={styles.topRow}>
           <View>
-            <Text style={styles.eyebrow}>DraBornLife • v0.0.6</Text>
+            <Text style={styles.eyebrow}>DraBornLife • v0.0.8</Text>
             <Text style={styles.title}>Antalya planı</Text>
           </View>
           <View style={styles.palmCircle}>
@@ -67,8 +67,8 @@ export function HomeScreen({ lifeData }) {
       />
 
       <View style={styles.nextCard}>
-        <Text style={styles.nextTitle}>Miami Ocean modu</Text>
-        <Text style={styles.nextText}>Fazla beyaz ekran yerine deniz tonları, okunur kartlar ve palmiye hissi korunarak daha dengeli tasarım uygulandı.</Text>
+        <Text style={styles.nextTitle}>Alınacaklar hazır</Text>
+        <Text style={styles.nextText}>v0.0.8 ile ev kurulum, GTA 6 seti ve motosiklet hedefleri liste ekranından takip edilebilir.</Text>
       </View>
     </View>
   );
