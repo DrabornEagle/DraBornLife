@@ -18,9 +18,9 @@ export function HomeFinalSummaryCard({ lifeData }) {
     <View style={card}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <View style={{ flex: 1, paddingRight: 12 }}>
-          <Text style={mini}>V1.0.9 PREMIUM FİNAL</Text>
-          <Text style={title}>{ready ? 'Premium ana sayfa son rötuşta' : 'Veri kontrolü gerekli'}</Text>
-          <Text style={desc}>APK yok. Ana sayfa küçük ekran taşmaları, kart oranları ve premium dashboard dengesi için kontrol edilir.</Text>
+          <Text style={mini}>V1.0.10 TASARIM KAPANIŞI</Text>
+          <Text style={title}>{ready ? 'v1.0 tasarım süreci kapandı' : 'Veri kontrolü gerekli'}</Text>
+          <Text style={desc}>APK yok. Tasarım yenileme süreci Expo Go geliştirme akışıyla tamamlandı. APK sadece açık komutla başlatılacak.</Text>
         </View>
         <View style={badge}><Text style={badgeText}>✓</Text></View>
       </View>
