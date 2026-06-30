@@ -1,0 +1,131 @@
+# DraBornLife v0.1 Yapılacaklar Listesi
+
+Bu liste, DraBornLife v0.1 tamamlanana kadar adım adım takip edilecek ana kontrol listesidir. Durum kodları `dkd_001` gibi değil, doğrudan sürüm kodu mantığıyla ilerler.
+
+## v0.0.1 — Proje başlangıcı ve plan
+
+- [x] DraBornLife ana kararlarını netleştir
+- [x] v0.1 kapsamını yaz
+- [x] GitHub repo başlangıç dokümanlarını oluştur
+- [x] Durum kodu sistemini `v0.0.x` formatına çevir
+- [x] v0.1 final hedefini belirle
+
+## v0.0.2 — Android proje iskeleti
+
+- [ ] Android uygulama klasör yapısını oluştur
+- [ ] Paket adını belirle: `com.draborneagle.drabornlife`
+- [ ] Uygulama adını belirle: `DraBornLife`
+- [ ] Minimum çalışan ana ekranı oluştur
+- [ ] APK build için temel GitHub Actions akışını hazırla
+- [ ] İlk boş APK üretimini hedefle
+
+## v0.0.3 — Tema, navigasyon ve temel arayüz
+
+- [ ] Türkçe mobil arayüz yapısını kur
+- [ ] Ana ekran / dashboard alanını hazırla
+- [ ] Alt veya kart tabanlı navigasyon kararını uygula
+- [ ] Antalya hedef kartı tasarla
+- [ ] Birikim kartı tasarla
+- [ ] Borç kartı tasarla
+- [ ] Alınacaklar kartı tasarla
+- [ ] Gelir-gider kartı tasarla
+
+## v0.0.4 — Lokal veri modeli ve cihaz içi kayıt
+
+- [ ] Supabase/cloud kullanmadan lokal veri yapısını kur
+- [ ] Ayarlar veri modeli oluştur
+- [ ] Gelir-gider veri modeli oluştur
+- [ ] Alınacaklar veri modeli oluştur
+- [ ] Borç veri modeli oluştur
+- [ ] Motosiklet hedefi veri modelini ekle
+- [ ] Veriyi cihaz içinde kalıcı sakla
+- [ ] İlk varsayılan verileri oluştur
+
+## v0.0.5 — Ana dashboard
+
+- [ ] Antalya taşınma hedef tarihini göster
+- [ ] Kalan gün sayısını hesapla
+- [ ] Toplam hedef bütçeyi göster
+- [ ] Mevcut birikimi göster
+- [ ] Birikim ilerleme çubuğu ekle
+- [ ] Borç ilerleme çubuğu ekle
+- [ ] Günlük/haftalık/aylık gelir-gider özetleri göster
+- [ ] GTA 6 öncesi taşınma hedef hatırlatıcısını ekle
+
+## v0.0.6 — Gelir-gider takip sistemi
+
+- [ ] Gelir ekleme ekranı
+- [ ] Gider ekleme ekranı
+- [ ] Kategori seçimi
+- [ ] Tarih seçimi
+- [ ] Not alanı
+- [ ] Günlük toplamlar
+- [ ] Haftalık toplamlar
+- [ ] Aylık toplamlar
+- [ ] Birikime ayrılan tutar takibi
+
+## v0.0.7 — Alınacaklar listesi
+
+- [ ] Kira / depozito kategorisi
+- [ ] Beyaz eşya kategorisi
+- [ ] Mobilya kategorisi
+- [ ] Mutfak / ev temel kategorisi
+- [ ] Çocuk odası kategorisi
+- [ ] İlk ay yaşam kategorisi
+- [ ] Antalya eğlence kategorisi
+- [ ] GTA 6 seti kategorisi: PS5 Pro + TV
+- [ ] Motosiklet hedefi kategorisi
+- [ ] Her kaleme tahmini fiyat ekleme
+- [ ] Her kaleme adet ekleme
+- [ ] Durum 1: `Parası Birikti`
+- [ ] Durum 2: `Satın Alındı / Kuruldu`
+- [ ] Toplam kalan bütçeyi hesaplama
+
+## v0.0.8 — Borç takip sistemi
+
+- [ ] Toplam borç girişi
+- [ ] Ödenen borç girişi
+- [ ] Kalan borç hesaplama
+- [ ] Antalya’ya kadar borç bitirme ilerlemesi
+- [ ] Borç azaltma barı
+- [ ] Borç notları
+
+## v0.0.9 — Yedekleme, dışa aktar ve içe aktar
+
+- [ ] Lokal yedek dosyası oluşturma
+- [ ] Manuel dışa aktar
+- [ ] Manuel içe aktar
+- [ ] Yeni telefonda veriyi geri yükleme senaryosu
+- [ ] Bozuk/eksik yedek dosyası için uyarı
+- [ ] Google Drive yedeğini v0.2+ sonrası opsiyonel not olarak bırak
+
+## v0.0.10 — Test, son temizlik ve hazırlık
+
+- [ ] Uygulama açılış testi
+- [ ] Veri kaydetme testi
+- [ ] Veri silme/düzenleme testi
+- [ ] Yedek dışa aktar/içe aktar testi
+- [ ] Dashboard hesaplama testi
+- [ ] APK üretim testi
+- [ ] Görsel temizlik
+- [ ] Kullanıcı metinleri ve Türkçe kontrolü
+
+## v0.1 — İlk çalışan APK
+
+- [ ] v0.1 sürüm notlarını yaz
+- [ ] İlk APK çıktısını üret
+- [ ] GitHub release hazırlığını yap
+- [ ] v0.1 tamamlandı olarak işaretle
+
+## v0.1 dışında bırakılanlar
+
+- Google Drive otomatik yedek
+- Supabase/cloud sync
+- Web panel
+- Çoklu kullanıcı hesabı
+- Bildirim sistemi
+- Detaylı grafikler
+- Yıllık çoklu hedef sistemi
+- Antalya sonrası Dubai/Miami uzun vadeli rota sistemi
+
+Bunlar v0.2 ve sonraki sürümlerde değerlendirilecek.
