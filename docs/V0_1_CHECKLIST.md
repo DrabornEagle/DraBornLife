@@ -12,12 +12,13 @@ Bu liste, DraBornLife v0.1 tamamlanana kadar adım adım takip edilecek ana kont
 
 ## v0.0.2 — Android proje iskeleti
 
-- [ ] Android uygulama klasör yapısını oluştur
-- [ ] Paket adını belirle: `com.draborneagle.drabornlife`
-- [ ] Uygulama adını belirle: `DraBornLife`
-- [ ] Minimum çalışan ana ekranı oluştur
-- [ ] APK build için temel GitHub Actions akışını hazırla
-- [ ] İlk boş APK üretimini hedefle
+- [x] Android uygulama klasör yapısını oluştur
+- [x] Paket adını belirle: `com.draborneagle.drabornlife`
+- [x] Uygulama adını belirle: `DraBornLife`
+- [x] Minimum çalışan ana ekranı oluştur
+- [x] APK build için temel GitHub Actions akışını hazırla
+- [x] İlk boş APK üretimini hedefle
+- [x] Termux zip klasör adını `DraBornLife` olacak şekilde güncelle
 
 ## v0.0.3 — Tema, navigasyon ve temel arayüz
 
