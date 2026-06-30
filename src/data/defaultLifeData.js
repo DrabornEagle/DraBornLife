@@ -1,9 +1,9 @@
-export const STORAGE_VERSION = 'v0.4.2';
+export const STORAGE_VERSION = 'v0.4.6';
 
 export const defaultLifeData = {
   settings: {
     appName: 'DraBornLife',
-    currentVersionCode: 'v0.4.2',
+    currentVersionCode: 'v0.4.6',
     selectedYear: 2026,
     targetCity: 'Antalya',
     targetAreas: ['Muratpasa', 'Lara', 'Konyaalti'],
@@ -16,36 +16,8 @@ export const defaultLifeData = {
     motorcycle: { title: 'Yeni motosiklet', estimatedPrice: 130000, savedAmount: 0, oldMotorcycleSaleAmount: 0, isPriceEditable: true, status: 'planned' },
   },
   yearlyPlans: [
-    {
-      id: 'year_2026_antalya',
-      year: 2026,
-      title: '2026 Antalya yeni hayat',
-      goalType: 'tasinma',
-      country: 'Turkiye',
-      city: 'Antalya',
-      area: 'Muratpasa / Lara / Konyaalti',
-      targetMonth: 'Ekim / Kasim',
-      targetDate: '2026-10-31',
-      estimatedBudget: 0,
-      savedAmount: 0,
-      status: 'active',
-      note: 'GTA 6 cikmadan once Antalya duzeni kurma hedefi.',
-    },
-    {
-      id: 'year_2027_future',
-      year: 2027,
-      title: '2027 yeni hedef',
-      goalType: 'seyahat',
-      country: '',
-      city: '',
-      area: '',
-      targetMonth: '',
-      targetDate: '',
-      estimatedBudget: 0,
-      savedAmount: 0,
-      status: 'planned',
-      note: 'Antalya sonrasi uzun vadeli aile, seyahat veya tasinma hedefi icin bos plan.',
-    },
+    { id: 'year_2026_antalya', year: 2026, title: '2026 Antalya yeni hayat', goalType: 'tasinma', country: 'Turkiye', city: 'Antalya', area: 'Muratpasa / Lara / Konyaalti', targetMonth: 'Ekim / Kasim', targetDate: '2026-10-31', estimatedBudget: 0, savedAmount: 0, status: 'active', note: 'GTA 6 cikmadan once Antalya duzeni kurma hedefi.' },
+    { id: 'year_2027_future', year: 2027, title: '2027 yeni hedef', goalType: 'seyahat', country: '', city: '', area: '', targetMonth: '', targetDate: '', estimatedBudget: 0, savedAmount: 0, status: 'planned', note: 'Antalya sonrasi uzun vadeli aile, seyahat veya tasinma hedefi icin bos plan.' },
   ],
   lifePlans: {
     homeSetup: { title: 'Ev kurulum plani', targetAmount: 0, savedAmount: 0, status: 'active' },
