@@ -6,6 +6,7 @@ import { LoadingScreen } from './src/screens/LoadingScreen';
 import { MoneyScreen } from './src/screens/MoneyScreen';
 import { MoreScreen } from './src/screens/MoreScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
+import { ShoppingScreen } from './src/screens/ShoppingScreen';
 import { useLifeData } from './src/hooks/useLifeData';
 
 const tabs = [
@@ -33,21 +34,15 @@ export default function App() {
       return <MoneyScreen lifeData={lifeData} onSave={updateLifeData} />;
     }
 
+    if (activeTab === 'shopping') {
+      return <ShoppingScreen lifeData={lifeData} onSave={updateLifeData} />;
+    }
+
     if (activeTab === 'settings') {
       return <SettingsScreen lifeData={lifeData} onReset={resetLocalData} />;
     }
 
-    const titles = {
-      shopping: 'Alınacaklar',
-      debt: 'Borç Takibi',
-    };
-
-    const subtitles = {
-      shopping: 'v0.0.8 içinde ev, beyaz eşya, mobilya, GTA 6 seti ve motosiklet hedefleri burada olacak.',
-      debt: 'v0.0.9 içinde toplam borç, ödenen borç ve Antalya hedefli borç azaltma barı burada olacak.',
-    };
-
-    return <MoreScreen title={titles[activeTab]} subtitle={subtitles[activeTab]} />;
+    return <MoreScreen title="Borç Takibi" subtitle="v0.0.9 içinde toplam borç, ödenen borç ve Antalya hedefli borç azaltma barı burada olacak." />;
   }, [activeTab, isLoading, lifeData, resetLocalData, updateLifeData]);
 
   return (
