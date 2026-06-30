@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { theme } from './src/theme';
 import { HomeScreen } from './src/screens/HomeScreen';
-import { PlaceholderScreen } from './src/screens/PlaceholderScreen';
+import { MoreScreen } from './src/screens/MoreScreen';
 
 const tabs = [
   { key: 'home', label: 'Ana Sayfa', icon: '🌴' },
@@ -34,7 +34,7 @@ export default function App() {
       settings: 'v0.0.4 sonrası hedef tarih, para birimi, yedekleme ve lokal veri ayarları burada olacak.',
     };
 
-    return <PlaceholderScreen title={titles[activeTab]} subtitle={subtitles[activeTab]} />;
+    return <MoreScreen title={titles[activeTab]} subtitle={subtitles[activeTab]} />;
   }, [activeTab]);
 
   return (
