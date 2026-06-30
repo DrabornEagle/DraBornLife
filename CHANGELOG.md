@@ -4,33 +4,39 @@
 
 Durum: Tamamlandı
 
-- Proje README dosyası oluşturuldu.
-- v0.1 yapılacaklar listesi eklendi.
-- Yol haritası eklendi.
+- README oluşturuldu.
+- v0.1 checklist eklendi.
+- Roadmap eklendi.
 - Lokal veri modeli taslağı eklendi.
-- Termux zip-only kurulum notları eklendi.
-- Durum kodu sistemi `v0.0.1`, `v0.0.2`, `v0.0.3` şeklinde başlatıldı.
+- Termux zip-only notları eklendi.
 
 ## v0.0.2
 
 Durum: Tamamlandı
 
-- Android proje iskeleti oluşturuldu.
+- İlk Android başlangıç iskeleti oluşturuldu.
 - Uygulama adı `DraBornLife` olarak ayarlandı.
 - Paket adı `com.draborneagle.drabornlife` olarak ayarlandı.
-- İlk açılış ekranı Java tabanlı native Android olarak eklendi.
-- Basit DraBornLife uygulama ikonu eklendi.
-- GitHub Actions ile debug APK build altyapısı eklendi.
-- Termux zip açılımından sonra klasör adının `DraBornLife` olması sağlandı.
+- Termux zip klasör adı `DraBornLife` olacak şekilde güncellendi.
 
 ## v0.0.3
 
+Durum: Tamamlandı
+
+- Proje Expo ve React Native yönüne taşındı.
+- Expo Go ile test kararı işlendi.
+- APK üretimi v0.1 final test aşamasına ertelendi.
+- `package.json` ve `app.json` eklendi.
+- Alt sekmeli navigasyon eklendi.
+- Miami, palmiye ve deniz temalı tasarım sistemi eklendi.
+- Ana ekran dashboard tasarımı hazırlandı.
+- Antalya hedefi, birikim, borç ve motosiklet hedef kartları eklendi.
+- Gelir-gider, alınacaklar, borç ve ayarlar sekmeleri hazırlandı.
+
+## v0.0.4
+
 Durum: Sıradaki adım
 
-Plan:
-
-- Türkçe mobil arayüz daha temiz hale getirilecek.
-- Dashboard kart sistemi kurulacak.
-- Antalya hedef kartı tasarlanacak.
-- Birikim, borç, alınacaklar ve gelir-gider kartları hazırlanacak.
-- v0.0.4 lokal veri sistemi için ekran yapısı hazır hale getirilecek.
+- Lokal veri yapısı kurulacak.
+- Ayarlar, gelir-gider, alınacaklar, borç ve motosiklet veri modelleri koda taşınacak.
+- İlk varsayılan veriler hazırlanacak.
