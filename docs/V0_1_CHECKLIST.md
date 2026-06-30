@@ -51,12 +51,18 @@ Bu liste, DraBornLife v0.1 tamamlanana kadar adım adım takip edilecek ana kont
 
 ## v0.0.5 — Ana dashboard
 
-- [ ] Antalya taşınma hedef tarihini göster
+- [x] v0.0.3 görünme sorununu sürüm koduyla düzelt
+- [x] Tasarımı daha sade ve anlaşılır hale getir
+- [x] Büyük dekoratif şekilleri azalt
+- [x] Daha modern açık dashboard zemini uygula
+- [x] Antalya taşınma hedef tarihini göster
 - [ ] Kalan gün sayısını hesapla
-- [ ] Toplam hedef bütçeyi göster
-- [ ] Mevcut birikimi göster
-- [ ] Birikim ilerleme çubuğu ekle
-- [ ] Borç ilerleme çubuğu ekle
+- [x] Toplam hedef bütçeyi göster
+- [x] Mevcut birikimi göster
+- [x] Birikim ilerleme çubuğu ekle
+- [x] Borç özet kartı ekle
+- [x] Motosiklet hedefini göster
+- [x] Lokal repo eşitleme notunu ekle
 - [ ] Günlük/haftalık/aylık gelir-gider özetleri göster
 - [ ] GTA 6 öncesi taşınma hedef hatırlatıcısını ekle
 
