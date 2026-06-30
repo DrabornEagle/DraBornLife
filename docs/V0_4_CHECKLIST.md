@@ -52,10 +52,12 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] Surum dosyalari v0.4.5 yapildi
 
 ### v0.4.6 Yillik finans ozeti
-- [ ] Secili yila ait gelir/gider/birikim ozeti hesaplanacak
-- [ ] Secili yilin hedef butcesine gore ilerleme yuzdesi gosterilecek
-- [ ] Yillik hedefler ile alinacaklar/borc/ozel hedefler baglantisi kurulacak
-- [ ] Ana ekranda secili yil icin kisa ozet karti gosterilecek
+- [x] Secili yila ait gelir/gider/birikim ozeti hesaplandi
+- [x] Secili yilin hedef butcesine gore ilerleme yuzdesi gosterildi
+- [x] Yillik hedefler ile alinacaklar/borc/ozel hedefler baglantisi kuruldu
+- [x] Ana ekranda secili yil icin kisa ozet karti gosterildi
+- [x] Yil ekranina yillik finans paneli eklendi
+- [x] Surum dosyalari v0.4.6 yapildi
 
 ### v0.4.7 Yedek ve geri yukleme uyumlulugu
 - [ ] v0.4 alanlari manuel yedege dahil edilecek
@@ -90,4 +92,5 @@ Bu surum Expo Go ile gelistirilecek. Ilk APK/AAB v1.0'da alinacak.
 - [x] v0.4.3 Yil secici ve Yil Plani ekrani tamamlandi
 - [x] v0.4.4 Birikim geri sayim sistemi tamamlandi
 - [x] v0.4.5 Tasinma, seyahat ve hayat hedef kartlari tamamlandi
-- [ ] Siradaki adim: v0.4.6 Yillik finans ozeti
+- [x] v0.4.6 Yillik finans ozeti tamamlandi
+- [ ] Siradaki adim: v0.4.7 Yedek ve geri yukleme uyumlulugu
