@@ -1,9 +1,9 @@
-export const STORAGE_VERSION = 'v1.0.10';
+export const STORAGE_VERSION = 'v1.0.11';
 
 export const defaultLifeData = {
   settings: {
     appName: 'DraBornLife',
-    currentVersionCode: 'v1.0.10',
+    currentVersionCode: 'v1.0.11',
     selectedYear: 2026,
     targetCity: 'Antalya',
     targetAreas: ['Muratpaşa', 'Lara', 'Konyaaltı'],
@@ -32,14 +32,14 @@ export const defaultLifeData = {
     { id: 'bath_home', title: 'Banyo ve temel ev', isCore: true, items: [] },
   ],
   activities: [
-    { id: 'activity_aquapark', title: 'Aile aquapark günü', category: 'aquapark', estimatedPrice: 0, savedAmount: 0, isCompleted: false, note: '' },
-    { id: 'activity_beach_day', title: 'Sahil pikniği', category: 'sahil', estimatedPrice: 0, savedAmount: 0, isCompleted: false, note: '' },
-    { id: 'activity_family_dinner', title: 'Lara aile yemeği', category: 'yemek', estimatedPrice: 0, savedAmount: 0, isCompleted: false, note: '' },
+    { id: 'activity_aquapark', title: 'Aile aquapark günü', category: 'Aquapark', estimatedPrice: 0, savedAmount: 0, isCompleted: false, note: '' },
+    { id: 'activity_beach_day', title: 'Sahil pikniği', category: 'Sahil', estimatedPrice: 0, savedAmount: 0, isCompleted: false, note: '' },
+    { id: 'activity_family_dinner', title: 'Lara aile yemeği', category: 'Yemek', estimatedPrice: 0, savedAmount: 0, isCompleted: false, note: '' },
   ],
   beaches: [
-    { id: 'beach_lara', title: 'Lara Plajı', type: 'sahil', area: 'Lara', estimatedBudget: 0, status: 'planned', familyNote: '' },
-    { id: 'beach_konyaalti', title: 'Konyaaltı Sahili', type: 'sahil', area: 'Konyaaltı', estimatedBudget: 0, status: 'planned', familyNote: '' },
-    { id: 'aqua_antalya', title: 'Aquapark hedefi', type: 'aquapark', area: 'Antalya', estimatedBudget: 0, status: 'planned', familyNote: '' },
+    { id: 'beach_lara', title: 'Lara Plajı', type: 'Sahil', area: 'Lara', estimatedBudget: 0, status: 'planned', familyNote: '' },
+    { id: 'beach_konyaalti', title: 'Konyaaltı Sahili', type: 'Sahil', area: 'Konyaaltı', estimatedBudget: 0, status: 'planned', familyNote: '' },
+    { id: 'aqua_antalya', title: 'Aquapark hedefi', type: 'Aquapark', area: 'Antalya', estimatedBudget: 0, status: 'planned', familyNote: '' },
   ],
   customGoals: [],
   moneyEntries: [],
