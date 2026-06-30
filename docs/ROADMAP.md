@@ -1,74 +1,79 @@
-# DraBornLife Yol Haritası
+# DraBornLife Roadmap
 
-## Güncel karar
+## Current decision
 
-İlk APK / AAB çıktısı **v1.0** sürümünde alınacak. v0.1 ve v0.2 geliştirmeleri Expo Go üzerinden test edilerek ilerleyecek.
+First APK/AAB will be created at v1.0. v0.1, v0.2 and v0.3 will continue with Expo Go testing.
 
-## v0.1 — Antalya taşınma çekirdeği
+## v0.1 Core relocation tracker
 
-Amaç: Antalya’ya taşınma, yeni ev kurma, gelir-gider, birikim, borç azaltma, alınacaklar listesi ve manuel yedekleme sistemini Expo Go üzerinde çalışan temel mobil prototip olarak tamamlamak.
+- Main dashboard
+- Antalya target settings
+- Income/expense tracking
+- Shopping list
+- Debt tracking
+- Motorcycle goal
+- Local data
+- Manual backup/import
 
-### v0.1 ana modüller
+## v0.2 Usability and safety
 
-1. Ana dashboard
-2. Antalya hedef ayarları
-3. Gelir-gider takibi
-4. Birikim hedefi
-5. Borç azaltma takibi
-6. Alınacaklar listesi
-7. Motosiklet yenileme hedefi
-8. GTA 6 öncesi taşınma hatırlatma hedefi
-9. Lokal veri saklama
-10. Manuel yedek dışa aktar / içe aktar
+- Editable targets
+- Remaining day calculation
+- Edit/delete/filter flows
+- Backup improvements
+- Data safety warnings
+- Expo Go final test
 
-## v0.2 — Kullanım geliştirme ve hedef düzenleme
+## v0.3 Life planning screens
 
-Amaç: v0.1 temelini daha kullanılabilir hale getirmek. Düzenleme, silme, filtreleme, hedef ayarları, kalan gün hesabı ve veri güvenliği eklenecek.
+Goal: turn DraBornLife into a wider Antalya life planning panel.
 
-### v0.2 ana modüller
+Main modules:
 
-1. Hedef tarih / hedef bölge / hedef bütçe düzenleme
-2. Kalan gün hesaplama
-3. GTA 6 öncesi taşınma notu
-4. Gelir-gider düzenleme / silme / filtreleme
-5. Alınacaklar düzenleme / silme / filtreleme
-6. Borç düzenleme / silme / ödeme geçmişi hazırlığı
-7. Yedekleme iyileştirmeleri
-8. Miami Ocean tasarım tutarlılığı
-9. Veri sıfırlama ve hatalı giriş uyarıları
-10. v0.2 final Expo Go testleri
+1. Antalya Life screen
+2. Life data model
+3. Home setup by rooms
+4. Family activity budget
+5. Beach, aquapark and holiday goals
+6. Custom goal system
+7. Backup compatibility
+8. Design cleanup
+9. v0.3 final Expo Go test
 
-## v0.3 — Yaşam planlama ekranları
+Version flow:
 
-- Antalya yaşam takibi
-- Ev düzeni / oda oda kurulum planı
-- Eğlence ve aile aktivite bütçesi
-- Aquapark / tatil / sahil hedefleri
-- Yeni hedef ekleme sistemi
+- v0.3.1 planning and version setup
+- v0.3.2 life data model
+- v0.3.3 Antalya Life screen
+- v0.3.4 home setup by rooms
+- v0.3.5 family activity budget
+- v0.3.6 beach/aquapark/holiday goals
+- v0.3.7 custom goal system
+- v0.3.8 backup compatibility
+- v0.3.9 design cleanup
+- v0.3.10 final test
 
-## v0.4 — Yıllık hedef sistemi
+## v0.4 Yearly goals
 
-- Seçilen yıl
-- Yaklaşık hedef ayı
-- Çoklu hedef takibi
-- Yıl bazlı birikim sayacı
-- Tamamlandı / ertelendi / iptal edildi durumları
+- Selected year
+- Approximate target month
+- Multiple yearly goals
+- Yearly saving countdown
+- Done/postponed/cancelled status
 
-## v1.0 — İlk APK / stabil kişisel yaşam paneli
+## v1.0 First APK
 
-- İlk APK veya AAB çıktısı
-- Stabil Android kurulum testi
-- Daha temiz arayüz
-- Güvenilir yedekleme
-- Tam veri geri yükleme
-- Sürüm notları
-- Uzun vadeli kullanım için stabil paket
+- First APK or AAB
+- Stable Android install test
+- Clean UI
+- Reliable backup
+- Full restore test
+- Release notes
 
-## v2.0+ uzun vadeli fikirler
+## v2.0+ Future ideas
 
-- Antalya sonrası Dubai / Miami gibi büyük rota hedefleri
-- Aile tatil planları
-- Karavan / cruise bütçe modülü
-- Yaşam hedefleri arşivi
-- Büyük hedef karşılaştırma ekranı
-- DrabornEagle ekosisteminden bağımsız kişisel asistan hissi
+- Antalya to Dubai/Miami long-term goals
+- Family travel planning
+- Caravan/cruise budget module
+- Life goal archive
+- Goal comparison screen
