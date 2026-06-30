@@ -33,7 +33,8 @@ DraBornLife is a personal mobile app for planning the Antalya relocation and new
 | v0.4.2 | Year based data model | Done |
 | v0.4.3 | Year selector and Year Plan screen | Done |
 | v0.4.4 | Saving countdown system | Done |
-| v0.4.5 | Life goal cards and yearly goal actions | Next |
+| v0.4.5 | Life goal cards and yearly goal actions | Done |
+| v0.4.6 | Yearly finance summary | Next |
 | v1.0 | First APK | Waiting |
 
 ## Checklist files
