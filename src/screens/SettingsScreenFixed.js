@@ -47,7 +47,7 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
 
   function handleExport() {
     setExportText(createBackupText(lifeData));
-    showInfo('v0.3 yedek metni hazir. Finans, ev kurulum, aktiviteler, sahil/aquapark/tatil ve ozel hedefler dahil.');
+    showInfo('v0.4 yedek metni hazir. Finans, ev kurulum, aktiviteler, sahil/aquapark/tatil, ozel hedefler ve yil planlari dahil.');
   }
 
   function handleImport() {
@@ -56,7 +56,7 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
     if (!result.ok) return showError(result.error);
     onRestore(result.data);
     const warning = result.versionWarning ? ` ${result.versionWarning}` : '';
-    const scopeText = result.scope?.length ? ` Kapsam: ${result.scope.length} veri alani.` : ' Eski yedek algilandi; eksik v0.3 alanlari otomatik tamamlanacak.';
+    const scopeText = result.scope?.length ? ` Kapsam: ${result.scope.length} veri alani.` : ' Eski yedek algilandi; eksik v0.4 alanlari otomatik tamamlanacak.';
     showInfo(`Veriler geri yuklendi. Yedek surumu: ${result.backupVersion}.${scopeText}${warning}`);
   }
 
@@ -98,7 +98,7 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
       </View>
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>v0.3 yedek kapsami</Text>
+        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>v0.4 yedek kapsami</Text>
         <Text style={{ marginTop: 8, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>{BACKUP_SCOPE.join(', ')}</Text>
       </View>
 
@@ -111,7 +111,7 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Ice aktar</Text>
-        <Text style={{ marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, fontWeight: '900' }}>Uyari: Geri yukleme mevcut lokal verinin ustune yazar. Eski v0.2 yedekleri yuklenirse yeni v0.3 alanlari otomatik tamamlanir.</Text>
+        <Text style={{ marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, fontWeight: '900' }}>Uyari: Geri yukleme mevcut lokal verinin ustune yazar. Eski v0.1/v0.2/v0.3 yedekleri yuklenirse yeni v0.4 alanlari otomatik tamamlanir.</Text>
         <TextInput multiline value={importText} onChangeText={setImportText} placeholder="Kaydettigin yedek metnini buraya yapistir" placeholderTextColor="#7C969D" style={{ minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' }} />
         <TouchableOpacity onPress={handleImport} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: '#FFB347', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Yedekten geri yukle</Text></TouchableOpacity>
       </View>
