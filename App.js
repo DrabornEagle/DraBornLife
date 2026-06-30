@@ -27,7 +27,7 @@ export default function App() {
   const screen = useMemo(() => {
     if (isLoading || !lifeData) return <LoadingScreen />;
     if (activeTab === 'home') return <HomeScreen lifeData={lifeData} />;
-    if (activeTab === 'life') return <AntalyaLifeScreen lifeData={lifeData} />;
+    if (activeTab === 'life') return <AntalyaLifeScreen lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'money') return <MoneyScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'shopping') return <ShoppingScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
     if (activeTab === 'debt') return <DebtScreenSafe lifeData={lifeData} onSave={updateLifeData} />;
