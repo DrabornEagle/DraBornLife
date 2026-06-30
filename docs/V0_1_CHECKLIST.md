@@ -38,14 +38,16 @@ Bu liste, DraBornLife v0.1 tamamlanana kadar adım adım takip edilecek ana kont
 
 ## v0.0.4 — Lokal veri modeli ve cihaz içi kayıt
 
-- [ ] Supabase/cloud kullanmadan lokal veri yapısını kur
-- [ ] Ayarlar veri modeli oluştur
-- [ ] Gelir-gider veri modeli oluştur
-- [ ] Alınacaklar veri modeli oluştur
-- [ ] Borç veri modeli oluştur
-- [ ] Motosiklet hedefi veri modelini ekle
-- [ ] Veriyi cihaz içinde kalıcı sakla
-- [ ] İlk varsayılan verileri oluştur
+- [x] Supabase/cloud kullanmadan lokal veri yapısını kur
+- [x] Ayarlar veri modeli oluştur
+- [x] Gelir-gider veri modeli oluştur
+- [x] Alınacaklar veri modeli oluştur
+- [x] Borç veri modeli oluştur
+- [x] Motosiklet hedefi veri modelini ekle
+- [x] Veriyi cihaz içinde kalıcı sakla
+- [x] İlk varsayılan verileri oluştur
+- [x] Ana ekranı lokal veri özetine bağla
+- [x] Expo start -c test notunu ekle
 
 ## v0.0.5 — Ana dashboard
 
