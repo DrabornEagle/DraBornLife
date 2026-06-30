@@ -1,18 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatTRY } from '../utils/lifeSummary';
 
-const categories = [
-  'Kira / Depozito',
-  'Beyaz eşya',
-  'Mobilya',
-  'Mutfak / ev temel',
-  'Çocuk odası',
-  'İlk ay yaşam',
-  'Antalya eğlence',
-  'GTA 6 seti',
-  'Motosiklet',
-];
+const categories = ['Kira / Depozito', 'Beyaz eşya', 'Mobilya', 'Mutfak / ev temel', 'Çocuk odası', 'İlk ay yaşam', 'Antalya eğlence', 'GTA 6 seti', 'Motosiklet'];
 
 export function ShoppingScreen({ lifeData, onSave }) {
   const [category, setCategory] = useState('Mobilya');
@@ -21,7 +12,6 @@ export function ShoppingScreen({ lifeData, onSave }) {
   const [quantity, setQuantity] = useState('1');
   const [savedAmount, setSavedAmount] = useState('');
   const [note, setNote] = useState('');
-
   const items = lifeData?.shoppingItems || [];
 
   const summary = useMemo(() => {
@@ -33,34 +23,15 @@ export function ShoppingScreen({ lifeData, onSave }) {
   }, [items]);
 
   function saveItems(nextItems) {
-    onSave({
-      ...lifeData,
-      shoppingItems: nextItems,
-    });
+    onSave({ ...lifeData, shoppingItems: nextItems });
   }
 
   function addItem() {
     const cleanTitle = title.trim();
     if (!cleanTitle) return;
-
-    const nextItem = {
-      id: `shop_${Date.now()}`,
-      category,
-      title: cleanTitle,
-      estimatedPrice: toNumber(estimatedPrice),
-      quantity: Math.max(1, toNumber(quantity)),
-      savedAmount: toNumber(savedAmount),
-      isMoneyReady: false,
-      isPurchasedOrInstalled: false,
-      note: note.trim(),
-    };
-
+    const nextItem = { id: `shop_${Date.now()}`, category, title: cleanTitle, estimatedPrice: toNumber(estimatedPrice), quantity: Math.max(1, toNumber(quantity)), savedAmount: toNumber(savedAmount), isMoneyReady: false, isPurchasedOrInstalled: false, note: note.trim() };
     saveItems([nextItem, ...items]);
-    setTitle('');
-    setEstimatedPrice('');
-    setQuantity('1');
-    setSavedAmount('');
-    setNote('');
+    setTitle(''); setEstimatedPrice(''); setQuantity('1'); setSavedAmount(''); setNote('');
   }
 
   function toggleItem(id, key) {
@@ -70,99 +41,36 @@ export function ShoppingScreen({ lifeData, onSave }) {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#DFF5F6' }} contentContainerStyle={{ padding: 18, paddingBottom: 120 }}>
       <View style={{ padding: 20, borderRadius: 30, backgroundColor: '#06202A' }}>
-        <Text style={{ color: '#C8FBFF', fontSize: 12, fontWeight: '900' }}>DraBornLife • v0.0.8</Text>
+        <Text style={{ color: '#C8FBFF', fontSize: 12, fontWeight: '900' }}>{APP_VERSION_LABEL}</Text>
         <Text style={{ marginTop: 8, color: 'white', fontSize: 32, fontWeight: '900' }}>Alınacaklar</Text>
         <Text style={{ marginTop: 10, color: '#DDF8FA', fontSize: 15, lineHeight: 22, fontWeight: '700' }}>Yeni ev, GTA 6 seti ve motosiklet hedeflerini adım adım takip et.</Text>
       </View>
 
-      <View style={{ flexDirection: 'row', marginTop: 14 }}>
-        <SummaryCard label="Toplam" value={formatTRY(summary.total)} />
-        <SummaryCard label="Birikmiş" value={formatTRY(summary.saved)} />
-      </View>
-      <View style={{ flexDirection: 'row', marginTop: 8 }}>
-        <SummaryCard label="Parası hazır" value={`${summary.ready} kalem`} />
-        <SummaryCard label="Alındı" value={`${summary.purchased} kalem`} />
-      </View>
+      <View style={{ flexDirection: 'row', marginTop: 14 }}><SummaryCard label="Toplam" value={formatTRY(summary.total)} /><SummaryCard label="Birikmiş" value={formatTRY(summary.saved)} /></View>
+      <View style={{ flexDirection: 'row', marginTop: 8 }}><SummaryCard label="Parası hazır" value={`${summary.ready} kalem`} /><SummaryCard label="Alındı" value={`${summary.purchased} kalem`} /></View>
 
       <View style={{ marginTop: 14, padding: 16, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#102A35', fontSize: 20, fontWeight: '900' }}>Yeni kalem ekle</Text>
-
         <Text style={{ marginTop: 14, color: '#315661', fontSize: 12, fontWeight: '900' }}>Kategori</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
-          {categories.map((item) => (
-            <TouchableOpacity key={item} onPress={() => setCategory(item)} style={{ marginRight: 8, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 18, backgroundColor: category === item ? '#2DE2E6' : '#CFECEE' }}>
-              <Text style={{ color: '#06202A', fontWeight: '900' }}>{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{categories.map((item) => <TouchableOpacity key={item} onPress={() => setCategory(item)} style={{ marginRight: 8, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 18, backgroundColor: category === item ? '#2DE2E6' : '#CFECEE' }}><Text style={{ color: '#06202A', fontWeight: '900' }}>{item}</Text></TouchableOpacity>)}</ScrollView>
         <Input label="Ürün / hedef adı" value={title} onChangeText={setTitle} placeholder="Örn: Salon koltuk takımı" />
         <Input label="Tahmini fiyat" value={estimatedPrice} onChangeText={setEstimatedPrice} placeholder="Örn: 35000" keyboardType="numeric" />
         <Input label="Adet" value={quantity} onChangeText={setQuantity} placeholder="1" keyboardType="numeric" />
         <Input label="Birikmiş tutar" value={savedAmount} onChangeText={setSavedAmount} placeholder="Örn: 5000" keyboardType="numeric" />
         <Input label="Not" value={note} onChangeText={setNote} placeholder="İsteğe bağlı" />
-
-        <TouchableOpacity onPress={addItem} style={{ marginTop: 16, paddingVertical: 15, borderRadius: 20, backgroundColor: '#FFB347', alignItems: 'center' }}>
-          <Text style={{ color: '#06202A', fontSize: 16, fontWeight: '900' }}>Listeye ekle</Text>
-        </TouchableOpacity>
+        <TouchableOpacity onPress={addItem} style={{ marginTop: 16, paddingVertical: 15, borderRadius: 20, backgroundColor: '#FFB347', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 16, fontWeight: '900' }}>Listeye ekle</Text></TouchableOpacity>
       </View>
 
-      <View style={{ marginTop: 16 }}>
-        <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Liste</Text>
-        {items.map((item) => (
-          <ShoppingRow key={item.id} item={item} onToggle={toggleItem} />
-        ))}
-      </View>
+      <View style={{ marginTop: 16 }}><Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Liste</Text>{items.map((item) => <ShoppingRow key={item.id} item={item} onToggle={toggleItem} />)}</View>
     </ScrollView>
   );
 }
 
 function ShoppingRow({ item, onToggle }) {
   const total = toNumber(item.estimatedPrice) * Math.max(1, toNumber(item.quantity));
-  return (
-    <View style={{ marginTop: 9, padding: 14, borderRadius: 20, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ flex: 1, color: '#102A35', fontSize: 15, fontWeight: '900' }}>{item.title}</Text>
-        <Text style={{ color: '#102A35', fontSize: 15, fontWeight: '900' }}>{formatTRY(total)}</Text>
-      </View>
-      <Text style={{ marginTop: 5, color: '#315661', fontSize: 12, fontWeight: '800' }}>{item.category} • {item.quantity || 1} adet</Text>
-      <Text style={{ marginTop: 5, color: '#315661', fontSize: 12, fontWeight: '700' }}>Birikmiş: {formatTRY(item.savedAmount)}</Text>
-
-      <View style={{ flexDirection: 'row', marginTop: 10 }}>
-        <StatusButton label="Parası Birikti" active={item.isMoneyReady} onPress={() => onToggle(item.id, 'isMoneyReady')} />
-        <StatusButton label="Satın Alındı" active={item.isPurchasedOrInstalled} onPress={() => onToggle(item.id, 'isPurchasedOrInstalled')} />
-      </View>
-    </View>
-  );
+  return <View style={{ marginTop: 9, padding: 14, borderRadius: 20, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}><View style={{ flexDirection: 'row', justifyContent: 'space-between' }}><Text style={{ flex: 1, color: '#102A35', fontSize: 15, fontWeight: '900' }}>{item.title}</Text><Text style={{ color: '#102A35', fontSize: 15, fontWeight: '900' }}>{formatTRY(total)}</Text></View><Text style={{ marginTop: 5, color: '#315661', fontSize: 12, fontWeight: '800' }}>{item.category} • {item.quantity || 1} adet</Text><Text style={{ marginTop: 5, color: '#315661', fontSize: 12, fontWeight: '700' }}>Birikmiş: {formatTRY(item.savedAmount)}</Text><View style={{ flexDirection: 'row', marginTop: 10 }}><StatusButton label="Parası Birikti" active={item.isMoneyReady} onPress={() => onToggle(item.id, 'isMoneyReady')} /><StatusButton label="Satın Alındı" active={item.isPurchasedOrInstalled} onPress={() => onToggle(item.id, 'isPurchasedOrInstalled')} /></View></View>;
 }
-
-function StatusButton({ label, active, onPress }) {
-  return (
-    <TouchableOpacity onPress={onPress} style={{ flex: 1, marginRight: 8, paddingVertical: 10, borderRadius: 16, backgroundColor: active ? '#2DE2E6' : '#CFECEE', alignItems: 'center' }}>
-      <Text style={{ color: '#06202A', fontSize: 12, fontWeight: '900' }}>{label}</Text>
-    </TouchableOpacity>
-  );
-}
-
-function SummaryCard({ label, value }) {
-  return (
-    <View style={{ flex: 1, marginHorizontal: 4, padding: 14, borderRadius: 20, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
-      <Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{label}</Text>
-      <Text style={{ marginTop: 6, color: '#102A35', fontSize: 20, fontWeight: '900' }}>{value}</Text>
-    </View>
-  );
-}
-
-function Input(props) {
-  return (
-    <View style={{ marginTop: 14 }}>
-      <Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{props.label}</Text>
-      <TextInput {...props} style={{ marginTop: 7, padding: 14, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 16, fontWeight: '700' }} placeholderTextColor="#7C969D" />
-    </View>
-  );
-}
-
-function toNumber(value) {
-  const parsed = Number(String(value).replace(',', '.'));
-  return Number.isFinite(parsed) ? parsed : 0;
-}
+function StatusButton({ label, active, onPress }) { return <TouchableOpacity onPress={onPress} style={{ flex: 1, marginRight: 8, paddingVertical: 10, borderRadius: 16, backgroundColor: active ? '#2DE2E6' : '#CFECEE', alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 12, fontWeight: '900' }}>{label}</Text></TouchableOpacity>; }
+function SummaryCard({ label, value }) { return <View style={{ flex: 1, marginHorizontal: 4, padding: 14, borderRadius: 20, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}><Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{label}</Text><Text style={{ marginTop: 6, color: '#102A35', fontSize: 20, fontWeight: '900' }}>{value}</Text></View>; }
+function Input(props) { return <View style={{ marginTop: 14 }}><Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{props.label}</Text><TextInput {...props} style={{ marginTop: 7, padding: 14, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 16, fontWeight: '700' }} placeholderTextColor="#7C969D" /></View>; }
+function toNumber(value) { const parsed = Number(String(value).replace(',', '.')); return Number.isFinite(parsed) ? parsed : 0; }
