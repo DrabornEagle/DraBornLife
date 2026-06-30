@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { NoticeBox } from '../components/NoticeBox';
 import { APP_STATUS_CODE } from '../config/appVersion';
 import { createBackupText, parseBackupText } from '../utils/backupUtils';
 
@@ -18,40 +19,55 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
   const [exportText, setExportText] = useState('');
   const [importText, setImportText] = useState('');
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('info');
+
+  function showInfo(text) { setMessageType('info'); setMessage(text); }
+  function showError(text) { setMessageType('error'); setMessage(text); }
 
   function saveTargets() {
-    const targetAreas = targetAreasText.split(',').map((x) => x.trim()).filter(Boolean);
     const nextMotorcyclePrice = toNumber(motorcyclePrice);
+    const nextTargetAmount = toNumber(targetAmount);
+    const nextOldSale = toNumber(oldMotorcycleSaleAmount);
 
+    if (targetAmount.trim() && nextTargetAmount <= 0) return showError('Toplam hedef bütçe negatif veya hatalı olamaz.');
+    if (motorcyclePrice.trim() && nextMotorcyclePrice <= 0) return showError('Motosiklet fiyatı negatif veya hatalı olamaz.');
+    if (oldMotorcycleSaleAmount.trim() && nextOldSale < 0) return showError('Eski motosiklet satış tutarı negatif olamaz.');
+
+    const targetAreas = targetAreasText.split(',').map((x) => x.trim()).filter(Boolean);
     const nextData = {
       ...lifeData,
       settings: { ...settings, targetAreas: targetAreas.length ? targetAreas : ['Muratpaşa', 'Lara', 'Konyaaltı'], targetMoveMonthText: targetMonthText.trim() || 'Ekim / Kasım 2026', currency: 'TRY' },
-      goals: { ...goals, antalyaMove: { ...moveGoal, targetDate: targetDate.trim() || '2026-10-31', targetAmount: toNumber(targetAmount) }, motorcycle: { ...motorcycle, estimatedPrice: nextMotorcyclePrice || 130000, oldMotorcycleSaleAmount: toNumber(oldMotorcycleSaleAmount), isPriceEditable: true } },
+      goals: { ...goals, antalyaMove: { ...moveGoal, targetDate: targetDate.trim() || '2026-10-31', targetAmount: nextTargetAmount }, motorcycle: { ...motorcycle, estimatedPrice: nextMotorcyclePrice || 130000, oldMotorcycleSaleAmount: nextOldSale, isPriceEditable: true } },
       shoppingItems: (lifeData?.shoppingItems || []).map((item) => item.id === 'motorcycle' ? { ...item, estimatedPrice: nextMotorcyclePrice || 130000 } : item),
     };
 
     onRestore(nextData);
-    setMessage('Hedef ayarları kaydedildi. Ana ekranda yeni değerleri görebilirsin.');
+    showInfo('Hedef ayarları kaydedildi. Ana ekranda yeni değerleri görebilirsin.');
   }
 
   function handleExport() {
     setExportText(createBackupText(lifeData));
-    setMessage('Yedek metni hazır. Tamamını seçip kopyala, telefonunda not veya txt dosyası olarak sakla.');
+    showInfo('Yedek metni hazır. Tamamını seçip kopyala, telefonunda not veya txt dosyası olarak sakla.');
   }
 
   function handleImport() {
-    if (!importText.trim()) {
-      setMessage('İçe aktarım için önce yedek metnini kutuya yapıştırmalısın.');
-      return;
-    }
+    if (!importText.trim()) return showError('İçe aktarım için önce yedek metnini kutuya yapıştırmalısın.');
     const result = parseBackupText(importText);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
-    }
+    if (!result.ok) return showError(result.error);
     onRestore(result.data);
     const warning = result.versionWarning ? ` ${result.versionWarning}` : '';
-    setMessage(`Veriler geri yüklendi. Yedek sürümü: ${result.backupVersion}.${warning}`);
+    showInfo(`Veriler geri yüklendi. Yedek sürümü: ${result.backupVersion}.${warning}`);
+  }
+
+  function confirmReset() {
+    Alert.alert(
+      'Demo veriyi sıfırla?',
+      'Bu işlem mevcut lokal demo verinin üstüne yazar. Devam etmeden önce yedek alman önerilir.',
+      [
+        { text: 'Vazgeç', style: 'cancel' },
+        { text: 'Sıfırla', style: 'destructive', onPress: () => { onReset(); showInfo('Demo veri sıfırlandı. Ana ekrandan kontrol edebilirsin.'); } },
+      ]
+    );
   }
 
   return (
@@ -62,6 +78,8 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
         <Text style={{ marginTop: 12, color: '#315661', fontSize: 15, fontWeight: '800' }}>Uygulama sürümü: {APP_STATUS_CODE}</Text>
         <Text style={{ marginTop: 8, color: '#315661', fontSize: 15, fontWeight: '800' }}>Para birimi: TRY</Text>
       </View>
+
+      <NoticeBox message={message} type={messageType} />
 
       <View style={{ marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' }}>
         <Text style={{ color: '#102A35', fontSize: 22, fontWeight: '900' }}>Antalya hedefi</Text>
@@ -97,8 +115,7 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
         <Text style={{ marginTop: 7, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>Otomatik Google Drive yedeği v1.0 sonrası opsiyonel özellik olarak beklemede. Şimdilik manuel yedek metni kullanılacak.</Text>
       </View>
 
-      {!!message && <Text style={{ marginTop: 12, color: '#DDF8FA', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>{message}</Text>}
-      <TouchableOpacity style={{ marginTop: 18, paddingVertical: 14, borderRadius: 20, backgroundColor: '#2DE2E6', alignItems: 'center' }} onPress={onReset}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>Demo veriyi sıfırla</Text></TouchableOpacity>
+      <TouchableOpacity style={{ marginTop: 18, paddingVertical: 14, borderRadius: 20, backgroundColor: '#FFD0D8', alignItems: 'center' }} onPress={confirmReset}><Text style={{ color: '#7A1E2B', fontSize: 15, fontWeight: '900' }}>Demo veriyi sıfırla</Text></TouchableOpacity>
     </ScrollView>
   );
 }
