@@ -312,8 +312,8 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
         {visiblePlaces.length === 0 ? <Text style={{ marginTop: 12, color: '#315661', fontSize: 14, lineHeight: 20, fontWeight: '800' }}>Bu filtreye uygun hedef yok.</Text> : visiblePlaces.map((item) => <PlaceItem key={item.id} item={item} onToggle={togglePlace} onEdit={editPlace} onDelete={deletePlace} />)}
       </Panel>
 
-      <Panel title="Ozel hedefler" subtitle="v0.3.7 adiminda yeni hedef ekleme sistemi gelecek.">
-        {customGoals.length === 0 ? <Text style={{ color: '#315661', fontSize: 14, lineHeight: 20, fontWeight: '800' }}>Henuz ozel hedef yok. Sonraki adimlarda kendi hedeflerini ekleyebileceksin.</Text> : customGoals.map((item) => <Line key={item.id} left={item.title} right={item.isCompleted ? 'Tamam' : 'Aktif'} note={formatTRY(item.estimatedBudget)} />)}
+      <Panel title="Ozel hedefler" subtitle="Ozel hedefler artik alt menudeki Hedef sekmesinden eklenir ve yonetilir.">
+        {customGoals.length === 0 ? <Text style={{ color: '#315661', fontSize: 14, lineHeight: 20, fontWeight: '800' }}>Henuz ozel hedef yok. Alt menuden Hedef sekmesine girerek ilk hedefini ekleyebilirsin.</Text> : customGoals.map((item) => <Line key={item.id} left={item.title} right={item.isCompleted ? 'Tamam' : 'Aktif'} note={`${item.category || 'hedef'} - ${formatTRY(item.estimatedBudget)}`} />)}
       </Panel>
     </ScrollView>
   );
