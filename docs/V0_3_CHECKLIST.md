@@ -10,11 +10,11 @@ v0.3, DraBornLife'i finans takip uygulamasindan Antalya yasam planlama paneline 
 
 - [x] v0.2.10 yedek branch olustur
 - [x] v0.3 checklist dosyasini olustur
-- [ ] README v0.3 akisina guncelle
-- [ ] Roadmap v0.3 kapsamlarini guncelle
-- [ ] Merkezi surum kodunu v0.3.1 yap
-- [ ] package.json surumunu 0.3.1 yap
-- [ ] app.config.js surumunu 0.3.1 yap
+- [x] README v0.3 akisina guncelle
+- [x] Roadmap v0.3 kapsamlarini guncelle
+- [x] Merkezi surum kodunu v0.3.1 yap
+- [x] package.json surumunu 0.3.1 yap
+- [x] app.config.js surumunu 0.3.1 yap
 
 ## v0.3.2 — Yasam veri modeli
 
