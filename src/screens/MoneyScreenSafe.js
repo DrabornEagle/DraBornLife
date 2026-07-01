@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { CurrencySelector } from '../components/CurrencySelector';
+import { MoneyCategoryReport } from '../components/MoneyCategoryReport';
 import { NoticeBox } from '../components/NoticeBox';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatMoney } from '../utils/lifeSummary';
@@ -78,6 +79,8 @@ export function MoneyScreenSafe({ lifeData, onSave }) {
       <Panel title="Nakit akışı" note="Son 7 gün ve son 30 gün net durum.">
         <View style={{ flexDirection: 'row', marginTop: 10 }}><Card label="7 gün net" value={money(totals.week.net)} /><Card label="30 gün net" value={money(totals.month.net)} /></View>
       </Panel>
+
+      <MoneyCategoryReport entries={entries} money={money} />
 
       <Panel title="Hızlı işlem" note="Sık kullanılan giriş tipini seç, sadece tutarı girip kaydet.">
         <Chips items={quickTemplates.map(x => x.title)} active="" onPick={name => applyTemplate(quickTemplates.find(x => x.title === name))} />
