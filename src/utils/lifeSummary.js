@@ -9,6 +9,7 @@ export function getLifeSummary(data) {
   const moneyEntries = data?.moneyEntries || [];
   const shoppingItems = data?.shoppingItems || [];
   const debtEntries = data?.debtEntries || [];
+  const activities = data?.activities || [];
   const motorcycle = data?.goals?.motorcycle || {};
   const moveGoal = data?.goals?.antalyaMove || {};
 
@@ -24,6 +25,12 @@ export function getLifeSummary(data) {
   const shoppingTotal = shoppingItems.reduce((t, x) => t + toNumber(x.estimatedPrice) * Math.max(1, toNumber(x.quantity)), 0);
   const shoppingSaved = shoppingItems.reduce((t, x) => t + toNumber(x.savedAmount), 0);
   const shoppingRemaining = Math.max(0, shoppingTotal - shoppingSaved);
+
+  const activityTotal = activities.reduce((t, x) => t + toNumber(x.estimatedPrice), 0);
+  const activitySaved = activities.reduce((t, x) => t + toNumber(x.savedAmount), 0);
+  const activityRemaining = Math.max(0, activityTotal - activitySaved);
+  const activityDone = activities.filter((x) => x.isCompleted).length;
+
   const manualTargetBudget = toNumber(moveGoal.targetAmount);
   const targetBudget = manualTargetBudget > 0 ? manualTargetBudget : shoppingTotal;
   const targetRemaining = Math.max(0, targetBudget - savedAmount);
@@ -60,6 +67,12 @@ export function getLifeSummary(data) {
     shoppingReady: shoppingItems.filter((x) => x.isMoneyReady).length,
     shoppingBought: shoppingItems.filter((x) => x.isPurchasedOrInstalled).length,
     shoppingCount: shoppingItems.length,
+    activityTotal,
+    activitySaved,
+    activityRemaining,
+    activityDone,
+    activityCount: activities.length,
+    activityPercent: percent(activitySaved, activityTotal),
     motorcyclePrice: toNumber(motorcycle.estimatedPrice),
     motorcycleSaved: toNumber(motorcycle.savedAmount),
     motorcycleOldSale: toNumber(motorcycle.oldMotorcycleSaleAmount),
