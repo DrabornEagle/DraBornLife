@@ -18,20 +18,20 @@ v1.3 başlaması APK alınacağı anlamına gelmez. APK build süreci sadece kul
 | v1.3.4 | Gelir gider akışı geliştirme | Done |
 | v1.3.5 | Alınacaklar ve ev kurulum bağlantısı | Done |
 | v1.3.6 | Yıllık hedefler ve özel hedefler bağlantısı | Done |
-| v1.3.7 | Veri sağlık kontrolü ve yedek doğrulama | Next |
-| v1.3.8 | Tasarım mikro düzeltmeleri | Waiting |
+| v1.3.7 | Veri sağlık kontrolü ve yedek doğrulama | Done |
+| v1.3.8 | Tasarım mikro düzeltmeleri | Next |
 | v1.3.9 | Genel test ve hata düzeltmeleri | Waiting |
 | v1.3.10 | v1.3 kapanışı | Waiting |
 
-## v1.3.6 - Yıllık hedefler ve özel hedefler bağlantısı
+## v1.3.7 - Veri sağlık kontrolü ve yedek doğrulama
 
-- [x] Özel hedeflere yıl seçimi eklendi.
-- [x] Özel hedefler yıllık hedeflere bağlandı.
-- [x] Tamamlanan özel hedefler yıl planına yansıtıldı.
-- [x] Silinen özel hedeflerin yıl bağlantısı temizlendi.
+- [x] Veri sağlık raporu eklendi.
+- [x] Yedek içine healthReport eklendi.
+- [x] Kritik hatalı yedek içe aktarımı engellendi.
+- [x] Ayarlar ekranına veri sağlığı paneli eklendi.
 
 ## İlk uygulanacak adım
 
 ```text
-v1.3.7 - Veri sağlık kontrolü ve yedek doğrulama
+v1.3.8 - Tasarım mikro düzeltmeleri
 ```
