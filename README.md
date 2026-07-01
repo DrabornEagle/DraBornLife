@@ -16,23 +16,20 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.2.7 | Debt payoff plan | Done |
 | v1.2.8 | Manual backup experience | Done |
 | v1.2.9 | General fixes and version sync | Done |
-| v1.2.10 | v1.2 closure | Next |
+| v1.2.10 | v1.2 closure | Done |
+| v1.3.1 | v1.3 plan and checklist | Next |
 
-## v1.2 development phase
+## Current phase
 
-v1.2.9 completed general fixes, version sync and small UX cleanup. Next step: v1.2.10 closure.
+v1.2 is closed. Next step: v1.3.1 planning.
 
 APK build is still manual-only and must not start unless the user explicitly asks for APK build.
 
 ## Files
 
 - docs/V1_2_NEXT_VERSION_PLAN.md
-- docs/V1_2_2_EXPO_GO_DEVICE_TEST_FIXES.md
-- docs/V1_2_3_FAMILY_ACTIVITY_PLAN.md
-- docs/V1_2_4_HOME_SETUP_ROOMS.md
-- docs/V1_2_5_REGION_COMPARISON.md
-- docs/V1_2_7_DEBT_PAYMENT_PLAN.md
-- docs/V1_2_8_BACKUP_EXPERIENCE.md
+- docs/V1_2_10_CLOSURE.md
+- docs/V1_3_NEXT_VERSION_PLAN.md
 
 ## Termux rule
 
