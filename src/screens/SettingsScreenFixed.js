@@ -3,7 +3,7 @@ import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'reac
 import { CurrencySelector } from '../components/CurrencySelector';
 import { NoticeBox } from '../components/NoticeBox';
 import { APP_STATUS_CODE } from '../config/appVersion';
-import { BACKUP_SCOPE, createBackupText, parseBackupText } from '../utils/backupUtils';
+import { BACKUP_SCOPE, createBackupText, getBackupStats, parseBackupText } from '../utils/backupUtils';
 
 export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
   const settings = lifeData?.settings || {};
@@ -54,18 +54,18 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
 
   function handleExport() {
     setExportText(createBackupText(lifeData));
-    showInfo(`Yedek metni hazır. ${backupStats.totalRecords} kayıt ve ${BACKUP_SCOPE.length} veri alanı dahil. Metnin tamamını kopyalayıp güvenli bir yere kaydet.`);
+    showInfo(`Yedek hazır. ${backupStats.totalRecords} kayıt, ${BACKUP_SCOPE.length} veri alanı, sürüm ${APP_STATUS_CODE}. Metnin tamamını kopyala.`);
   }
 
   function handleImport() {
     if (!importText.trim()) return showError('İçe aktarım için önce yedek metnini kutuya yapıştırmalısın.');
     const result = parseBackupText(importText);
     if (!result.ok) return showError(result.error);
+    const stats = result.stats || getBackupStats(result.data);
     const scopeCount = result.scope?.length || 0;
     const warning = result.versionWarning ? ` ${result.versionWarning}` : '';
-    const scopeText = scopeCount ? ` Gelen yedekte ${scopeCount} veri alanı var.` : ' Eski yedek algılandı; eksik alanlar otomatik tamamlanacak.';
     onRestore(result.data);
-    showInfo(`Veriler geri yüklendi. Yedek sürümü: ${result.backupVersion}.${scopeText}${warning}`);
+    showInfo(`Geri yükleme tamamlandı. Sürüm: ${result.backupVersion}. Tarih: ${result.createdAt}. Kayıt: ${stats.totalRecords}. Alan: ${scopeCount || 'eski yedek'}.${warning}`);
   }
 
   function confirmReset() {
@@ -83,17 +83,16 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
       <Panel title="Yıllık sistem"><Input label="Varsayılan aktif yıl" value={activeYear} onChangeText={setActiveYear} placeholder="2026" keyboardType="numeric" /><Text style={hint}>Bu yıl Ana Sayfa ve Yıl ekranı için varsayılan seçim olur.</Text></Panel>
       <Panel title="Antalya hedefi"><Input label="Hedef tarih" value={targetDate} onChangeText={setTargetDate} placeholder="2026-10-31" /><Input label="Hedef ay metni" value={targetMonthText} onChangeText={setTargetMonthText} placeholder="Ekim / Kasım 2026" /><Input label="Hedef bölgeler" value={targetAreasText} onChangeText={setTargetAreasText} placeholder="Muratpaşa, Lara, Konyaaltı" /><Input label="Toplam hedef bütçe" value={targetAmount} onChangeText={setTargetAmount} placeholder="Örn: 500000" keyboardType="numeric" /></Panel>
       <Panel title="Motosiklet hedefi"><Input label="Sıfır motosiklet tahmini fiyat" value={motorcyclePrice} onChangeText={setMotorcyclePrice} placeholder="130000" keyboardType="numeric" /><Input label="Eski motosiklet satış tutarı" value={oldMotorcycleSaleAmount} onChangeText={setOldMotorcycleSaleAmount} placeholder="Örn: 60000" keyboardType="numeric" /><Button label="Hedef ayarlarını kaydet" onPress={saveTargets} color="#FFB347" /></Panel>
-      <Panel title="Yedek özeti"><CountLine label="Toplam kayıt" value={backupStats.totalRecords} /><CountLine label="Yıllık hedef" value={backupStats.yearlyPlans} /><CountLine label="Para kaydı" value={backupStats.moneyEntries} /><CountLine label="Alınacak kalem" value={backupStats.shoppingItems} /><CountLine label="Borç kaydı" value={backupStats.debtEntries} /><CountLine label="Özel hedef" value={backupStats.customGoals} /><Text style={hint}>Yedek alanı: {BACKUP_SCOPE.length}. Kapsam: {BACKUP_SCOPE.join(', ')}</Text></Panel>
-      <Panel title="Dışa aktar"><Text style={hint}>Yedek metni tüm lokal verileri kapsar. Oluşan metnin tamamını kopyala; parça eksik kalırsa geri yükleme çalışmaz.</Text><Button label="Yedek metni oluştur" onPress={handleExport} color="#2DE2E6" /><Box value={exportText} onChangeText={setExportText} placeholder="Dışa aktarım metni burada görünecek" /></Panel>
-      <Panel title="İçe aktar"><Text style={{ marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, fontWeight: '900' }}>Uyarı: Geri yükleme mevcut lokal verinin üstüne yazar. Emin değilsen önce mevcut veriyi dışa aktar.</Text><Box value={importText} onChangeText={setImportText} placeholder="Kaydettiğin yedek metnini buraya yapıştır" /><Button label="Yedekten geri yükle" onPress={handleImport} color="#FFB347" /></Panel>
-      <View style={{ marginTop: 14, padding: 16, borderRadius: 22, backgroundColor: '#FFF1D6', borderWidth: 1, borderColor: '#FFDCA0' }}><Text style={{ color: '#102A35', fontSize: 17, fontWeight: '900' }}>Google Drive notu</Text><Text style={hint}>Otomatik Google Drive yedeği v1.0 sonrası opsiyonel özellik olarak beklemede. Şimdilik manuel yedek metni kullanılacak.</Text></View>
+      <Panel title="Yedek merkezi"><Text style={hint}>Bu yedek cihaz içi verinin tamamını metin olarak dışa aktarır. Telefon değişirse aynı metni içe aktararak geri dönebilirsin.</Text><CountLine label="Toplam kayıt" value={backupStats.totalRecords} /><CountLine label="Yıl hedefi" value={backupStats.yearlyPlans} /><CountLine label="Ev odası" value={backupStats.homeSetupRooms} /><CountLine label="Aktivite" value={backupStats.activities} /><CountLine label="Sahil / rota" value={backupStats.beaches} /><CountLine label="Bölge notu" value={backupStats.regionNotes} /><CountLine label="Para kaydı" value={backupStats.moneyEntries} /><CountLine label="Alınacak kalem" value={backupStats.shoppingItems} /><CountLine label="Borç kaydı" value={backupStats.debtEntries} /><Text style={hint}>Yedek kapsamı: {BACKUP_SCOPE.join(', ')}</Text></Panel>
+      <Panel title="Dışa aktar"><Text style={hint}>1) Yedek metni oluştur. 2) Metnin tamamını kopyala. 3) WhatsApp, notlar veya dosya olarak güvenli yerde sakla.</Text><Button label="Yedek metni oluştur" onPress={handleExport} color="#2DE2E6" /><Box value={exportText} onChangeText={setExportText} placeholder="Dışa aktarım metni burada görünecek" /></Panel>
+      <Panel title="İçe aktar"><Text style={warning}>Uyarı: Geri yükleme mevcut lokal verinin üstüne yazar. Önce mevcut veriyi dışa aktarman önerilir.</Text><Box value={importText} onChangeText={setImportText} placeholder="Kaydettiğin yedek metnini buraya yapıştır" /><Button label="Yedekten geri yükle" onPress={handleImport} color="#FFB347" /></Panel>
+      <View style={{ marginTop: 14, padding: 16, borderRadius: 22, backgroundColor: '#FFF1D6', borderWidth: 1, borderColor: '#FFDCA0' }}><Text style={{ color: '#102A35', fontSize: 17, fontWeight: '900' }}>Google Drive notu</Text><Text style={hint}>Otomatik Google Drive yedeği ileride opsiyonel özellik olabilir. Şimdilik manuel yedek metni kullanılacak.</Text></View>
       <TouchableOpacity style={{ marginTop: 18, paddingVertical: 14, borderRadius: 20, backgroundColor: '#FFD0D8', alignItems: 'center' }} onPress={confirmReset}><Text style={{ color: '#7A1E2B', fontSize: 15, fontWeight: '900' }}>Demo veriyi sıfırla</Text></TouchableOpacity>
     </ScrollView>
   );
 }
 
 function syncYearPlans(input) { const list = Array.isArray(input.plans) ? input.plans : []; const area = input.targetAreas.join(' / '); const antalyaPlan = { id: 'year_2026_antalya', year: input.year, title: `${input.year} Antalya yeni hayat`, goalType: 'tasinma', country: 'Türkiye', city: 'Antalya', area, targetMonth: input.targetMonth, targetDate: input.targetDate, estimatedBudget: input.moveBudget, savedAmount: input.moveSaved, status: 'active', note: 'Antalya ana hedefi Ayarlar ekranından senkronlanır.' }; const motorcyclePlan = { id: 'year_motorcycle_goal', year: input.year, title: 'Yeni motosiklet', goalType: 'arac', country: 'Türkiye', city: 'Antalya', area: '', targetMonth: input.targetMonth, targetDate: input.targetDate, estimatedBudget: input.motorcyclePrice, savedAmount: input.motorcycleSaved, status: 'planned', note: 'Motosiklet fiyatı Ayarlar ve Liste ekranlarıyla bağlıdır.' }; const without = list.filter((p) => p.id !== antalyaPlan.id && p.id !== motorcyclePlan.id); return [antalyaPlan, motorcyclePlan, ...without]; }
-function getBackupStats(data) { const count = (x) => Array.isArray(x) ? x.length : 0; const stats = { yearlyPlans: count(data?.yearlyPlans), moneyEntries: count(data?.moneyEntries), shoppingItems: count(data?.shoppingItems), debtEntries: count(data?.debtEntries), customGoals: count(data?.customGoals), activities: count(data?.activities), beaches: count(data?.beaches) }; return { ...stats, totalRecords: Object.values(stats).reduce((a, b) => a + b, 0) }; }
 function Panel({ title, children }) { return <View style={panel}><Text style={panelTitle}>{title}</Text>{children}</View>; }
 function CountLine({ label, value }) { return <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: '#D9F1F2' }}><Text style={{ color: '#315661', fontSize: 13, fontWeight: '800' }}>{label}</Text><Text style={{ color: '#102A35', fontSize: 13, fontWeight: '900' }}>{value}</Text></View>; }
 function Input(props) { return <View style={{ marginTop: 14 }}><Text style={label}>{props.label}</Text><TextInput {...props} style={inputStyle} placeholderTextColor="#7C969D" /></View>; }
@@ -110,5 +109,6 @@ const panel = { marginTop: 14, padding: 18, borderRadius: 24, backgroundColor: '
 const panelTitle = { color: '#102A35', fontSize: 22, fontWeight: '900' };
 const label = { color: '#315661', fontSize: 12, fontWeight: '900' };
 const hint = { marginTop: 8, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' };
+const warning = { marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, fontWeight: '900' };
 const inputStyle = { marginTop: 7, padding: 14, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 16, fontWeight: '700' };
-const boxStyle = { minHeight: 120, marginTop: 12, padding: 12, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' };
+const boxStyle = { marginTop: 12, minHeight: 150, padding: 14, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' };
