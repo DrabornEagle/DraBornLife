@@ -57,7 +57,7 @@ export function SettingsScreenFixed({ lifeData, onReset, onRestore }) {
 }
 
 function Panel({ title, children }) { return <View style={panel}><Text style={panelTitle}>{title}</Text>{children}</View>; }
-function Count({ label, value }) { return <View style={countLine}><Text style={countLabel}>{label}</Text><Text style={countValue}>{value}</Text></View>; }
+function Count({ label, value }) { return <View style={countLine}><Text style={countLabel} numberOfLines={2}>{label}</Text><Text style={countValue} numberOfLines={2}>{String(value)}</Text></View>; }
 function Box(props) { return <TextInput multiline {...props} placeholderTextColor="#7C969D" style={boxStyle} />; }
 function Button({ label, onPress, color }) { return <TouchableOpacity onPress={onPress} style={{ marginTop: 14, paddingVertical: 14, borderRadius: 18, backgroundColor: color, alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 15, fontWeight: '900' }}>{label}</Text></TouchableOpacity>; }
 
@@ -72,8 +72,8 @@ const warning = { marginTop: 8, color: '#7A1E2B', fontSize: 13, lineHeight: 19, 
 const warnText = { marginTop: 6, color: '#7A4D00', fontSize: 12, lineHeight: 17, fontWeight: '800' };
 const errorText = { marginTop: 6, color: '#7A1E2B', fontSize: 12, lineHeight: 17, fontWeight: '900' };
 const countLine = { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: '#D9F1F2' };
-const countLabel = { color: '#315661', fontSize: 13, fontWeight: '800' };
-const countValue = { color: '#102A35', fontSize: 13, fontWeight: '900' };
+const countLabel = { flex: 1, paddingRight: 8, color: '#315661', fontSize: 13, lineHeight: 18, fontWeight: '800' };
+const countValue = { maxWidth: 130, color: '#102A35', fontSize: 13, lineHeight: 18, textAlign: 'right', fontWeight: '900' };
 const boxStyle = { marginTop: 12, minHeight: 150, padding: 14, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', color: '#102A35', fontSize: 12, fontWeight: '700', textAlignVertical: 'top' };
 const noteBox = { marginTop: 14, padding: 16, borderRadius: 22, backgroundColor: '#FFF1D6', borderWidth: 1, borderColor: '#FFDCA0' };
 const noteTitle = { color: '#102A35', fontSize: 17, fontWeight: '900' };
