@@ -12,15 +12,15 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.2.3 | Family activity plan screen | Done |
 | v1.2.4 | Home setup rooms and item groups | Done |
 | v1.2.5 | Antalya region comparison notes | Done |
-| v1.2.6 | Weekly / monthly saving suggestion system | Next |
-| v1.2.7 | Debt payoff calendar and payment plan suggestion | Waiting |
-| v1.2.8 | Manual backup experience improvement | Waiting |
-| v1.2.9 | General bug fixes and small UX touches | Waiting |
-| v1.2.10 | v1.2 closure | Waiting |
+| v1.2.6 | Home screen and menu fixes | Done |
+| v1.2.7 | Debt payoff plan | Done |
+| v1.2.8 | Manual backup experience | Done |
+| v1.2.9 | General fixes and version sync | Done |
+| v1.2.10 | v1.2 closure | Next |
 
 ## v1.2 development phase
 
-v1.2.5 added Antalya region comparison notes. Next step: v1.2.6 weekly / monthly saving suggestion system.
+v1.2.9 completed general fixes, version sync and small UX cleanup. Next step: v1.2.10 closure.
 
 APK build is still manual-only and must not start unless the user explicitly asks for APK build.
 
@@ -31,6 +31,8 @@ APK build is still manual-only and must not start unless the user explicitly ask
 - docs/V1_2_3_FAMILY_ACTIVITY_PLAN.md
 - docs/V1_2_4_HOME_SETUP_ROOMS.md
 - docs/V1_2_5_REGION_COMPARISON.md
+- docs/V1_2_7_DEBT_PAYMENT_PLAN.md
+- docs/V1_2_8_BACKUP_EXPERIENCE.md
 
 ## Termux rule
 
