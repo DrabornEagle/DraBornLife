@@ -42,8 +42,8 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.1.9 | Turkish text and currency final scan checklist | Done |
 | v1.1.10 | v1.1 stabilization closure | Done |
 | v1.2.1 | v1.2 plan and master checklist | Done |
-| v1.2.2 | Real Expo Go device test fixes | Next |
-| v1.2.3 | Family activity / aquapark / beach plan screen | Waiting |
+| v1.2.2 | Real Expo Go device test protocol | Done |
+| v1.2.3 | Family activity / aquapark / beach plan screen | Next |
 | v1.2.4 | Home setup rooms and item groups | Waiting |
 | v1.2.5 | Antalya region comparison notes | Waiting |
 | v1.2.6 | Weekly / monthly saving suggestion system | Waiting |
@@ -54,7 +54,7 @@ Personal mobile app for Antalya relocation and future life goals.
 
 ## v1.2 development phase
 
-v1.2 development planning has started. The first completed step is v1.2.1, and the next step is v1.2.2 real Expo Go device test fixes.
+v1.2 development is active. v1.2.2 created the real Expo Go device test protocol, and the next step is v1.2.3 family activity / aquapark / beach plan screen.
 
 APK build is still manual-only and must not start unless the user explicitly says: "APK almaya başlayalım".
 
@@ -82,6 +82,7 @@ Starting v1.2 does not mean APK build starts. APK build remains manual-only. Unt
 - docs/V1_1_STABILIZATION_MASTER_CHECKLIST.md
 - docs/V1_1_10_STABILIZATION_CLOSURE.md
 - docs/V1_2_NEXT_VERSION_PLAN.md
+- docs/V1_2_2_EXPO_GO_DEVICE_TEST_FIXES.md
 
 ## Termux rule
 
