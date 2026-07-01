@@ -31,16 +31,27 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.0.9 | Final premium design fixes | Done |
 | v1.0.10 | v1.0 design closure | Done |
 | v1.0.11 | Critical UI/UX fix: hidden Test tab, Turkish text, Home priorities | Done |
+| v1.1.1 | Stabilization plan and master checklist | Done |
+| v1.1.2 | Expo Go startup and navigation checklist | Done |
+| v1.1.3 | Premium Home usage checklist | Done |
+| v1.1.4 | Money screen checklist | Done |
+| v1.1.5 | Debt screen checklist | Done |
+| v1.1.6 | Shopping/list screen checklist | Done |
+| v1.1.7 | Year and custom goals checklist | Done |
+| v1.1.8 | Settings, backup and restore checklist | Done |
+| v1.1.9 | Turkish text and currency final scan checklist | Done |
+| v1.1.10 | v1.1 stabilization closure | Done |
+| v1.2 | Next version planning | Next |
 
-## v1.0 design phase
+## v1.1 stabilization phase
 
-v1.0 design renewal is closed, but user feedback fixes continue with Expo Go only.
+v1.1 stabilization is closed as a repository/documentation and safety-prep pass. Manual Expo Go device verification is still recommended before any APK work.
 
 APK build is still manual-only and must not start unless the user explicitly says: "APK almaya başlayalım".
 
 ## Important APK decision
 
-Starting or closing v1.0 does not mean APK build starts. APK build remains manual-only. Until then, development continues with Expo Go only.
+Starting or closing v1.1 does not mean APK build starts. APK build remains manual-only. Until then, development continues with Expo Go only.
 
 ## Files
 
@@ -59,6 +70,9 @@ Starting or closing v1.0 does not mean APK build starts. APK build remains manua
 - docs/V1_0_9_FINAL_PREMIUM_DESIGN_FIXES.md
 - docs/V1_0_10_DESIGN_CLOSURE.md
 - docs/V1_0_11_CRITICAL_UI_UX_FIX.md
+- docs/V1_1_STABILIZATION_MASTER_CHECKLIST.md
+- docs/V1_1_10_STABILIZATION_CLOSURE.md
+- docs/V1_2_NEXT_VERSION_PLAN.md
 
 ## Termux rule
 
