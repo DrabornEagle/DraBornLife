@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: 'DraBornLife',
     slug: 'drabornlife',
-    version: '1.4.4',
+    version: '1.4.5',
     orientation: 'portrait',
     userInterfaceStyle: 'light',
     scheme: 'drabornlife',
@@ -15,7 +15,7 @@ module.exports = {
       bundleIdentifier: 'com.draborneagle.drabornlife',
     },
     extra: {
-      statusCode: 'v1.4.4',
+      statusCode: 'v1.4.5',
       stabilizationPhaseClosed: true,
       storageMode: 'local-only',
       cloudDatabase: false,
