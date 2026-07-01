@@ -14,14 +14,14 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.3.4 | Income and expense flow | Done |
 | v1.3.5 | Shopping and home setup connection | Done |
 | v1.3.6 | Year and custom goals connection | Done |
-| v1.3.7 | Data health and backup validation | Next |
-| v1.3.8 | Design micro fixes | Waiting |
+| v1.3.7 | Data health and backup validation | Done |
+| v1.3.8 | Design micro fixes | Next |
 | v1.3.9 | General test and bug fixes | Waiting |
 | v1.3.10 | v1.3 closure | Waiting |
 
 ## Current phase
 
-v1.3.6 year and custom goals connection is complete. Next step: v1.3.7 data health and backup validation.
+v1.3.7 data health and backup validation is complete. Next step: v1.3.8 design micro fixes.
 
 APK build is still manual-only and must not start unless the user explicitly asks for APK build.
 
@@ -36,6 +36,7 @@ APK build is still manual-only and must not start unless the user explicitly ask
 - docs/V1_3_4_MONEY_FLOW.md
 - docs/V1_3_5_SHOPPING_HOME_LINK.md
 - docs/V1_3_6_YEAR_CUSTOM_GOALS_LINK.md
+- docs/V1_3_7_DATA_HEALTH_BACKUP_VALIDATION.md
 
 ## Termux rule
 
