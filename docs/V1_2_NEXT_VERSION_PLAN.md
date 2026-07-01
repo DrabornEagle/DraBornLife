@@ -17,12 +17,12 @@ APK build süreci kullanıcı açıkça istemeden başlatılmayacak.
 | v1.2.7 | Borç ödeme planı | Done |
 | v1.2.8 | Manuel yedek deneyimi | Done |
 | v1.2.9 | Genel hata düzeltmeleri | Done |
-| v1.2.10 | v1.2 kapanışı | Next |
+| v1.2.10 | v1.2 kapanışı | Done |
 
 ## Son tamamlanan adım
 
-v1.2.9 ile sürüm senkronu, küçük UX kontrolleri ve kapanış öncesi genel temizlik yapıldı.
+v1.2.10 ile v1.2 sürümü kapatıldı.
 
 ## Sıradaki adım
 
-v1.2.10 - v1.2 kapanışı.
+v1.3.1 - v1.3 planı ve yapılacaklar listesi.
