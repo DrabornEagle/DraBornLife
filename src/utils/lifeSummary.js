@@ -10,6 +10,7 @@ export function getLifeSummary(data) {
   const shoppingItems = data?.shoppingItems || [];
   const debtEntries = data?.debtEntries || [];
   const activities = data?.activities || [];
+  const homeSetupRooms = data?.homeSetupRooms || [];
   const motorcycle = data?.goals?.motorcycle || {};
   const moveGoal = data?.goals?.antalyaMove || {};
 
@@ -25,6 +26,12 @@ export function getLifeSummary(data) {
   const shoppingTotal = shoppingItems.reduce((t, x) => t + toNumber(x.estimatedPrice) * Math.max(1, toNumber(x.quantity)), 0);
   const shoppingSaved = shoppingItems.reduce((t, x) => t + toNumber(x.savedAmount), 0);
   const shoppingRemaining = Math.max(0, shoppingTotal - shoppingSaved);
+
+  const homeItems = homeSetupRooms.flatMap((room) => Array.isArray(room.items) ? room.items : []);
+  const homeSetupTotal = homeItems.reduce((t, x) => t + toNumber(x.estimatedPrice), 0);
+  const homeSetupDoneItems = homeItems.filter((x) => x.isCompleted);
+  const homeSetupDoneBudget = homeSetupDoneItems.reduce((t, x) => t + toNumber(x.estimatedPrice), 0);
+  const homeSetupRemaining = Math.max(0, homeSetupTotal - homeSetupDoneBudget);
 
   const activityTotal = activities.reduce((t, x) => t + toNumber(x.estimatedPrice), 0);
   const activitySaved = activities.reduce((t, x) => t + toNumber(x.savedAmount), 0);
@@ -67,6 +74,12 @@ export function getLifeSummary(data) {
     shoppingReady: shoppingItems.filter((x) => x.isMoneyReady).length,
     shoppingBought: shoppingItems.filter((x) => x.isPurchasedOrInstalled).length,
     shoppingCount: shoppingItems.length,
+    homeSetupTotal,
+    homeSetupDoneBudget,
+    homeSetupRemaining,
+    homeSetupCount: homeItems.length,
+    homeSetupDoneCount: homeSetupDoneItems.length,
+    homeSetupPercent: percent(homeSetupDoneBudget, homeSetupTotal),
     activityTotal,
     activitySaved,
     activityRemaining,
