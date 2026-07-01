@@ -16,24 +16,24 @@ v1.2 planı APK anlamına gelmez. APK build süreci sadece kullanıcı açıkça
 | v1.2.2 | Gerçek Expo Go cihaz testinden gelen düzeltmeler | Done |
 | v1.2.3 | Aile aktivite / aquapark / sahil planı ekranı geliştirme | Done |
 | v1.2.4 | Ev kurulum odaları ve eşya grupları geliştirme | Done |
-| v1.2.5 | Antalya yaşam rotası ve bölge karşılaştırma notları | Next |
-| v1.2.6 | Birikim hedefleri için aylık / haftalık öneri sistemi | Waiting |
+| v1.2.5 | Antalya yaşam rotası ve bölge karşılaştırma notları | Done |
+| v1.2.6 | Birikim hedefleri için aylık / haftalık öneri sistemi | Next |
 | v1.2.7 | Borç kapatma takvimi ve ödeme planı önerisi | Waiting |
 | v1.2.8 | Manuel yedek deneyimi iyileştirme | Waiting |
 | v1.2.9 | Genel hata düzeltmeleri ve küçük UX rötuşları | Waiting |
 | v1.2.10 | v1.2 kapanışı | Waiting |
 
-## v1.2.4 - Ev kurulum odaları ve eşya grupları
+## v1.2.5 - Antalya yaşam rotası ve bölge karşılaştırma notları
 
-- [x] Ev kurulum odaları geliştirildi.
-- [x] Eşyalara grup seçimi eklendi.
-- [x] Oda bazlı toplam bütçe hesaplandı.
-- [x] Oda bazlı tamamlanan eşya ve kalan bütçe gösterildi.
-- [x] Grup filtresi eklendi.
-- [x] Ana sayfaya ev kurulum özeti bağlandı.
+- [x] Bölge karşılaştırma paneli eklendi.
+- [x] Muratpaşa, Lara ve Konyaaltı varsayılan bölgeleri eklendi.
+- [x] Kira, ulaşım, sahil, aile ve market puanları eklendi.
+- [x] Artı, eksi ve kişisel aile notları eklendi.
+- [x] Ortalama bölge skoru eklendi.
+- [x] Bölge notları yedek kapsamına alındı.
 
 ## İlk uygulanacak adım
 
 ```text
-v1.2.5 - Antalya yaşam rotası ve bölge karşılaştırma notları
+v1.2.6 - Birikim hedefleri için aylık / haftalık öneri sistemi
 ```
