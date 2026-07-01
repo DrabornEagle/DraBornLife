@@ -1,6 +1,4 @@
 # DraBornLife
 
-v1.4.7 Done
-v1.4.8 Next
-
-APK build requires user approval.
+v1.4.8 Done
+v1.4.9 Next
