@@ -13,12 +13,9 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.4.2 | Done |
 | v1.4.3 | Done |
 | v1.4.4 | Done |
-| v1.4.5 | Next |
+| v1.4.5 | Done |
+| v1.4.6 | Next |
 
-APK build is manual-only and must not start unless the user explicitly asks for it.
+APK build requires user approval.
 
-Permanent local folder name:
-
-```text
-DraBornLife
-```
+Permanent local folder: DraBornLife
