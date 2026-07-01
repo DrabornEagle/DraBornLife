@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { NoticeBox } from '../components/NoticeBox';
+import { ShoppingPriorityPanel } from '../components/ShoppingPriorityPanel';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatMoney } from '../utils/lifeSummary';
 
@@ -70,6 +71,7 @@ export function ShoppingScreenSafe({ lifeData, onSave }) {
         <View style={{ flexDirection: 'row', marginTop: 8 }}><Card label="Kalan" value={money(summary.remaining)} /><Card label="Hazır / Alındı" value={`${summary.ready} / ${summary.purchased}`} /></View>
         <View style={{ flexDirection: 'row', marginTop: 8 }}><Card label="Odaya bağlı" value={`${summary.linked} kalem`} /><Card label="Oda sayısı" value={`${rooms.length}`} /></View>
       </Panel>
+      <ShoppingPriorityPanel items={items} money={money} />
       <Panel title={editingId ? 'Kalemi düzenle' : 'Yeni kalem ekle'} note="Kalemi kategoriye ve gerekiyorsa ev kurulum odasına bağla.">
         <Text style={labelStyle}>Kategori</Text><Chips items={categories} active={form.category} onPick={v => setField('category', v)} />
         <Input label="Ürün / hedef adı" value={form.title} onChangeText={v => setField('title', v)} placeholder="Örn: Salon koltuk takımı" />
