@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NoticeBox } from '../components/NoticeBox';
+import { RegionComparisonPanel } from '../components/RegionComparisonPanel';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatMoney } from '../utils/lifeSummary';
 
@@ -120,6 +121,7 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
       <NoticeBox message={notice.text} type={notice.type} />
       <View style={{ flexDirection: 'row', marginTop: 14 }}><MiniCard title="Ev kurulumu" value={`%${percent(roomDone, roomItems.length)}`} text={`${roomDone}/${roomItems.length || 0} eşya tamam`} /><MiniCard title="Aile aktivite" value={money(Math.max(0, activityTotal - activitySavedTotal))} text={`%${percent(activitySavedTotal, activityTotal)} bütçe hazır`} /></View>
       <View style={{ flexDirection: 'row', marginTop: 8 }}><MiniCard title="Sahil / Aqua" value={`${visitedPlaces}/${beaches.length}`} text={`${plannedPlaces} planlı hedef`} /><MiniCard title="Özel hedef" value={`${customDone}/${customGoals.length}`} text={money(Math.max(0, customTotal - customSaved))} /></View>
+      <RegionComparisonPanel lifeData={lifeData} onSave={onSave} />
 
       <Panel title="Ev kurulum odaları" subtitle="Oda seç, eşya grubu belirle, bütçe ve tamamlanma durumunu takip et.">
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>{rooms.map((room) => <Chip key={room.id} label={fix(room.title)} active={selectedRoom.id === room.id} onPress={() => { setSelectedRoomId(room.id); setItemGroupFilter('Tümü'); clearRoomForm(); }} />)}</ScrollView>
