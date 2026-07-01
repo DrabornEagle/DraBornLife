@@ -8,20 +8,12 @@ Personal mobile app for Antalya relocation and future life goals.
 |---|---|---|
 | v0.1 - v1.1 | Core and stabilization | Done |
 | v1.2 | Real use improvements | Done |
-| v1.3.1 | Plan | Done |
-| v1.3.2 | Real data check | Done |
-| v1.3.3 | Home decision system | Done |
-| v1.3.4 | Money flow | Done |
-| v1.3.5 | Shopping home setup link | Done |
-| v1.3.6 | Year custom goals link | Done |
-| v1.3.7 | Data health backup validation | Done |
-| v1.3.8 | Design micro fixes | Done |
-| v1.3.9 | General test and bug fixes | Done |
-| v1.3.10 | Closure | Next |
+| v1.3 | Data and UX improvements | Done |
+| v1.4.1 | Next plan | Next |
 
 ## Current phase
 
-v1.3.9 is complete. Next step: v1.3.10.
+v1.3 is done. Next step: v1.4.1.
 
 APK build is manual-only and must not start unless the user explicitly asks for it.
 
