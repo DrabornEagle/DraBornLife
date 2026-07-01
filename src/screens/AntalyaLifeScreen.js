@@ -3,6 +3,7 @@ import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import { NoticeBox } from '../components/NoticeBox';
 import { RegionComparisonPanel } from '../components/RegionComparisonPanel';
 import { RoomPlanPanel } from '../components/RoomPlanPanel';
+import { LifeDecisionReport } from '../components/LifeDecisionReport';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatMoney } from '../utils/lifeSummary';
 
@@ -79,6 +80,7 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
       <View style={{ flexDirection: 'row', marginTop: 14 }}><Mini title="Ev kurulumu" value={`%${percent(roomDone, roomItems.length)}`} text={`${roomDone}/${roomItems.length || 0} eşya tamam`} /><Mini title="Aile aktivite" value={money(Math.max(0, activityTotal - activitySavedTotal))} text={`%${percent(activitySavedTotal, activityTotal)} bütçe hazır`} /></View>
       <View style={{ flexDirection: 'row', marginTop: 8 }}><Mini title="Sahil / Aqua" value={`${visitedPlaces}/${beaches.length}`} text="rota hedefi" /><Mini title="Özel hedef" value={`${customDone}/${customGoals.length}`} text="tamamlandı" /></View>
       <RoomPlanPanel rooms={rooms} money={money} />
+      <LifeDecisionReport lifeData={lifeData} money={money} />
       <RegionComparisonPanel lifeData={lifeData} onSave={onSave} />
 
       <Panel title="Ev kurulum odaları" subtitle="Oda seç, eşya grubu belirle, bütçe ve tamamlanma durumunu takip et.">
