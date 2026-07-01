@@ -21,7 +21,7 @@ const tabs = [
   { key: 'money', label: 'Para', icon: '◦' },
   { key: 'shopping', label: 'Liste', icon: '◦' },
   { key: 'debt', label: 'Borç', icon: '◦' },
-  { key: 'settings', label: 'Ayar', icon: '◦' },
+  { key: 'settings', label: 'Ayarlar', icon: '◦' },
 ];
 
 export default function App() {
@@ -55,7 +55,7 @@ export default function App() {
           <View style={styles.content}>{screen}</View>
           <View style={styles.tabWrap}>
             <View style={styles.navHeader}>
-              <Text style={styles.navTitle}>DraBornLife</Text>
+              <Text style={styles.navTitle}>DraBornLife Menü</Text>
               <Text style={styles.navHint}>Aktif: {activeTabInfo.label} • {tabs.length} bölüm</Text>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.tabBarContent}>
@@ -82,43 +82,14 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   appShell: { flex: 1, backgroundColor: theme.colors.oceanDeep },
   content: { flex: 1, backgroundColor: '#F3F6F8' },
-  tabWrap: {
-    backgroundColor: theme.colors.oceanDeep,
-    paddingTop: 8,
-    paddingBottom: 9,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(200,251,255,0.10)',
-    elevation: 10,
-  },
+  tabWrap: { backgroundColor: theme.colors.oceanDeep, paddingTop: 8, paddingBottom: 9, borderTopWidth: 1, borderTopColor: 'rgba(200,251,255,0.10)', elevation: 10 },
   navHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 6 },
   navTitle: { color: '#FFFFFF', fontSize: 12, fontWeight: '900', letterSpacing: 0.3 },
   navHint: { color: 'rgba(221,248,250,0.70)', fontSize: 10, fontWeight: '800' },
   tabBarContent: { paddingLeft: 12, paddingRight: 28 },
-  tabItem: {
-    width: 62,
-    marginRight: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.09)',
-  },
-  tabItemActive: {
-    width: 82,
-    backgroundColor: theme.colors.aqua,
-    borderColor: 'rgba(255,255,255,0.48)',
-    elevation: 6,
-  },
-  iconDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.16)',
-  },
+  tabItem: { width: 62, marginRight: 8, alignItems: 'center', justifyContent: 'center', paddingVertical: 7, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)' },
+  tabItemActive: { width: 82, backgroundColor: theme.colors.aqua, borderColor: 'rgba(255,255,255,0.48)', elevation: 6 },
+  iconDot: { width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.16)' },
   iconDotActive: { backgroundColor: 'rgba(6,32,42,0.12)' },
   tabIcon: { color: 'rgba(255,255,255,0.72)', fontSize: 15, lineHeight: 16, fontWeight: '900' },
   tabIconActive: { color: theme.colors.oceanDeep },
