@@ -7,8 +7,8 @@ Main goal: daily use assistant and readiness checks.
 | Version | Step | Status |
 |---|---|---|
 | v1.5.1 | Plan and checklist | Done |
-| v1.5.2 | Daily check panel | Next |
-| v1.5.3 | Move readiness score | Waiting |
+| v1.5.2 | Daily check panel | Done |
+| v1.5.3 | Move readiness score | Next |
 | v1.5.4 | Weekly summary | Waiting |
 | v1.5.5 | Budget alert rules | Waiting |
 | v1.5.6 | Backup reminder rules | Waiting |
@@ -17,4 +17,4 @@ Main goal: daily use assistant and readiness checks.
 | v1.5.9 | General tests | Waiting |
 | v1.5.10 | Closure | Waiting |
 
-Next: v1.5.2.
+Next: v1.5.3.
