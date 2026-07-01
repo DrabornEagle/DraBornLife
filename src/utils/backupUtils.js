@@ -10,6 +10,7 @@ export const BACKUP_SCOPE = [
   'homeSetupRooms',
   'activities',
   'beaches',
+  'regionNotes',
   'customGoals',
   'moneyEntries',
   'shoppingItems',
@@ -48,7 +49,7 @@ export function parseBackupText(text) {
 
     const backupVersion = parsed.backupVersion || 'bilinmiyor';
     const versionText = String(backupVersion);
-    const isCompatible = versionText.startsWith('v0.1') || versionText.startsWith('v0.2') || versionText.startsWith('v0.3') || versionText.startsWith('v0.4') || versionText.startsWith('v0.5') || versionText.startsWith('v1.0');
+    const isCompatible = versionText.startsWith('v0.1') || versionText.startsWith('v0.2') || versionText.startsWith('v0.3') || versionText.startsWith('v0.4') || versionText.startsWith('v0.5') || versionText.startsWith('v1.0') || versionText.startsWith('v1.1') || versionText.startsWith('v1.2');
     const versionWarning = isCompatible ? '' : `Yedek sürümü farklı görünüyor: ${backupVersion}. Veri yapısı uygunsa yine de yüklenebilir.`;
     const scope = Array.isArray(parsed.backupScope) ? parsed.backupScope : [];
 
