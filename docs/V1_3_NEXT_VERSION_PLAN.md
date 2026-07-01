@@ -1,37 +1,18 @@
-# DraBornLife v1.3 Sürüm Planı ve Yapılacaklar Listesi
+# DraBornLife v1.3 Plan
 
-## v1.3 ana hedef
+APK build kullanıcının açık isteği olmadan başlamaz.
 
-v1.3 sürümünün hedefi, v1.2 kapanışından sonra uygulamayı gerçek kullanıcı verisiyle daha güvenilir, daha anlaşılır ve daha günlük kullanıma uygun hale getirmektir.
+| Version | Status |
+|---|---|
+| v1.3.1 | Done |
+| v1.3.2 | Done |
+| v1.3.3 | Done |
+| v1.3.4 | Done |
+| v1.3.5 | Done |
+| v1.3.6 | Done |
+| v1.3.7 | Done |
+| v1.3.8 | Done |
+| v1.3.9 | Done |
+| v1.3.10 | Done |
 
-## APK kararı
-
-v1.3 başlaması APK alınacağı anlamına gelmez. APK build süreci sadece kullanıcı açıkça isterse başlar.
-
-## v1.3 sürüm akışı
-
-| Version | Step | Status |
-|---|---|---|
-| v1.3.1 | v1.3 planı ve yapılacaklar listesi | Done |
-| v1.3.2 | Gerçek kullanıcı verisi ile Expo Go kontrolü | Done |
-| v1.3.3 | Ana sayfa karar sistemi iyileştirme | Done |
-| v1.3.4 | Gelir gider akışı geliştirme | Done |
-| v1.3.5 | Alınacaklar ve ev kurulum bağlantısı | Done |
-| v1.3.6 | Yıllık hedefler ve özel hedefler bağlantısı | Done |
-| v1.3.7 | Veri sağlık kontrolü ve yedek doğrulama | Done |
-| v1.3.8 | Tasarım mikro düzeltmeleri | Next |
-| v1.3.9 | Genel test ve hata düzeltmeleri | Waiting |
-| v1.3.10 | v1.3 kapanışı | Waiting |
-
-## v1.3.7 - Veri sağlık kontrolü ve yedek doğrulama
-
-- [x] Veri sağlık raporu eklendi.
-- [x] Yedek içine healthReport eklendi.
-- [x] Kritik hatalı yedek içe aktarımı engellendi.
-- [x] Ayarlar ekranına veri sağlığı paneli eklendi.
-
-## İlk uygulanacak adım
-
-```text
-v1.3.8 - Tasarım mikro düzeltmeleri
-```
+Next: v1.4.1.
