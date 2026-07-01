@@ -38,8 +38,8 @@ Bu komut gelmeden:
 |---|---|---|
 | v1.2.1 | v1.2 planı ve yapılacaklar listesi | Done |
 | v1.2.2 | Gerçek Expo Go cihaz testinden gelen düzeltmeler | Done |
-| v1.2.3 | Aile aktivite / aquapark / sahil planı ekranı geliştirme | Next |
-| v1.2.4 | Ev kurulum odaları ve eşya grupları geliştirme | Waiting |
+| v1.2.3 | Aile aktivite / aquapark / sahil planı ekranı geliştirme | Done |
+| v1.2.4 | Ev kurulum odaları ve eşya grupları geliştirme | Next |
 | v1.2.5 | Antalya yaşam rotası ve bölge karşılaştırma notları | Waiting |
 | v1.2.6 | Birikim hedefleri için aylık / haftalık öneri sistemi | Waiting |
 | v1.2.7 | Borç kapatma takvimi ve ödeme planı önerisi | Waiting |
@@ -57,10 +57,6 @@ Bu komut gelmeden:
 
 ## v1.2.2 - Gerçek Expo Go cihaz testinden gelen düzeltmeler
 
-Amaç: Kullanıcı telefonda uygulamayı açtıktan sonra görülen gerçek hataları küçük patch mantığında temizlemek.
-
-Bu adımda repo tarafında gerçek cihaz test protokolü ve hata raporlama formatı oluşturuldu. Fiziksel Expo Go testi kullanıcı tarafından yapılacaktır.
-
 - [x] Gerçek cihaz test protokolü oluşturuldu.
 - [x] Açılış kontrol listesi yazıldı.
 - [x] Ana sayfa kontrol listesi yazıldı.
@@ -73,14 +69,12 @@ Bu adımda repo tarafında gerçek cihaz test protokolü ve hata raporlama forma
 
 ## v1.2.3 - Aile aktivite / aquapark / sahil planı
 
-Amaç: Antalya'ya taşınınca aileyle yapılacak aktiviteleri daha planlı takip etmek.
-
-Önerilen işler:
-
-- [ ] Aktivite kartları daha detaylı hale getirilecek.
-- [ ] Aquapark, sahil, piknik, yemek, gezi gibi kategoriler netleşecek.
-- [ ] Her aktivite için tahmini bütçe, hedef ay, tamamlandı durumu gösterilecek.
-- [ ] Aile aktivite toplam bütçesi ana özetlere bağlanacak.
+- [x] Aktivite kartları daha detaylı hale getirildi.
+- [x] Aquapark, sahil, piknik, yemek, gezi gibi kategoriler netleştirildi.
+- [x] Her aktivite için tahmini bütçe, hedef ay, tamamlandı durumu ve aile notu alanı eklendi.
+- [x] Aktivite kategori ve durum filtreleri eklendi.
+- [x] Aile aktivite toplam bütçesi ana özetlere bağlandı.
+- [x] Ana sayfaya aile aktivite özeti ve progress kartı eklendi.
 
 ## v1.2.4 - Ev kurulum odaları ve eşya grupları
 
@@ -163,7 +157,7 @@ Amaç: v1.2 sürümünü tamamlayıp sıradaki ana sürüme geçmek.
 ## İlk uygulanacak adım
 
 ```text
-v1.2.3 - Aile aktivite / aquapark / sahil planı ekranı geliştirme
+v1.2.4 - Ev kurulum odaları ve eşya grupları geliştirme
 ```
 
-v1.2.3 ile Antalya'da aileyle yapılacak aquapark, sahil, gezi ve yemek gibi aktivite hedefleri daha kullanışlı kartlara alınacaktır.
+v1.2.4 ile ev kurulum odaları, oda bazlı eşya bütçeleri ve oda tamamlanma durumları geliştirilecektir.
