@@ -5,9 +5,9 @@ export function MoneyCategoryReport({ entries, money }) {
   const report = buildCategoryReport(entries || []);
   return (
     <View style={panel}>
-      <Text style={title}>Kategori raporu</Text>
-      <Text style={note}>Gelir ve gider hangi kategorilerden geliyor, hızlıca gör.</Text>
-      <View style={{ flexDirection: 'row', marginTop: 10 }}>
+      <Text style={title} numberOfLines={2}>Kategori raporu</Text>
+      <Text style={note} numberOfLines={3}>Gelir ve gider hangi kategorilerden geliyor, hızlıca gör.</Text>
+      <View style={miniRow}>
         <Mini label="En yüksek gelir" value={report.topIncome ? `${report.topIncome.category} • ${money(report.topIncome.income)}` : 'Yok'} />
         <Mini label="En yüksek gider" value={report.topExpense ? `${report.topExpense.category} • ${money(report.topExpense.expense)}` : 'Yok'} />
       </View>
@@ -32,19 +32,21 @@ function buildCategoryReport(entries) {
   const topExpense = rows.filter((x) => x.expense > 0).sort((a, b) => b.expense - a.expense)[0];
   return { rows, topIncome, topExpense };
 }
-function Row({ row, money }) { return <View style={rowStyle}><View style={{ flex: 1, paddingRight: 8 }}><Text style={rowTitle}>{row.category}</Text><Text style={rowSub}>{row.count} kayıt • Net: {money(row.net)}</Text></View><View style={{ alignItems: 'flex-end' }}><Text style={income}>+ {money(row.income)}</Text><Text style={expense}>- {money(row.expense)}</Text></View></View>; }
-function Mini({ label, value }) { return <View style={mini}><Text style={miniLabel}>{label}</Text><Text style={miniValue} numberOfLines={3}>{value}</Text></View>; }
+function Row({ row, money }) { return <View style={rowStyle}><View style={{ flex: 1, paddingRight: 8 }}><Text style={rowTitle} numberOfLines={1}>{row.category}</Text><Text style={rowSub} numberOfLines={2}>{row.count} kayıt • Net: {money(row.net)}</Text></View><View style={amountBox}><Text style={income} numberOfLines={1}>+ {money(row.income)}</Text><Text style={expense} numberOfLines={1}>- {money(row.expense)}</Text></View></View>; }
+function Mini({ label, value }) { return <View style={mini}><Text style={miniLabel} numberOfLines={1}>{label}</Text><Text style={miniValue} numberOfLines={3}>{value}</Text></View>; }
 function n(value) { const parsed = Number(String(value).replace(',', '.')); return Number.isFinite(parsed) ? parsed : 0; }
 
-const panel = { marginTop: 14, padding: 16, borderRadius: 24, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E4F2F1' };
-const title = { color: '#102A35', fontSize: 20, fontWeight: '900' };
-const note = { marginTop: 5, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' };
-const mini = { flex: 1, marginHorizontal: 4, padding: 12, minHeight: 84, borderRadius: 18, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' };
-const miniLabel = { color: '#315661', fontSize: 11, fontWeight: '900' };
-const miniValue = { marginTop: 5, color: '#102A35', fontSize: 13, lineHeight: 17, fontWeight: '900' };
-const rowStyle = { marginTop: 8, padding: 12, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', flexDirection: 'row', alignItems: 'center' };
-const rowTitle = { color: '#102A35', fontSize: 14, fontWeight: '900' };
+const panel = { marginTop: 14, padding: 14, borderRadius: 24, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E4F2F1' };
+const title = { color: '#102A35', fontSize: 19, lineHeight: 24, fontWeight: '900' };
+const note = { marginTop: 5, color: '#315661', fontSize: 13, lineHeight: 18, fontWeight: '800' };
+const miniRow = { flexDirection: 'row', marginTop: 10 };
+const mini = { flex: 1, marginHorizontal: 3, padding: 11, minHeight: 82, borderRadius: 18, backgroundColor: '#E9FAFA', borderWidth: 1, borderColor: '#BEEDEF' };
+const miniLabel = { color: '#315661', fontSize: 10, fontWeight: '900' };
+const miniValue = { marginTop: 5, color: '#102A35', fontSize: 12, lineHeight: 16, fontWeight: '900' };
+const rowStyle = { marginTop: 8, padding: 11, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#BEEDEF', flexDirection: 'row', alignItems: 'center' };
+const rowTitle = { color: '#102A35', fontSize: 14, lineHeight: 18, fontWeight: '900' };
 const rowSub = { marginTop: 4, color: '#315661', fontSize: 12, lineHeight: 16, fontWeight: '800' };
-const income = { color: '#128C7E', fontSize: 12, fontWeight: '900' };
-const expense = { marginTop: 3, color: '#FF5E7E', fontSize: 12, fontWeight: '900' };
+const amountBox = { maxWidth: 112, alignItems: 'flex-end' };
+const income = { color: '#128C7E', fontSize: 11, lineHeight: 15, fontWeight: '900' };
+const expense = { marginTop: 3, color: '#FF5E7E', fontSize: 11, lineHeight: 15, fontWeight: '900' };
 const empty = { marginTop: 10, color: '#315661', fontSize: 13, lineHeight: 18, fontWeight: '800' };
