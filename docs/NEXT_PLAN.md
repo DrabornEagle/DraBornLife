@@ -1,7 +1,6 @@
 # Next
 
-v1.4.8 Done
-v1.4.9 Next
-v1.4.10 Waiting
+v1.4.9 Done
+v1.4.10 Next
 
 APK approval only.
