@@ -60,6 +60,7 @@ export function HomeScreen({ lifeData }) {
       <View style={styles.actionCard}>
         <Text style={styles.sectionKicker}>HIZLI KARARLAR</Text>
         <ControlLine title="Alınacaklar" value={`${summary.shoppingBought}/${summary.shoppingCount}`} note={`${summary.shoppingReady} kalemin parası hazır`} />
+        <ControlLine title="Aile aktivite" value={money(summary.activityRemaining)} note={`${summary.activityDone}/${summary.activityCount} aktivite tamam`} />
         <ControlLine title="Motosiklet" value={money(summary.motorcyclePrice)} note="Tahmini fiyat düzenlenebilir" />
         <ControlLine title="Son 30 gün net" value={money(summary.monthSummary.net)} note="Aylık nakit akışı" />
         <ControlLine title="Son 7 gün net" value={money(summary.weekSummary.net)} note="Haftalık gidişat" />
@@ -71,6 +72,7 @@ export function HomeScreen({ lifeData }) {
       </View>
 
       <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={money(summary.savedAmount)} rightLabel={money(summary.targetBudget)} color={theme.colors.aqua} />
+      <CleanProgressCard title="Aile aktivite bütçesi" subtitle={`Kalan aktivite bütçesi: ${money(summary.activityRemaining)}`} percent={summary.activityPercent} leftLabel={money(summary.activitySaved)} rightLabel={money(summary.activityTotal)} color={theme.colors.sunset} />
       <CleanProgressCard title="Borç azaltma" subtitle={`Kalan borç: ${money(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={money(summary.paidDebt)} rightLabel={money(summary.totalDebt)} color={theme.colors.miamiPink} />
     </ScrollView>
   );
