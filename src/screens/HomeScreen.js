@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CleanProgressCard } from '../components/CleanProgressCard';
+import { HomeTips } from '../components/HomeTips';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { theme } from '../theme';
 import { formatMoney, getLifeSummary } from '../utils/lifeSummary';
@@ -42,6 +43,8 @@ export function HomeScreen({ lifeData }) {
         <Text style={styles.decisionText}>{decision.text}</Text>
         <View style={styles.decisionPill}><Text style={styles.decisionPillText}>{decision.action}</Text></View>
       </View>
+
+      <HomeTips summary={summary} lifeData={lifeData} money={money} />
 
       {alerts.length > 0 && (
         <View style={styles.alertCard}>
