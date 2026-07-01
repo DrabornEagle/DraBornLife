@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CleanProgressCard } from '../components/CleanProgressCard';
 import { HomeTips } from '../components/HomeTips';
+import { MoveReadinessScore } from '../components/MoveReadinessScore';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { theme } from '../theme';
 import { formatMoney, getLifeSummary } from '../utils/lifeSummary';
@@ -36,6 +37,8 @@ export function HomeScreen({ lifeData }) {
         <InfoLine title="Antalya taşınma" value={`${summary.daysLeft} gün`} note={`${summary.targetDateText} • ${areas}`} dark />
         <InfoLine title="GTA 6 hedefi" value={`${summary.gta6DaysLeft} gün`} note="Taşınma bu tarihten önce tamamlanmalı." />
       </View>
+
+      <MoveReadinessScore summary={summary} lifeData={lifeData} money={money} />
 
       <View style={styles.decisionCard}>
         <Text style={styles.decisionKicker}>BUGÜNÜN ÖNCELİĞİ</Text>
