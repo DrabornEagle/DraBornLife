@@ -6,8 +6,8 @@ APK build kullanıcı açıkça istemeden başlamaz.
 |---|---|
 | v1.4.1 | Done |
 | v1.4.2 | Done |
-| v1.4.3 | Next |
-| v1.4.4 | Waiting |
+| v1.4.3 | Done |
+| v1.4.4 | Next |
 | v1.4.5 | Waiting |
 | v1.4.6 | Waiting |
 | v1.4.7 | Waiting |
@@ -15,4 +15,4 @@ APK build kullanıcı açıkça istemeden başlamaz.
 | v1.4.9 | Waiting |
 | v1.4.10 | Waiting |
 
-Next: v1.4.3.
+Next: v1.4.4.
