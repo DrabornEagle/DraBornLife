@@ -9,6 +9,10 @@ export function HomeScreen({ lifeData }) {
   const summary = getLifeSummary(lifeData);
   const money = (value) => formatMoney(value, lifeData);
   const areas = summary.targetAreas || 'Muratpaşa • Lara • Konyaaltı';
+  const weeks = Math.max(1, Math.ceil(summary.daysLeft / 7));
+  const months = Math.max(1, Math.ceil(summary.daysLeft / 30));
+  const weeklyNeed = Math.ceil(summary.targetRemaining / weeks);
+  const monthlyNeed = Math.ceil(summary.targetRemaining / months);
 
   return (
     <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.screen}>
@@ -38,6 +42,11 @@ export function HomeScreen({ lifeData }) {
           <Mini label="Hedef" value={money(summary.targetBudget)} />
           <Mini label="Birikim" value={money(summary.savedAmount)} />
           <Mini label="Borç" value={money(summary.debtLeft)} />
+        </View>
+        <View style={styles.moneyGrid}>
+          <Mini label="Haftalık" value={money(weeklyNeed)} />
+          <Mini label="Aylık" value={money(monthlyNeed)} />
+          <Mini label="Kalan hafta" value={`${weeks}`} />
         </View>
       </View>
 
