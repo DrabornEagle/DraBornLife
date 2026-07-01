@@ -4,8 +4,13 @@ import { NoticeBox } from '../components/NoticeBox';
 import { APP_VERSION_LABEL } from '../config/appVersion';
 import { formatMoney } from '../utils/lifeSummary';
 
-const activityCategories = ['Aquapark', 'Sahil', 'Yemek', 'Gezi', 'Çocuk eğlence', 'Tatil'];
-const placeTypes = ['Sahil', 'Aquapark', 'Tatil'];
+const activityCategories = ['Aquapark', 'Sahil', 'Piknik', 'Yemek', 'Gezi', 'Çocuk eğlence', 'Tatil'];
+const activityFilters = [
+  { key: 'all', label: 'Tümü' },
+  { key: 'active', label: 'Aktif' },
+  { key: 'done', label: 'Tamamlandı' },
+];
+const placeTypes = ['Sahil', 'Aquapark', 'Gezi', 'Tatil'];
 const placeFilters = [
   { key: 'all', label: 'Tümü' },
   { key: 'planned', label: 'Planlı' },
@@ -29,7 +34,10 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
   const [activityCategory, setActivityCategory] = useState('Aquapark');
   const [activityPrice, setActivityPrice] = useState('');
   const [activitySaved, setActivitySaved] = useState('');
+  const [activityTargetMonth, setActivityTargetMonth] = useState('');
   const [activityNote, setActivityNote] = useState('');
+  const [activityCategoryFilter, setActivityCategoryFilter] = useState('Tümü');
+  const [activityStatusFilter, setActivityStatusFilter] = useState('all');
   const [editingPlaceId, setEditingPlaceId] = useState(null);
   const [placeTitle, setPlaceTitle] = useState('');
   const [placeType, setPlaceType] = useState('Sahil');
@@ -46,7 +54,14 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
   const homePercent = percent(roomDone, roomItems.length);
   const activityTotal = activities.reduce((sum, item) => sum + n(item.estimatedPrice), 0);
   const activitySavedTotal = activities.reduce((sum, item) => sum + n(item.savedAmount), 0);
+  const activityRemaining = Math.max(0, activityTotal - activitySavedTotal);
   const activityDone = activities.filter((item) => item.isCompleted).length;
+  const activityPercent = percent(activitySavedTotal, activityTotal);
+  const visibleActivities = activities.filter((item) => {
+    const categoryOk = activityCategoryFilter === 'Tümü' || item.category === activityCategoryFilter;
+    const statusOk = activityStatusFilter === 'all' || (activityStatusFilter === 'done' && item.isCompleted) || (activityStatusFilter === 'active' && !item.isCompleted);
+    return categoryOk && statusOk;
+  });
   const visitedPlaces = beaches.filter((item) => item.status === 'visited' || item.status === 'done').length;
   const plannedPlaces = beaches.length - visitedPlaces;
   const visiblePlaces = beaches.filter((item) => placeFilter === 'all' || item.status === placeFilter || (placeFilter === 'visited' && item.status === 'done'));
@@ -58,7 +73,7 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
   function info(text) { setNotice({ text, type: 'info' }); }
   function error(text) { setNotice({ text, type: 'error' }); }
   function clearRoomForm() { setEditingItemId(null); setItemTitle(''); setItemPrice(''); setItemNote(''); }
-  function clearActivityForm() { setEditingActivityId(null); setActivityTitle(''); setActivityCategory('Aquapark'); setActivityPrice(''); setActivitySaved(''); setActivityNote(''); }
+  function clearActivityForm() { setEditingActivityId(null); setActivityTitle(''); setActivityCategory('Aquapark'); setActivityPrice(''); setActivitySaved(''); setActivityTargetMonth(''); setActivityNote(''); }
   function clearPlaceForm() { setEditingPlaceId(null); setPlaceTitle(''); setPlaceType('Sahil'); setPlaceArea('Antalya'); setPlaceBudget(''); setPlaceNote(''); }
   function saveRooms(nextRooms) { onSave({ ...lifeData, homeSetupRooms: nextRooms }); }
   function saveActivities(nextActivities) { onSave({ ...lifeData, activities: nextActivities }); }
@@ -86,12 +101,21 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
     if (activitySaved.trim() && saved < 0) return error('Biriken tutar negatif olamaz.');
     if (price > 0 && saved > price) return error('Biriken tutar tahmini fiyattan büyük olamaz.');
     const oldActivity = activities.find((item) => item.id === editingActivityId);
-    const nextActivity = { id: editingActivityId || `activity_${Date.now()}`, title, category: activityCategory, estimatedPrice: price, savedAmount: saved, note: activityNote.trim(), isCompleted: editingActivityId ? !!oldActivity?.isCompleted : false };
+    const nextActivity = {
+      id: editingActivityId || `activity_${Date.now()}`,
+      title,
+      category: activityCategory,
+      estimatedPrice: price,
+      savedAmount: saved,
+      targetMonth: activityTargetMonth.trim(),
+      note: activityNote.trim(),
+      isCompleted: editingActivityId ? !!oldActivity?.isCompleted : false,
+    };
     saveActivities(editingActivityId ? activities.map((item) => item.id === editingActivityId ? nextActivity : item) : [nextActivity, ...activities]);
     info(editingActivityId ? 'Aktivite güncellendi.' : 'Aktivite eklendi.');
     clearActivityForm();
   }
-  function editActivity(item) { setEditingActivityId(item.id); setActivityTitle(item.title || ''); setActivityCategory(item.category || 'Aquapark'); setActivityPrice(String(item.estimatedPrice || '')); setActivitySaved(String(item.savedAmount || '')); setActivityNote(item.note || ''); info('Aktivite düzenleme modu açıldı.'); }
+  function editActivity(item) { setEditingActivityId(item.id); setActivityTitle(item.title || ''); setActivityCategory(item.category || 'Aquapark'); setActivityPrice(String(item.estimatedPrice || '')); setActivitySaved(String(item.savedAmount || '')); setActivityTargetMonth(item.targetMonth || ''); setActivityNote(item.note || ''); info('Aktivite düzenleme modu açıldı.'); }
   function deleteActivity(activityId) { saveActivities(activities.filter((item) => item.id !== activityId)); if (editingActivityId === activityId) clearActivityForm(); info('Aktivite silindi.'); }
   function toggleActivity(activityId) { saveActivities(activities.map((item) => item.id === activityId ? { ...item, isCompleted: !item.isCompleted } : item)); info('Aktivite durumu güncellendi.'); }
 
@@ -117,8 +141,36 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
         <Text style={{ marginTop: 10, color: '#DDF8FA', fontSize: 15, lineHeight: 22, fontWeight: '700' }}>Ev kurulumu, aile aktiviteleri, sahil ve tatil hedeflerini tek yaşam panelinde takip et.</Text>
       </View>
       <NoticeBox message={notice.text} type={notice.type} />
-      <View style={{ flexDirection: 'row', marginTop: 14 }}><MiniCard title="Ev kurulumu" value={`%${homePercent}`} text={`${roomDone}/${roomItems.length || 0} eşya tamam`} /><MiniCard title="Aktivite" value={money(Math.max(0, activityTotal - activitySavedTotal))} text="Kalan aktivite bütçesi" /></View>
+      <View style={{ flexDirection: 'row', marginTop: 14 }}><MiniCard title="Ev kurulumu" value={`%${homePercent}`} text={`${roomDone}/${roomItems.length || 0} eşya tamam`} /><MiniCard title="Aile aktivite" value={money(activityRemaining)} text={`%${activityPercent} bütçe hazır`} /></View>
       <View style={{ flexDirection: 'row', marginTop: 8 }}><MiniCard title="Sahil / Aqua" value={`${visitedPlaces}/${beaches.length}`} text={`${plannedPlaces} planlı hedef`} /><MiniCard title="Özel hedef" value={`${customDone}/${customGoals.length}`} text={money(Math.max(0, customTotal - customSaved))} /></View>
+
+      <Panel title="Aile aktivite planı" subtitle="Aquapark, sahil, piknik, yemek, gezi ve tatil hedeflerini bütçe ve hedef ayla takip et.">
+        <View style={{ flexDirection: 'row', marginBottom: 8 }}><SmallSummary title="Toplam" value={money(activityTotal)} /><SmallSummary title="Biriken" value={money(activitySavedTotal)} /><SmallSummary title="Tamam" value={`${activityDone}/${activities.length}`} /></View>
+        <Input label="Aktivite adı" value={activityTitle} onChangeText={setActivityTitle} placeholder="Örn: Aile aquapark günü" />
+        <Text style={labelStyle}>Kategori</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{activityCategories.map((category) => <Chip key={category} label={category} active={activityCategory === category} onPress={() => setActivityCategory(category)} />)}</ScrollView>
+        <Input label="Tahmini fiyat" value={activityPrice} onChangeText={setActivityPrice} placeholder="Örn: 2500" keyboardType="numeric" />
+        <Input label="Biriken tutar" value={activitySaved} onChangeText={setActivitySaved} placeholder="Örn: 500" keyboardType="numeric" />
+        <Input label="Hedef ay" value={activityTargetMonth} onChangeText={setActivityTargetMonth} placeholder="Örn: Haziran 2027" />
+        <Input label="Aile notu" value={activityNote} onChangeText={setActivityNote} placeholder="Örn: Çocuk için uygun saatleri araştır" />
+        <Button label={editingActivityId ? 'Aktiviteyi güncelle' : 'Aktivite ekle'} onPress={saveActivity} color="#FFB347" />
+        {editingActivityId && <Button label="Düzenlemeyi iptal et" onPress={clearActivityForm} color="#CFECEE" />}
+        <Text style={labelStyle}>Kategori filtresi</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{['Tümü', ...activityCategories].map((category) => <Chip key={category} label={category} active={activityCategoryFilter === category} onPress={() => setActivityCategoryFilter(category)} />)}</ScrollView>
+        <Text style={labelStyle}>Durum filtresi</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8, marginBottom: 8 }}>{activityFilters.map((filter) => <Chip key={filter.key} label={filter.label} active={activityStatusFilter === filter.key} onPress={() => setActivityStatusFilter(filter.key)} />)}</ScrollView>
+        {visibleActivities.length === 0 ? <EmptyText text="Bu filtreye uygun aktivite yok. İlk aile aktivitesini ekle." /> : visibleActivities.map((item) => <ActivityItem key={item.id} item={item} onToggle={toggleActivity} onEdit={editActivity} onDelete={deleteActivity} money={money} />)}
+      </Panel>
+
+      <Panel title="Sahil, aquapark ve tatil rotası" subtitle="Planlanan ve gidilen aile hedeflerini ayrıca rota kartlarıyla takip et.">
+        <Input label="Hedef adı" value={placeTitle} onChangeText={setPlaceTitle} placeholder="Örn: Lara Plajı" />
+        <Text style={labelStyle}>Tür</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{placeTypes.map((type) => <Chip key={type} label={type} active={placeType === type} onPress={() => setPlaceType(type)} />)}</ScrollView>
+        <Input label="Bölge" value={placeArea} onChangeText={setPlaceArea} placeholder="Örn: Lara" />
+        <Input label="Tahmini bütçe" value={placeBudget} onChangeText={setPlaceBudget} placeholder="Örn: 1500" keyboardType="numeric" />
+        <Input label="Aile notu" value={placeNote} onChangeText={setPlaceNote} placeholder="İsteğe bağlı" />
+        <Button label={editingPlaceId ? 'Hedefi güncelle' : 'Hedef ekle'} onPress={savePlace} color="#FFB347" />
+        {editingPlaceId && <Button label="Düzenlemeyi iptal et" onPress={clearPlaceForm} color="#CFECEE" />}
+        <Text style={labelStyle}>Filtre</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8, marginBottom: 8 }}>{placeFilters.map((filter) => <Chip key={filter.key} label={filter.label} active={placeFilter === filter.key} onPress={() => setPlaceFilter(filter.key)} />)}</ScrollView>
+        <Line left="Toplam rota bütçesi" right={money(placeBudgetTotal)} note={`${visitedPlaces} gidildi / ${plannedPlaces} planlı`} />
+        {visiblePlaces.length === 0 ? <EmptyText text="Bu filtreye uygun hedef yok." /> : visiblePlaces.map((item) => <PlaceItem key={item.id} item={item} onToggle={togglePlace} onEdit={editPlace} onDelete={deletePlace} money={money} />)}
+      </Panel>
 
       <Panel title="Ev kurulum odaları" subtitle="Oda seç, eşya ekle, tamamlandı durumunu takip et.">
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>{rooms.map((room) => <Chip key={room.id} label={fixTurkishText(room.title)} active={selectedRoom.id === room.id} onPress={() => { setSelectedRoomId(room.id); clearRoomForm(); }} />)}</ScrollView>
@@ -132,31 +184,6 @@ export function AntalyaLifeScreen({ lifeData, onSave }) {
         <Button label={editingItemId ? 'Eşyayı güncelle' : 'Eşyayı ekle'} onPress={saveRoomItem} color="#FFB347" />
         {editingItemId && <Button label="Düzenlemeyi iptal et" onPress={clearRoomForm} color="#CFECEE" />}
         {(selectedRoom.items || []).length === 0 ? <EmptyText text="Bu odada henüz eşya yok. İlk eşyayı ekleyerek oda kurulumunu başlat." /> : (selectedRoom.items || []).map((item) => <RoomItem key={item.id} item={item} onToggle={toggleRoomItem} onEdit={editRoomItem} onDelete={deleteRoomItem} money={money} />)}
-      </Panel>
-
-      <Panel title="Aile aktivite bütçesi" subtitle="Aquapark, sahil, yemek, gezi ve tatil hedeflerini bütçeyle takip et.">
-        <Input label="Aktivite adı" value={activityTitle} onChangeText={setActivityTitle} placeholder="Örn: Aile aquapark günü" />
-        <Text style={labelStyle}>Kategori</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{activityCategories.map((category) => <Chip key={category} label={category} active={activityCategory === category} onPress={() => setActivityCategory(category)} />)}</ScrollView>
-        <Input label="Tahmini fiyat" value={activityPrice} onChangeText={setActivityPrice} placeholder="Örn: 2500" keyboardType="numeric" />
-        <Input label="Biriken tutar" value={activitySaved} onChangeText={setActivitySaved} placeholder="Örn: 500" keyboardType="numeric" />
-        <Input label="Not" value={activityNote} onChangeText={setActivityNote} placeholder="İsteğe bağlı" />
-        <Button label={editingActivityId ? 'Aktiviteyi güncelle' : 'Aktivite ekle'} onPress={saveActivity} color="#FFB347" />
-        {editingActivityId && <Button label="Düzenlemeyi iptal et" onPress={clearActivityForm} color="#CFECEE" />}
-        {activities.length === 0 ? <EmptyText text="Henüz aktivite yok. Aile için ilk aktivite hedefini ekle." /> : activities.map((item) => <ActivityItem key={item.id} item={item} onToggle={toggleActivity} onEdit={editActivity} onDelete={deleteActivity} money={money} />)}
-        <Line left="Tamamlanan aktivite" right={`${activityDone}/${activities.length}`} note="Aile keyfi hedefleri" />
-      </Panel>
-
-      <Panel title="Sahil, aquapark ve tatil" subtitle="Planlanan ve gidilen aile hedeflerini takip et.">
-        <Input label="Hedef adı" value={placeTitle} onChangeText={setPlaceTitle} placeholder="Örn: Lara Plajı" />
-        <Text style={labelStyle}>Tür</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>{placeTypes.map((type) => <Chip key={type} label={type} active={placeType === type} onPress={() => setPlaceType(type)} />)}</ScrollView>
-        <Input label="Bölge" value={placeArea} onChangeText={setPlaceArea} placeholder="Örn: Lara" />
-        <Input label="Tahmini bütçe" value={placeBudget} onChangeText={setPlaceBudget} placeholder="Örn: 1500" keyboardType="numeric" />
-        <Input label="Aile notu" value={placeNote} onChangeText={setPlaceNote} placeholder="İsteğe bağlı" />
-        <Button label={editingPlaceId ? 'Hedefi güncelle' : 'Hedef ekle'} onPress={savePlace} color="#FFB347" />
-        {editingPlaceId && <Button label="Düzenlemeyi iptal et" onPress={clearPlaceForm} color="#CFECEE" />}
-        <Text style={labelStyle}>Filtre</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8, marginBottom: 8 }}>{placeFilters.map((filter) => <Chip key={filter.key} label={filter.label} active={placeFilter === filter.key} onPress={() => setPlaceFilter(filter.key)} />)}</ScrollView>
-        <Line left="Toplam hedef bütçesi" right={money(placeBudgetTotal)} note={`${visitedPlaces} gidildi / ${plannedPlaces} planlı`} />
-        {visiblePlaces.length === 0 ? <EmptyText text="Bu filtreye uygun hedef yok." /> : visiblePlaces.map((item) => <PlaceItem key={item.id} item={item} onToggle={togglePlace} onEdit={editPlace} onDelete={deletePlace} money={money} />)}
       </Panel>
 
       <Panel title="Özel hedefler" subtitle="Özel hedefler alt menüdeki Hedef sekmesinden eklenir ve yönetilir.">
@@ -174,28 +201,28 @@ function fixTurkishText(value) {
     .replace(/Odasi/g, 'Odası')
     .replace(/Ozel/g, 'Özel')
     .replace(/ozel/g, 'özel')
-    .replace(/Kurulum/g, 'Kurulum')
     .replace(/esya/g, 'eşya')
     .replace(/Esya/g, 'Eşya')
     .replace(/tamamlandi/g, 'tamamlandı')
     .replace(/Tamamlandi/g, 'Tamamlandı');
 }
 function Panel({ title, subtitle, children }) { return <View style={{ marginTop: 14, padding: 16, borderRadius: 24, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0' }}><Text style={{ color: '#102A35', fontSize: 20, fontWeight: '900' }}>{title}</Text><Text style={{ marginTop: 5, marginBottom: 8, color: '#315661', fontSize: 13, lineHeight: 19, fontWeight: '800' }}>{subtitle}</Text>{children}</View>; }
-function MiniCard({ title, value, text }) { return <View style={{ flex: 1, marginHorizontal: 4, padding: 14, minHeight: 110, borderRadius: 22, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0' }}><Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{title}</Text><Text style={{ marginTop: 8, color: '#102A35', fontSize: 22, fontWeight: '900' }}>{value}</Text><Text style={{ marginTop: 6, color: '#315661', fontSize: 12, lineHeight: 17, fontWeight: '800' }}>{text}</Text></View>; }
-function Line({ left, right, note }) { return <View style={{ paddingVertical: 10, borderTopWidth: 1, borderTopColor: '#E3EAF0' }}><View style={{ flexDirection: 'row', justifyContent: 'space-between' }}><Text style={{ flex: 1, color: '#102A35', fontSize: 14, fontWeight: '900' }}>{fixTurkishText(left)}</Text><Text style={{ color: '#FF7A59', fontSize: 13, fontWeight: '900' }}>{fixTurkishText(right)}</Text></View><Text style={{ marginTop: 3, color: '#315661', fontSize: 12, fontWeight: '800' }}>{fixTurkishText(note)}</Text></View>; }
+function MiniCard({ title, value, text }) { return <View style={{ flex: 1, marginHorizontal: 4, padding: 14, minHeight: 110, borderRadius: 22, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0' }}><Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{title}</Text><Text style={{ marginTop: 8, color: '#102A35', fontSize: 20, lineHeight: 25, fontWeight: '900' }} numberOfLines={2}>{value}</Text><Text style={{ marginTop: 6, color: '#315661', fontSize: 12, lineHeight: 17, fontWeight: '800' }}>{text}</Text></View>; }
+function SmallSummary({ title, value }) { return <View style={{ flex: 1, marginRight: 6, padding: 10, borderRadius: 16, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#E3EAF0' }}><Text style={{ color: '#315661', fontSize: 10, fontWeight: '900' }}>{title}</Text><Text style={{ marginTop: 5, color: '#102A35', fontSize: 13, lineHeight: 17, fontWeight: '900' }} numberOfLines={2}>{value}</Text></View>; }
+function Line({ left, right, note }) { return <View style={{ paddingVertical: 10, borderTopWidth: 1, borderTopColor: '#E3EAF0' }}><View style={{ flexDirection: 'row', justifyContent: 'space-between' }}><Text style={{ flex: 1, paddingRight: 10, color: '#102A35', fontSize: 14, lineHeight: 19, fontWeight: '900' }}>{fixTurkishText(left)}</Text><Text style={{ maxWidth: 125, color: '#FF7A59', fontSize: 13, lineHeight: 18, textAlign: 'right', fontWeight: '900' }} numberOfLines={2}>{fixTurkishText(right)}</Text></View><Text style={{ marginTop: 3, color: '#315661', fontSize: 12, fontWeight: '800' }}>{fixTurkishText(note)}</Text></View>; }
 function Chip({ label, active, onPress }) { return <TouchableOpacity onPress={onPress} style={{ marginRight: 8, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 18, backgroundColor: active ? '#2DE2E6' : '#E8F1F2' }}><Text style={{ color: '#06202A', fontSize: 12, fontWeight: '900' }}>{fixTurkishText(label)}</Text></TouchableOpacity>; }
 function Input(props) { return <View style={{ marginTop: 12 }}><Text style={{ color: '#315661', fontSize: 12, fontWeight: '900' }}>{props.label}</Text><TextInput {...props} style={{ marginTop: 7, padding: 13, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#E3EAF0', color: '#102A35', fontSize: 15, fontWeight: '800' }} placeholderTextColor="#7C969D" /></View>; }
 function Button({ label, onPress, color }) { return <TouchableOpacity onPress={onPress} style={{ marginTop: 12, paddingVertical: 13, borderRadius: 18, backgroundColor: color, alignItems: 'center' }}><Text style={{ color: '#06202A', fontSize: 14, fontWeight: '900' }}>{label}</Text></TouchableOpacity>; }
 function EmptyText({ text }) { return <Text style={{ marginTop: 12, color: '#315661', fontSize: 14, lineHeight: 20, fontWeight: '800' }}>{fixTurkishText(text)}</Text>; }
 function RoomItem({ item, onToggle, onEdit, onDelete, money }) { return <View style={itemCard}><View style={row}><Text style={itemTitleStyle}>{fixTurkishText(item.title)}</Text><Text style={{ color: item.isCompleted ? '#128C7E' : '#FF7A59', fontSize: 12, fontWeight: '900' }}>{item.isCompleted ? 'Tamam' : 'Bekliyor'}</Text></View><Text style={itemSub}>{money(item.estimatedPrice)} {item.note ? `- ${fixTurkishText(item.note)}` : ''}</Text><View style={btnRow}><Small label="Tamam" onPress={() => onToggle(item.id)} active={item.isCompleted} /><Small label="Düzenle" onPress={() => onEdit(item)} active /><Small label="Sil" onPress={() => onDelete(item.id)} danger /></View></View>; }
-function ActivityItem({ item, onToggle, onEdit, onDelete, money }) { const left = Math.max(0, n(item.estimatedPrice) - n(item.savedAmount)); return <View style={itemCard}><View style={row}><Text style={itemTitleStyle}>{fixTurkishText(item.title)}</Text><Text style={{ color: item.isCompleted ? '#128C7E' : '#FF7A59', fontSize: 12, fontWeight: '900' }}>{item.isCompleted ? 'Tamam' : money(left)}</Text></View><Text style={itemSub}>{fixTurkishText(item.category)} - Biriken: {money(item.savedAmount)} / {money(item.estimatedPrice)}</Text>{!!item.note && <Text style={itemSub}>{fixTurkishText(item.note)}</Text>}<View style={btnRow}><Small label="Tamam" onPress={() => onToggle(item.id)} active={item.isCompleted} /><Small label="Düzenle" onPress={() => onEdit(item)} active /><Small label="Sil" onPress={() => onDelete(item.id)} danger /></View></View>; }
+function ActivityItem({ item, onToggle, onEdit, onDelete, money }) { const left = Math.max(0, n(item.estimatedPrice) - n(item.savedAmount)); return <View style={itemCard}><View style={row}><Text style={itemTitleStyle}>{fixTurkishText(item.title)}</Text><Text style={{ color: item.isCompleted ? '#128C7E' : '#FF7A59', fontSize: 12, fontWeight: '900' }}>{item.isCompleted ? 'Tamam' : money(left)}</Text></View><Text style={itemSub}>{fixTurkishText(item.category)} - Biriken: {money(item.savedAmount)} / {money(item.estimatedPrice)}</Text>{!!item.targetMonth && <Text style={itemSub}>Hedef ay: {fixTurkishText(item.targetMonth)}</Text>}{!!item.note && <Text style={itemSub}>{fixTurkishText(item.note)}</Text>}<View style={btnRow}><Small label="Tamam" onPress={() => onToggle(item.id)} active={item.isCompleted} /><Small label="Düzenle" onPress={() => onEdit(item)} active /><Small label="Sil" onPress={() => onDelete(item.id)} danger /></View></View>; }
 function PlaceItem({ item, onToggle, onEdit, onDelete, money }) { const visited = item.status === 'visited' || item.status === 'done'; return <View style={itemCard}><View style={row}><Text style={itemTitleStyle}>{fixTurkishText(item.title)}</Text><Text style={{ color: visited ? '#128C7E' : '#FF7A59', fontSize: 12, fontWeight: '900' }}>{visited ? 'Gidildi' : 'Planlı'}</Text></View><Text style={itemSub}>{fixTurkishText(item.type)} - {fixTurkishText(item.area)} - {money(item.estimatedBudget)}</Text>{!!item.familyNote && <Text style={itemSub}>{fixTurkishText(item.familyNote)}</Text>}<View style={btnRow}><Small label={visited ? 'Planlı' : 'Gidildi'} onPress={() => onToggle(item.id)} active={visited} /><Small label="Düzenle" onPress={() => onEdit(item)} active /><Small label="Sil" onPress={() => onDelete(item.id)} danger /></View></View>; }
 function Small({ label, active, danger, onPress }) { return <TouchableOpacity onPress={onPress} style={{ flex: 1, marginRight: 6, paddingVertical: 9, borderRadius: 15, backgroundColor: danger ? '#FFD0D8' : active ? '#2DE2E6' : '#E8F1F2', alignItems: 'center' }}><Text style={{ color: danger ? '#7A1E2B' : '#06202A', fontSize: 11, fontWeight: '900' }}>{label}</Text></TouchableOpacity>; }
 const labelStyle = { marginTop: 12, color: '#315661', fontSize: 12, fontWeight: '900' };
 const itemCard = { marginTop: 10, padding: 13, borderRadius: 18, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#E3EAF0' };
 const row = { flexDirection: 'row', justifyContent: 'space-between' };
-const itemTitleStyle = { flex: 1, color: '#102A35', fontSize: 15, fontWeight: '900' };
-const itemSub = { marginTop: 4, color: '#315661', fontSize: 12, fontWeight: '800' };
+const itemTitleStyle = { flex: 1, paddingRight: 8, color: '#102A35', fontSize: 15, lineHeight: 20, fontWeight: '900' };
+const itemSub = { marginTop: 4, color: '#315661', fontSize: 12, lineHeight: 17, fontWeight: '800' };
 const btnRow = { flexDirection: 'row', marginTop: 10 };
 function percent(done, total) { if (!total) return 0; return Math.round((done / total) * 100); }
 function n(value) { const parsed = Number(String(value).replace(',', '.')); return Number.isFinite(parsed) ? parsed : 0; }
