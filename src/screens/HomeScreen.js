@@ -7,10 +7,8 @@ import { formatMoney, getLifeSummary } from '../utils/lifeSummary';
 
 export function HomeScreen({ lifeData }) {
   const summary = getLifeSummary(lifeData);
-  const targetAreasText = summary.targetAreas || 'Muratpaşa • Lara • Konyaaltı';
   const money = (value) => formatMoney(value, lifeData);
-  const moveUrgency = urgencyText(summary.daysLeft);
-  const gtaUrgency = urgencyText(summary.gta6DaysLeft);
+  const areas = summary.targetAreas || 'Muratpaşa • Lara • Konyaaltı';
 
   return (
     <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.screen}>
@@ -23,104 +21,49 @@ export function HomeScreen({ lifeData }) {
           <View style={styles.badge}><Text style={styles.badgeText}>APK YOK</Text></View>
         </View>
         <Text style={styles.heroTitle}>Taşınma komuta merkezi</Text>
-        <Text style={styles.heroText}>Öncelik net: Antalya düzenini GTA 6 çıkmadan önce tamamlamak.</Text>
+        <Text style={styles.heroText}>Antalya düzenini GTA 6 çıkmadan önce tamamlamak için ana bütçe, ev kurulum ve borç durumunu takip et.</Text>
       </View>
 
-      <View style={styles.criticalPanel}>
-        <Text style={styles.criticalKicker}>KRİTİK GERİ SAYIM</Text>
-        <Text style={styles.criticalTitle}>Bugün odaklanman gereken iki büyük tarih</Text>
-        <PriorityCard
-          label="ANTALYA TAŞINMA"
-          title={`${summary.daysLeft} gün`}
-          subtitle={`${summary.targetDateText} • ${targetAreasText}`}
-          footer={moveUrgency}
-          color="#2DE2E6"
-          dark
-        />
-        <PriorityCard
-          label="GTA 6 ÇIKIŞINA KALAN"
-          title={`${summary.gta6DaysLeft} gün`}
-          subtitle="Taşınma hedefi bu tarihten önce tamamlanmalı."
-          footer={gtaUrgency}
-          color="#FFB347"
-        />
+      <View style={styles.panel}>
+        <Text style={styles.kicker}>KRİTİK GERİ SAYIM</Text>
+        <InfoLine title="Antalya taşınma" value={`${summary.daysLeft} gün`} note={`${summary.targetDateText} • ${areas}`} dark />
+        <InfoLine title="GTA 6 hedefi" value={`${summary.gta6DaysLeft} gün`} note="Taşınma bu tarihten önce tamamlanmalı." />
       </View>
 
       <View style={styles.moneyHero}>
-        <Text style={styles.sectionKicker}>BÜTÇE ALARMI</Text>
+        <Text style={styles.kicker}>BÜTÇE ALARMI</Text>
         <Text style={styles.moneyTitle}>{money(summary.targetRemaining)}</Text>
         <Text style={styles.moneySub}>Antalya hedef bütçesine kalan tutar</Text>
         <View style={styles.moneyGrid}>
-          <MoneyMini label="Hedef" value={money(summary.targetBudget)} />
-          <MoneyMini label="Birikim" value={money(summary.savedAmount)} />
-          <MoneyMini label="Borç" value={money(summary.debtLeft)} />
+          <Mini label="Hedef" value={money(summary.targetBudget)} />
+          <Mini label="Birikim" value={money(summary.savedAmount)} />
+          <Mini label="Borç" value={money(summary.debtLeft)} />
         </View>
       </View>
 
-      <View style={styles.actionCard}>
-        <Text style={styles.sectionKicker}>HIZLI KARARLAR</Text>
-        <ControlLine title="Alınacaklar" value={`${summary.shoppingBought}/${summary.shoppingCount}`} note={`${summary.shoppingReady} kalemin parası hazır`} />
-        <ControlLine title="Aile aktivite" value={money(summary.activityRemaining)} note={`${summary.activityDone}/${summary.activityCount} aktivite tamam`} />
-        <ControlLine title="Motosiklet" value={money(summary.motorcyclePrice)} note="Tahmini fiyat düzenlenebilir" />
-        <ControlLine title="Son 30 gün net" value={money(summary.monthSummary.net)} note="Aylık nakit akışı" />
-        <ControlLine title="Son 7 gün net" value={money(summary.weekSummary.net)} note="Haftalık gidişat" />
+      <View style={styles.panel}>
+        <Text style={styles.kicker}>HIZLI KARARLAR</Text>
+        <InfoLine title="Ev kurulumu" value={money(summary.homeSetupRemaining)} note={`${summary.homeSetupDoneCount}/${summary.homeSetupCount} eşya tamam`} />
+        <InfoLine title="Alınacaklar" value={`${summary.shoppingBought}/${summary.shoppingCount}`} note={`${summary.shoppingReady} kalemin parası hazır`} />
+        <InfoLine title="Aile aktivite" value={money(summary.activityRemaining)} note={`${summary.activityDone}/${summary.activityCount} aktivite tamam`} />
+        <InfoLine title="Motosiklet" value={money(summary.motorcyclePrice)} note="Tahmini fiyat düzenlenebilir" />
       </View>
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>İlerleme</Text>
-        <Text style={styles.sectionSubtitle}>Ana hedefleri burada kısa ve okunur şekilde gör.</Text>
+        <Text style={styles.sectionSubtitle}>Ana hedefleri kısa ve okunur şekilde gör.</Text>
       </View>
 
       <CleanProgressCard title="Taşınma bütçesi" subtitle="Hedef bütçeye giden yol" percent={summary.savingPercent} leftLabel={money(summary.savedAmount)} rightLabel={money(summary.targetBudget)} color={theme.colors.aqua} />
+      <CleanProgressCard title="Ev kurulum bütçesi" subtitle={`Kalan ev kurulum bütçesi: ${money(summary.homeSetupRemaining)}`} percent={summary.homeSetupPercent} leftLabel={money(summary.homeSetupDoneBudget)} rightLabel={money(summary.homeSetupTotal)} color={theme.colors.palm} />
       <CleanProgressCard title="Aile aktivite bütçesi" subtitle={`Kalan aktivite bütçesi: ${money(summary.activityRemaining)}`} percent={summary.activityPercent} leftLabel={money(summary.activitySaved)} rightLabel={money(summary.activityTotal)} color={theme.colors.sunset} />
       <CleanProgressCard title="Borç azaltma" subtitle={`Kalan borç: ${money(summary.debtLeft)}`} percent={summary.debtPercent} leftLabel={money(summary.paidDebt)} rightLabel={money(summary.totalDebt)} color={theme.colors.miamiPink} />
     </ScrollView>
   );
 }
 
-function urgencyText(days) {
-  if (days <= 30) return 'Çok kritik dönem';
-  if (days <= 90) return 'Yaklaşıyor, hızlanma zamanı';
-  if (days <= 180) return 'Planlı takip gerekli';
-  return 'Uzun vadeli takip';
-}
-
-function PriorityCard({ label, title, subtitle, footer, color, dark }) {
-  return (
-    <View style={[styles.priorityCard, dark && styles.priorityCardDark]}>
-      <View style={[styles.priorityBar, { backgroundColor: color }]} />
-      <View style={{ flex: 1 }}>
-        <Text style={[styles.priorityLabel, dark && styles.lightText]}>{label}</Text>
-        <Text style={[styles.priorityTitle, dark && styles.lightTitle]}>{title}</Text>
-        <Text style={[styles.prioritySub, dark && styles.lightSub]}>{subtitle}</Text>
-      </View>
-      <View style={[styles.priorityFooter, dark && styles.priorityFooterDark]}>
-        <Text style={[styles.priorityFooterText, dark && styles.lightFooter]}>{footer}</Text>
-      </View>
-    </View>
-  );
-}
-
-function MoneyMini({ label, value }) {
-  return (
-    <View style={styles.moneyMini}>
-      <Text style={styles.moneyMiniLabel}>{label}</Text>
-      <Text style={styles.moneyMiniValue} numberOfLines={2}>{value}</Text>
-    </View>
-  );
-}
-
-function ControlLine({ title, value, note }) {
-  return (
-    <View style={styles.controlLine}>
-      <View style={{ flex: 1, paddingRight: 12 }}>
-        <Text style={styles.controlTitle}>{title}</Text>
-        <Text style={styles.controlNote}>{note}</Text>
-      </View>
-      <Text style={styles.controlValue} numberOfLines={2}>{value}</Text>
-    </View>
-  );
-}
+function Mini({ label, value }) { return <View style={styles.mini}><Text style={styles.miniLabel}>{label}</Text><Text style={styles.miniValue} numberOfLines={2}>{value}</Text></View>; }
+function InfoLine({ title, value, note, dark }) { return <View style={[styles.infoLine, dark && styles.infoDark]}><View style={{ flex: 1, paddingRight: 10 }}><Text style={[styles.infoTitle, dark && styles.white]}>{title}</Text><Text style={[styles.infoNote, dark && styles.whiteSoft]}>{note}</Text></View><Text style={[styles.infoValue, dark && styles.white]} numberOfLines={2}>{value}</Text></View>; }
 
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#F3F6F8' },
@@ -133,35 +76,22 @@ const styles = StyleSheet.create({
   badgeText: { color: '#C8FBFF', fontSize: 10, fontWeight: '900', letterSpacing: 0.6 },
   heroTitle: { marginTop: 21, color: '#FFFFFF', fontSize: 30, lineHeight: 35, fontWeight: '900', letterSpacing: -0.4 },
   heroText: { marginTop: 9, color: 'rgba(255,255,255,0.72)', fontSize: 14, lineHeight: 21, fontWeight: '700' },
-  criticalPanel: { marginHorizontal: 18, marginTop: 14, padding: 15, borderRadius: 28, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 5 },
-  criticalKicker: { color: '#FF7A59', fontSize: 11, lineHeight: 15, fontWeight: '900', letterSpacing: 0.9 },
-  criticalTitle: { marginTop: 5, marginBottom: 12, color: '#102A35', fontSize: 19, lineHeight: 24, fontWeight: '900' },
-  priorityCard: { marginBottom: 10, padding: 15, borderRadius: 24, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#E3EAF0', overflow: 'hidden' },
-  priorityCardDark: { backgroundColor: '#102A35', borderColor: '#102A35' },
-  priorityBar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 5 },
-  priorityLabel: { color: '#52616B', fontSize: 11, lineHeight: 15, fontWeight: '900', letterSpacing: 0.9 },
-  priorityTitle: { marginTop: 6, color: '#102A35', fontSize: 38, lineHeight: 43, fontWeight: '900', letterSpacing: -1.0 },
-  prioritySub: { marginTop: 5, color: '#52616B', fontSize: 13, lineHeight: 18, fontWeight: '800' },
-  priorityFooter: { alignSelf: 'flex-start', marginTop: 10, paddingHorizontal: 11, paddingVertical: 7, borderRadius: 999, backgroundColor: '#FFF1D6', borderWidth: 1, borderColor: '#FFDCA0' },
-  priorityFooterDark: { backgroundColor: 'rgba(45,226,230,0.12)', borderColor: 'rgba(200,251,255,0.18)' },
-  priorityFooterText: { color: '#7A4D00', fontSize: 11, fontWeight: '900' },
-  lightText: { color: 'rgba(255,255,255,0.68)' },
-  lightTitle: { color: '#FFFFFF' },
-  lightSub: { color: 'rgba(255,255,255,0.72)' },
-  lightFooter: { color: '#C8FBFF' },
+  panel: { marginHorizontal: 18, marginTop: 14, padding: 15, borderRadius: 28, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 3 },
+  kicker: { color: '#FF7A59', fontSize: 11, lineHeight: 15, fontWeight: '900', letterSpacing: 0.9 },
+  infoLine: { marginTop: 10, padding: 14, borderRadius: 22, backgroundColor: '#F8FFFF', borderWidth: 1, borderColor: '#E3EAF0', flexDirection: 'row', alignItems: 'center' },
+  infoDark: { backgroundColor: '#102A35', borderColor: '#102A35' },
+  infoTitle: { color: '#102A35', fontSize: 14, lineHeight: 19, fontWeight: '900' },
+  infoNote: { marginTop: 3, color: '#52616B', fontSize: 12, lineHeight: 17, fontWeight: '800' },
+  infoValue: { maxWidth: 130, color: '#102A35', textAlign: 'right', fontSize: 16, lineHeight: 21, fontWeight: '900' },
+  white: { color: '#FFFFFF' },
+  whiteSoft: { color: 'rgba(255,255,255,0.72)' },
   moneyHero: { marginHorizontal: 18, marginTop: 12, padding: 18, borderRadius: 28, backgroundColor: '#071A24', borderWidth: 1, borderColor: '#102F3D', elevation: 4 },
-  sectionKicker: { color: '#FF7A59', fontSize: 11, lineHeight: 15, fontWeight: '900', letterSpacing: 0.9 },
   moneyTitle: { marginTop: 7, color: '#FFFFFF', fontSize: 34, lineHeight: 39, fontWeight: '900', letterSpacing: -0.8 },
   moneySub: { marginTop: 5, color: 'rgba(255,255,255,0.72)', fontSize: 13, lineHeight: 19, fontWeight: '800' },
   moneyGrid: { flexDirection: 'row', marginTop: 14 },
-  moneyMini: { flex: 1, marginRight: 7, padding: 11, minHeight: 78, borderRadius: 18, backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
-  moneyMiniLabel: { color: 'rgba(255,255,255,0.62)', fontSize: 10, fontWeight: '900' },
-  moneyMiniValue: { marginTop: 6, color: '#FFFFFF', fontSize: 14, lineHeight: 18, fontWeight: '900' },
-  actionCard: { marginHorizontal: 18, marginTop: 12, padding: 16, borderRadius: 26, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E3EAF0', elevation: 2 },
-  controlLine: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 11, borderTopWidth: 1, borderTopColor: '#EEF2F4' },
-  controlTitle: { color: '#102A35', fontSize: 14, lineHeight: 19, fontWeight: '900' },
-  controlNote: { marginTop: 3, color: '#52616B', fontSize: 12, lineHeight: 17, fontWeight: '800' },
-  controlValue: { maxWidth: 130, color: '#102A35', textAlign: 'right', fontSize: 14, lineHeight: 18, fontWeight: '900' },
+  mini: { flex: 1, marginRight: 7, padding: 11, minHeight: 78, borderRadius: 18, backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
+  miniLabel: { color: 'rgba(255,255,255,0.62)', fontSize: 10, fontWeight: '900' },
+  miniValue: { marginTop: 6, color: '#FFFFFF', fontSize: 14, lineHeight: 18, fontWeight: '900' },
   sectionHeader: { marginHorizontal: 18, marginTop: 22, marginBottom: 4 },
   sectionTitle: { color: '#102A35', fontSize: 23, lineHeight: 29, fontWeight: '900', letterSpacing: -0.2 },
   sectionSubtitle: { marginTop: 5, color: '#52616B', fontSize: 13, lineHeight: 19, fontWeight: '700' },
