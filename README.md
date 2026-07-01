@@ -10,7 +10,8 @@ Personal mobile app for Antalya relocation and future life goals.
 | v1.2 | Done |
 | v1.3 | Done |
 | v1.4.1 | Done |
-| v1.4.2 | Next |
+| v1.4.2 | Done |
+| v1.4.3 | Next |
 
 APK build is manual-only and must not start unless the user explicitly asks for it.
 
