@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "DraBornLife",
+    "slug": "drabornlife",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#070A16"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.draborneagle.drabornlife",
+      "edgeToEdgeEnabled": true
+    },
+    "extra": {
+      "projectPhase": "v0.1-core",
+      "apkTarget": "v1.0"
+    }
+  }
+}
