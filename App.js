@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -25,9 +25,16 @@ export default function App() {
   const [data, setData] = useState(defaultData);
   const [tab, setTab] = useState('panel');
   const [amount, setAmount] = useState('');
+  const float = useRef(new Animated.Value(0)).current;
 
   useEffect(() => { AsyncStorage.getItem(KEY).then((raw) => raw && setData(JSON.parse(raw))).catch(() => {}); }, []);
   useEffect(() => { AsyncStorage.setItem(KEY, JSON.stringify(data)).catch(() => {}); }, [data]);
+  useEffect(() => {
+    Animated.loop(Animated.sequence([
+      Animated.timing(float, { toValue: 1, duration: 2200, useNativeDriver: true }),
+      Animated.timing(float, { toValue: 0, duration: 2200, useNativeDriver: true })
+    ])).start();
+  }, [float]);
 
   const stats = useMemo(() => {
     const saved = data.savings.reduce((s, x) => s + Number(x.amount || 0), 0);
@@ -51,7 +58,7 @@ export default function App() {
         <View style={styles.badge}><Text style={styles.badgeText}>{VERSION}</Text></View>
       </View>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {tab === 'panel' && <Panel stats={stats} />}
+        {tab === 'panel' && <Panel stats={stats} float={float} />}
         {tab === 'liste' && <Items data={data} setData={setData} />}
         {tab === 'ayar' && <Settings data={data} setData={setData} />}
         <View style={styles.card}>
@@ -65,8 +72,12 @@ export default function App() {
   );
 }
 
-function Panel({ stats }) {
-  return <LinearGradient colors={['#1A2050', '#111833']} style={styles.hero}><Text style={styles.kicker}>ANTALYA HEDEFİ</Text><Text style={styles.heroTitle}>{stats.progress}% tamamlandı</Text><Text style={styles.body}>{stats.days} gün kaldı. Hedef: {money(stats.target)} • Birikim: {money(stats.saved)} • Kalan: {money(stats.left)}</Text><View style={styles.track}><LinearGradient colors={['#6D5BFF','#13B8FF','#22CFA0']} style={[styles.fill,{width:`${Math.max(5,stats.progress)}%`}]} /></View></LinearGradient>;
+function Panel({ stats, float }) {
+  const y = float.interpolate({ inputRange: [0, 1], outputRange: [0, -12] });
+  return <LinearGradient colors={['#1A2050', '#111833']} style={styles.hero}>
+    <Animated.View style={[styles.orb, { transform: [{ translateY: y }] }]} />
+    <Animated.View style={[styles.orbTwo, { transform: [{ translateY: y }] }]} />
+    <Text style={styles.kicker}>ANTALYA HEDEFİ</Text><Text style={styles.heroTitle}>{stats.progress}% tamamlandı</Text><Text style={styles.body}>{stats.days} gün kaldı. Hedef: {money(stats.target)} • Birikim: {money(stats.saved)} • Kalan: {money(stats.left)}</Text><View style={styles.track}><LinearGradient colors={['#6D5BFF','#13B8FF','#22CFA0']} style={[styles.fill,{width:`${Math.max(5,stats.progress)}%`}]} /></View></LinearGradient>;
 }
 
 function Items({ data, setData }) {
@@ -77,4 +88,4 @@ function Settings({ data, setData }) {
   return <View style={styles.card}><Text style={styles.cardTitle}>Ayarlar</Text><TextInput value={String(data.settings.targetBudget)} onChangeText={(v) => setData({ ...data, settings: { ...data.settings, targetBudget: Number(v) || 0 } })} keyboardType="numeric" style={styles.input} /><Text style={styles.body}>APK hedefi: v1.0 • Bu sürüm Expo Go test içindir.</Text></View>;
 }
 
-const styles = StyleSheet.create({ safe:{flex:1,backgroundColor:'#070A16'}, header:{paddingHorizontal:22,paddingTop:18,paddingBottom:8,flexDirection:'row',alignItems:'center',justifyContent:'space-between'}, title:{color:'#F8FAFF',fontSize:30,fontWeight:'900'}, subtitle:{color:'#A9B1C7',fontSize:13,fontWeight:'700',marginTop:3}, badge:{backgroundColor:'#6D5BFF',borderRadius:16,paddingHorizontal:12,paddingVertical:8}, badgeText:{color:'white',fontWeight:'900'}, scroll:{padding:18,paddingBottom:120}, hero:{borderRadius:30,padding:20,marginBottom:14}, kicker:{color:'#36C2FF',fontWeight:'900',letterSpacing:1}, heroTitle:{color:'#F8FAFF',fontSize:40,fontWeight:'900',marginTop:10}, body:{color:'#A9B1C7',fontSize:14,lineHeight:21,fontWeight:'700',marginTop:8}, track:{height:13,borderRadius:99,backgroundColor:'rgba(255,255,255,0.12)',overflow:'hidden',marginTop:18}, fill:{height:'100%',borderRadius:99}, card:{backgroundColor:'rgba(18,23,43,0.88)',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,borderRadius:26,padding:16,marginBottom:12}, cardTitle:{color:'#F8FAFF',fontSize:18,fontWeight:'900'}, input:{minHeight:50,borderRadius:18,borderWidth:1,borderColor:'rgba(255,255,255,0.1)',backgroundColor:'#12172B',color:'#F8FAFF',paddingHorizontal:14,marginTop:12,fontWeight:'800'}, button:{height:52,borderRadius:20,backgroundColor:'#6D5BFF',alignItems:'center',justifyContent:'center',marginTop:14}, smallButton:{height:44,borderRadius:16,backgroundColor:'#6D5BFF',alignItems:'center',justifyContent:'center',marginTop:12}, buttonText:{color:'white',fontWeight:'900'}, nav:{position:'absolute',left:14,right:14,bottom:14,height:74,borderRadius:28,backgroundColor:'rgba(14,18,35,0.96)',borderWidth:1,borderColor:'rgba(255,255,255,0.1)',flexDirection:'row',alignItems:'center',justifyContent:'space-around'}, navItem:{flex:1,alignItems:'center'}, navText:{color:'#A9B1C7',fontSize:11,fontWeight:'900',marginTop:4} });
+const styles = StyleSheet.create({ safe:{flex:1,backgroundColor:'#070A16'}, header:{paddingHorizontal:22,paddingTop:18,paddingBottom:8,flexDirection:'row',alignItems:'center',justifyContent:'space-between'}, title:{color:'#F8FAFF',fontSize:30,fontWeight:'900'}, subtitle:{color:'#A9B1C7',fontSize:13,fontWeight:'700',marginTop:3}, badge:{backgroundColor:'#6D5BFF',borderRadius:16,paddingHorizontal:12,paddingVertical:8}, badgeText:{color:'white',fontWeight:'900'}, scroll:{padding:18,paddingBottom:120}, hero:{borderRadius:30,padding:20,marginBottom:14,overflow:'hidden'}, orb:{position:'absolute',right:-46,top:-48,width:150,height:150,borderRadius:75,backgroundColor:'rgba(109,91,255,0.28)'}, orbTwo:{position:'absolute',left:-30,bottom:-44,width:110,height:110,borderRadius:55,backgroundColor:'rgba(19,184,255,0.18)'}, kicker:{color:'#36C2FF',fontWeight:'900',letterSpacing:1}, heroTitle:{color:'#F8FAFF',fontSize:40,fontWeight:'900',marginTop:10}, body:{color:'#A9B1C7',fontSize:14,lineHeight:21,fontWeight:'700',marginTop:8}, track:{height:13,borderRadius:99,backgroundColor:'rgba(255,255,255,0.12)',overflow:'hidden',marginTop:18}, fill:{height:'100%',borderRadius:99}, card:{backgroundColor:'rgba(18,23,43,0.88)',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,borderRadius:26,padding:16,marginBottom:12}, cardTitle:{color:'#F8FAFF',fontSize:18,fontWeight:'900'}, input:{minHeight:50,borderRadius:18,borderWidth:1,borderColor:'rgba(255,255,255,0.1)',backgroundColor:'#12172B',color:'#F8FAFF',paddingHorizontal:14,marginTop:12,fontWeight:'800'}, button:{height:52,borderRadius:20,backgroundColor:'#6D5BFF',alignItems:'center',justifyContent:'center',marginTop:14}, smallButton:{height:44,borderRadius:16,backgroundColor:'#6D5BFF',alignItems:'center',justifyContent:'center',marginTop:12}, buttonText:{color:'white',fontWeight:'900'}, nav:{position:'absolute',left:14,right:14,bottom:14,height:74,borderRadius:28,backgroundColor:'rgba(14,18,35,0.96)',borderWidth:1,borderColor:'rgba(255,255,255,0.1)',flexDirection:'row',alignItems:'center',justifyContent:'space-around'}, navItem:{flex:1,alignItems:'center'}, navText:{color:'#A9B1C7',fontSize:11,fontWeight:'900',marginTop:4} });
