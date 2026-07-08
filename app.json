@@ -2,7 +2,7 @@
   "expo": {
     "name": "DraBornLife",
     "slug": "drabornlife",
-    "version": "0.3.8",
+    "version": "0.3.9",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,7 +17,7 @@
       "edgeToEdgeEnabled": true
     },
     "extra": {
-      "projectPhase": "v0.3.8-icon-save-history",
+      "projectPhase": "v0.3.9-saving-product-edit",
       "apkTarget": "v1.0"
     }
   }
