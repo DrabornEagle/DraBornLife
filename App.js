@@ -1,104 +1,63 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Animated, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const VERSION = 'v0.2';
-const KEY = 'drabornlife-v02';
-const LEGACY_KEYS = ['drabornlife-v01-colorful', 'drabornlife-v01-final', 'drabornlife-v01'];
+const VERSION = 'v0.2.1';
+const KEY = 'drabornlife-v021-clean';
+const targetDate = '2026-10-31';
 const itemStatuses = ['Planlandı', 'Parası Birikti', 'Satın Alındı', 'Kuruldu', 'Vazgeçildi'];
 const moveStatuses = ['Planlama', 'Para birikiyor', 'Ev araştırması başladı', 'Ev tutuldu', 'Eşyalar alınıyor', 'Kurulum başladı', 'Antalya’ya taşınıldı'];
-const regions = ['Muratpaşa', 'Lara', 'Konyaaltı'];
 const financeModes = [
-  ['income', 'Gelir', 'cash-plus', ['#00D4FF', '#4D7CFF']],
-  ['expense', 'Gider', 'cart-arrow-down', ['#FF477E', '#FF9F1C']],
-  ['saving', 'Birikim', 'piggy-bank', ['#20E3B2', '#29FFC6']],
-  ['debt', 'Borç', 'alert-decagram', ['#A855F7', '#F43F5E']]
+  ['income', 'Gelir', 'cash-plus', ['#1ED6FF', '#4178FF']],
+  ['expense', 'Gider', 'cart-arrow-down', ['#FF4D8D', '#FF9E2C']],
+  ['saving', 'Birikim', 'piggy-bank', ['#23E6B0', '#48F2DA']],
+  ['debt', 'Borç', 'alert-circle', ['#9B5CFF', '#FF4D6D']]
 ];
 
-const baseChecklist = [
-  'Kiralık ev ilanlarını takip et',
-  'Ev - okul - deniz mesafesini karşılaştır',
-  'Depozito ve ilk kira bütçesini hazırla',
-  'Beyaz eşya fiyatlarını kontrol et',
-  'Mobilya temel paketlerini araştır',
-  'Kayra için okul görüşme listesi hazırla',
-  'Taşınma valiz listesini çıkar',
-  'Elektrik / su / internet kurulum notlarını yaz',
-  'GTA 6 seti bütçesini ayrı takip et',
-  'Eski motosiklet satış planını netleştir'
-];
-
-const defaultData = {
-  settings: { targetBudget: 650000, targetDate: '2026-10-31', motorcycleTarget: 130000, theme: 'color' },
-  incomes: [], expenses: [], savings: [], debts: [],
-  items: [
-    { id: 'rent', name: 'Kira ilk ay', category: 'Kira / Depozito', estimate: 35000, actual: 0, status: 'Planlandı', priority: 'Yüksek', note: 'Denize yakın ev.' },
-    { id: 'deposit', name: 'Depozito', category: 'Kira / Depozito', estimate: 70000, actual: 0, status: 'Planlandı', priority: 'Yüksek', note: 'Muratpaşa/Lara veya Konyaaltı.' },
-    { id: 'white', name: 'Beyaz eşya seti', category: 'Beyaz Eşya', estimate: 90000, actual: 0, status: 'Planlandı', priority: 'Yüksek', note: 'Buzdolabı, çamaşır, bulaşık.' },
-    { id: 'furniture', name: 'Mobilya temel set', category: 'Mobilya', estimate: 130000, actual: 0, status: 'Planlandı', priority: 'Yüksek', note: 'Salon, yatak odası, çocuk odası.' },
-    { id: 'firstmonth', name: 'İlk ay yaşam', category: 'İlk Ay Yaşam', estimate: 70000, actual: 0, status: 'Planlandı', priority: 'Yüksek', note: 'Market, ulaşım, okul hazırlığı.' },
-    { id: 'gta', name: 'GTA 6 / PS5 Pro / TV', category: 'GTA 6 Seti', estimate: 95000, actual: 0, status: 'Planlandı', priority: 'Orta', note: '19 Kasım 2026 öncesi hazır.' },
-    { id: 'motor', name: 'Sıfır motosiklet', category: 'Yeni Motosiklet', estimate: 130000, actual: 0, status: 'Planlandı', priority: 'Orta', note: 'Eski motor satılıp yenisi alınacak.' },
-    { id: 'fun', name: 'Antalya aile eğlence', category: 'Antalya Eğlence', estimate: 30000, actual: 0, status: 'Planlandı', priority: 'Orta', note: 'Aquapark, deniz, aile aktiviteleri.' }
-  ],
-  houses: [
-    { id: 'h1', title: 'Lara denize yakın 2+1', region: 'Lara', rent: 35000, deposit: 70000, seaMin: 8, schoolMin: 12, buildingAge: 3, note: 'Yeni bina, aile için iyi aday.', favorite: true },
-    { id: 'h2', title: 'Konyaaltı sahile yakın 2+1', region: 'Konyaaltı', rent: 38000, deposit: 76000, seaMin: 6, schoolMin: 16, buildingAge: 5, note: 'Sahil avantajı güçlü.', favorite: false },
-    { id: 'h3', title: 'Muratpaşa merkezi 2+1', region: 'Muratpaşa', rent: 32000, deposit: 64000, seaMin: 14, schoolMin: 9, buildingAge: 7, note: 'Okul ve merkez avantajı.', favorite: false }
-  ],
-  schools: [
-    { id: 's1', name: 'Lara özel okul adayı', region: 'Lara', monthly: 22000, distanceMin: 12, ageGroup: '5 yaş', note: 'Orta fiyatlı, eve yakınlık araştırılacak.', favorite: true },
-    { id: 's2', name: 'Konyaaltı özel okul adayı', region: 'Konyaaltı', monthly: 24000, distanceMin: 15, ageGroup: '5 yaş', note: 'Deniz ve aile yaşamına yakın.', favorite: false },
-    { id: 's3', name: 'Muratpaşa özel okul adayı', region: 'Muratpaşa', monthly: 20000, distanceMin: 10, ageGroup: '5 yaş', note: 'Merkezi konum avantajı.', favorite: false }
-  ],
-  checklist: baseChecklist.map((title, index) => ({ id: `c${index}`, title, done: index < 2 })),
-  notes: [{ id: 'note-1', title: 'Yeni hayat hedefi', body: 'Evimize tatil hayatını taşıyoruz.', category: 'Aile', date: new Date().toISOString() }],
+const emptyData = {
+  settings: { targetBudget: 650000, targetDate, motorcycleTarget: 130000, theme: 'dark' },
+  incomes: [],
+  expenses: [],
+  savings: [],
+  debts: [],
+  items: [],
+  houses: [],
+  schools: [],
+  checklist: [],
+  notes: [],
   relocation: { city: 'Antalya', status: 'Planlama', regions: 'Muratpaşa / Lara / Konyaaltı', homeGoal: 'Denize yakın, yeni bina, temiz ev' }
 };
 
-const num = (v) => Number(String(v ?? '').replace(/\./g, '').replace(',', '.')) || 0;
-const money = (v) => `${Math.round(num(v)).toLocaleString('tr-TR')} TL`;
-const uid = () => String(Date.now()) + Math.random().toString(16).slice(2);
-const daysLeft = (date) => Math.max(0, Math.ceil((new Date(`${date}T23:59:59`).getTime() - Date.now()) / 86400000));
-const pct = (a, b) => (!b ? 0 : Math.max(0, Math.min(100, Math.round((a / b) * 100))));
-const clamp = (v) => Math.max(0, Math.min(100, Math.round(v)));
-const houseScore = (h) => clamp(100 - num(h.seaMin) * 2.2 - num(h.schoolMin) * 1.8 - num(h.buildingAge) * 1.4 - Math.max(0, num(h.rent) - 30000) / 1000);
-const schoolScore = (s) => clamp(100 - num(s.distanceMin) * 2.2 - Math.max(0, num(s.monthly) - 18000) / 700);
+const n = (v) => Number(String(v ?? '').replace(/\./g, '').replace(',', '.')) || 0;
+const money = (v) => `${Math.round(n(v)).toLocaleString('tr-TR')} TL`;
+const uid = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+const daysLeft = (d) => Math.max(0, Math.ceil((new Date(`${d}T23:59:59`).getTime() - Date.now()) / 86400000));
+const percent = (a, b) => (!b ? 0 : Math.max(0, Math.min(100, Math.round((a / b) * 100))));
+const houseScore = (h) => Math.max(0, Math.min(100, Math.round(100 - n(h.seaMin) * 2.1 - n(h.schoolMin) * 1.8 - n(h.buildingAge) * 1.2 - Math.max(0, n(h.rent) - 30000) / 1000)));
+const schoolScore = (s) => Math.max(0, Math.min(100, Math.round(100 - n(s.distanceMin) * 2.2 - Math.max(0, n(s.monthly) - 18000) / 700)));
 
 export default function App() {
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState(emptyData);
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState('panel');
   const [lifeTab, setLifeTab] = useState('ev');
   const [financeMode, setFinanceMode] = useState('income');
-  const [finance, setFinance] = useState({ title: '', amount: '', category: 'Günlük kazanç', note: '' });
-  const [item, setItem] = useState({ name: '', category: 'Mobilya', estimate: '', actual: '', priority: 'Orta', note: '' });
-  const [house, setHouse] = useState({ title: '', region: 'Lara', rent: '', deposit: '', seaMin: '', schoolMin: '', buildingAge: '', note: '' });
-  const [school, setSchool] = useState({ name: '', region: 'Lara', monthly: '', distanceMin: '', ageGroup: '5 yaş', note: '' });
+  const [finance, setFinance] = useState({ title: '', amount: '', category: '', note: '' });
+  const [payment, setPayment] = useState({});
+  const [item, setItem] = useState({ name: '', category: '', estimate: '', actual: '', priority: '', note: '' });
+  const [house, setHouse] = useState({ title: '', region: '', rent: '', deposit: '', seaMin: '', schoolMin: '', buildingAge: '', note: '' });
+  const [school, setSchool] = useState({ name: '', region: '', monthly: '', distanceMin: '', ageGroup: '5 yaş', note: '' });
   const [task, setTask] = useState('');
-  const [note, setNote] = useState({ title: '', body: '', category: 'Genel' });
+  const [note, setNote] = useState({ title: '', category: '', body: '' });
   const [backup, setBackup] = useState('');
-  const [message, setMessage] = useState('');
-  const [payments, setPayments] = useState({});
+  const [toast, setToast] = useState('');
   const float = useRef(new Animated.Value(0)).current;
-  const pulse = useRef(new Animated.Value(0)).current;
   const fade = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    async function load() {
-      let raw = await AsyncStorage.getItem(KEY);
-      if (!raw) {
-        for (const oldKey of LEGACY_KEYS) {
-          raw = await AsyncStorage.getItem(oldKey);
-          if (raw) break;
-        }
-      }
-      if (raw) setData(mergeData(JSON.parse(raw)));
-      setReady(true);
-    }
-    load().catch(() => setReady(true));
+    AsyncStorage.getItem(KEY).then((raw) => raw && setData(cleanMerge(JSON.parse(raw)))).finally(() => setReady(true));
   }, []);
 
   useEffect(() => {
@@ -106,204 +65,258 @@ export default function App() {
   }, [data, ready]);
 
   useEffect(() => {
-    Animated.loop(Animated.parallel([
-      Animated.sequence([
-        Animated.timing(float, { toValue: 1, duration: 2600, useNativeDriver: true }),
-        Animated.timing(float, { toValue: 0, duration: 2600, useNativeDriver: true })
-      ]),
-      Animated.sequence([
-        Animated.timing(pulse, { toValue: 1, duration: 1800, useNativeDriver: true }),
-        Animated.timing(pulse, { toValue: 0, duration: 1800, useNativeDriver: true })
-      ])
+    Animated.loop(Animated.sequence([
+      Animated.timing(float, { toValue: 1, duration: 2500, useNativeDriver: true }),
+      Animated.timing(float, { toValue: 0, duration: 2500, useNativeDriver: true })
     ])).start();
-  }, [float, pulse]);
+  }, [float]);
 
   useEffect(() => {
     fade.setValue(0);
-    Animated.timing(fade, { toValue: 1, duration: 320, useNativeDriver: true }).start();
-  }, [tab, fade]);
+    Animated.timing(fade, { toValue: 1, duration: 260, useNativeDriver: true }).start();
+  }, [tab, lifeTab, fade]);
 
-  const t = palette(data.settings.theme);
+  const theme = getTheme(data.settings.theme);
   const stats = useMemo(() => getStats(data), [data]);
   const save = (next) => setData({ ...next, version: VERSION, updatedAt: new Date().toISOString() });
+  const say = (msg) => setToast(msg);
 
   function addFinance() {
-    if (!finance.title.trim() || !num(finance.amount)) return setMessage('Başlık ve tutar gir.');
-    const row = { id: uid(), title: finance.title.trim(), amount: num(finance.amount), category: finance.category || 'Genel', note: finance.note, date: new Date().toISOString() };
-    const map = { income: 'incomes', expense: 'expenses', saving: 'savings', debt: 'debts' };
-    const key = map[financeMode];
+    if (!finance.title.trim() || !n(finance.amount)) return say('Başlık ve tutar gir.');
+    const row = { id: uid(), title: finance.title.trim(), amount: n(finance.amount), category: finance.category || 'Genel', note: finance.note, date: new Date().toISOString() };
+    const key = financeMode === 'income' ? 'incomes' : financeMode === 'expense' ? 'expenses' : financeMode === 'saving' ? 'savings' : 'debts';
     save({ ...data, [key]: [financeMode === 'debt' ? { ...row, paid: 0 } : row, ...data[key]] });
-    setFinance({ title: '', amount: '', category: financeMode === 'income' ? 'Günlük kazanç' : financeMode === 'expense' ? 'Ev gideri' : financeMode === 'saving' ? 'Birikim' : 'Borç', note: '' });
-    setMessage('Kayıt eklendi.');
+    setFinance({ title: '', amount: '', category: '', note: '' });
+    say('Kayıt eklendi.');
   }
 
-  function addPayment(id) {
-    const value = num(payments[id]);
-    if (!value) return;
-    save({ ...data, debts: data.debts.map((d) => d.id === id ? { ...d, paid: Math.min(num(d.amount), num(d.paid) + value) } : d) });
-    setPayments({ ...payments, [id]: '' });
-    setMessage('Borç ödemesi işlendi.');
+  function addDebtPayment(id) {
+    const value = n(payment[id]);
+    if (!value) return say('Ödeme tutarı gir.');
+    save({ ...data, debts: data.debts.map((d) => d.id === id ? { ...d, paid: Math.min(n(d.amount), n(d.paid) + value) } : d) });
+    setPayment({ ...payment, [id]: '' });
+    say('Borç ödemesi işlendi.');
   }
 
-  function remove(key, id) { save({ ...data, [key]: data[key].filter((x) => x.id !== id) }); setMessage('Silindi.'); }
   function addItem() {
-    if (!item.name.trim() || !num(item.estimate)) return setMessage('Ürün adı ve fiyat gir.');
-    save({ ...data, items: [{ id: uid(), ...item, estimate: num(item.estimate), actual: num(item.actual), status: 'Planlandı' }, ...data.items] });
-    setItem({ name: '', category: 'Mobilya', estimate: '', actual: '', priority: 'Orta', note: '' });
-    setMessage('Ürün eklendi.');
+    if (!item.name.trim() || !n(item.estimate)) return say('Ürün adı ve fiyat gir.');
+    save({ ...data, items: [{ id: uid(), ...item, estimate: n(item.estimate), actual: n(item.actual), status: 'Planlandı' }, ...data.items] });
+    setItem({ name: '', category: '', estimate: '', actual: '', priority: '', note: '' });
+    say('Ürün eklendi.');
   }
+
   function addHouse() {
-    if (!house.title.trim() || !num(house.rent)) return setMessage('Ev adı ve kira gir.');
-    save({ ...data, houses: [{ id: uid(), ...house, rent: num(house.rent), deposit: num(house.deposit), seaMin: num(house.seaMin), schoolMin: num(house.schoolMin), buildingAge: num(house.buildingAge), favorite: false }, ...data.houses] });
-    setHouse({ title: '', region: 'Lara', rent: '', deposit: '', seaMin: '', schoolMin: '', buildingAge: '', note: '' });
-    setMessage('Ev adayı eklendi.');
+    if (!house.title.trim() || !n(house.rent)) return say('Ev başlığı ve kira gir.');
+    save({ ...data, houses: [{ id: uid(), ...house, rent: n(house.rent), deposit: n(house.deposit), seaMin: n(house.seaMin), schoolMin: n(house.schoolMin), buildingAge: n(house.buildingAge) }, ...data.houses] });
+    setHouse({ title: '', region: '', rent: '', deposit: '', seaMin: '', schoolMin: '', buildingAge: '', note: '' });
+    say('Ev adayı eklendi.');
   }
+
   function addSchool() {
-    if (!school.name.trim() || !num(school.monthly)) return setMessage('Okul adı ve aylık ücret gir.');
-    save({ ...data, schools: [{ id: uid(), ...school, monthly: num(school.monthly), distanceMin: num(school.distanceMin), favorite: false }, ...data.schools] });
-    setSchool({ name: '', region: 'Lara', monthly: '', distanceMin: '', ageGroup: '5 yaş', note: '' });
-    setMessage('Okul adayı eklendi.');
+    if (!school.name.trim() || !n(school.monthly)) return say('Okul adı ve ücret gir.');
+    save({ ...data, schools: [{ id: uid(), ...school, monthly: n(school.monthly), distanceMin: n(school.distanceMin) }, ...data.schools] });
+    setSchool({ name: '', region: '', monthly: '', distanceMin: '', ageGroup: '5 yaş', note: '' });
+    say('Okul adayı eklendi.');
   }
+
   function addTask() {
-    if (!task.trim()) return;
+    if (!task.trim()) return say('Görev yaz.');
     save({ ...data, checklist: [{ id: uid(), title: task.trim(), done: false }, ...data.checklist] });
     setTask('');
-    setMessage('Kontrol listesine eklendi.');
   }
-  function toggleTask(id) { save({ ...data, checklist: data.checklist.map((x) => x.id === id ? { ...x, done: !x.done } : x) }); }
+
   function addNote() {
-    if (!note.title.trim() || !note.body.trim()) return setMessage('Not başlığı ve içerik gir.');
+    if (!note.title.trim() || !note.body.trim()) return say('Not başlığı ve içerik gir.');
     save({ ...data, notes: [{ id: uid(), ...note, date: new Date().toISOString() }, ...data.notes] });
-    setNote({ title: '', body: '', category: 'Genel' });
-    setMessage('Not eklendi.');
+    setNote({ title: '', category: '', body: '' });
+    say('Not eklendi.');
   }
-  function makeBackup() { setBackup(JSON.stringify({ ...data, version: VERSION, exportedAt: new Date().toISOString() }, null, 2)); setMessage('v0.2 yedek metni hazır.'); }
-  function restoreBackup() { try { save(mergeData(JSON.parse(backup))); setMessage('Yedek geri yüklendi.'); } catch { setMessage('Yedek okunamadı.'); } }
+
+  function remove(key, id) {
+    save({ ...data, [key]: data[key].filter((x) => x.id !== id) });
+    say('Silindi.');
+  }
+
+  function backupNow() {
+    setBackup(JSON.stringify({ ...data, version: VERSION, exportedAt: new Date().toISOString() }, null, 2));
+    say('Yedek hazır.');
+  }
+
+  function restoreNow() {
+    try { save(cleanMerge(JSON.parse(backup))); say('Yedek yüklendi.'); } catch { say('Yedek okunamadı.'); }
+  }
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: t.bg }]}>
-      <StatusBar barStyle={t.status} />
-      <LinearGradient colors={t.bgGradient} style={StyleSheet.absoluteFillObject} />
-      <Backdrop float={float} pulse={pulse} />
-      <Header t={t} />
+    <View style={[styles.root, { backgroundColor: theme.bg }]}>
+      <StatusBar barStyle={theme.status} />
+      <LinearGradient colors={theme.bgGradient} style={StyleSheet.absoluteFillObject} />
+      <Background float={float} />
+      <Header theme={theme} />
       <Animated.View style={[styles.flex, { opacity: fade }]}>
-        {tab === 'panel' && <Dashboard t={t} data={data} stats={stats} float={float} pulse={pulse} />}
-        {tab === 'finans' && <Finance t={t} data={data} mode={financeMode} setMode={setFinanceMode} form={finance} setForm={setFinance} add={addFinance} remove={remove} payments={payments} setPayments={setPayments} addPayment={addPayment} stats={stats} />}
-        {tab === 'liste' && <Items t={t} data={data} item={item} setItem={setItem} addItem={addItem} setItemStatus={(id, status) => save({ ...data, items: data.items.map((x) => x.id === id ? { ...x, status } : x) })} remove={remove} stats={stats} />}
-        {tab === 'antalya' && <Antalya t={t} data={data} save={save} lifeTab={lifeTab} setLifeTab={setLifeTab} house={house} setHouse={setHouse} addHouse={addHouse} school={school} setSchool={setSchool} addSchool={addSchool} task={task} setTask={setTask} addTask={addTask} toggleTask={toggleTask} remove={remove} note={note} setNote={setNote} addNote={addNote} />}
-        {tab === 'ayar' && <Settings t={t} data={data} save={save} backup={backup} setBackup={setBackup} makeBackup={makeBackup} restoreBackup={restoreBackup} reset={() => save(defaultData)} />}
+        {tab === 'panel' && <Dashboard theme={theme} data={data} stats={stats} float={float} />}
+        {tab === 'finans' && <Finance theme={theme} data={data} mode={financeMode} setMode={setFinanceMode} form={finance} setForm={setFinance} add={addFinance} payment={payment} setPayment={setPayment} addDebtPayment={addDebtPayment} remove={remove} stats={stats} />}
+        {tab === 'liste' && <Shopping theme={theme} data={data} form={item} setForm={setItem} add={addItem} remove={remove} save={save} stats={stats} />}
+        {tab === 'antalya' && <Antalya theme={theme} data={data} save={save} lifeTab={lifeTab} setLifeTab={setLifeTab} house={house} setHouse={setHouse} addHouse={addHouse} school={school} setSchool={setSchool} addSchool={addSchool} task={task} setTask={setTask} addTask={addTask} note={note} setNote={setNote} addNote={addNote} remove={remove} />}
+        {tab === 'ayar' && <Settings theme={theme} data={data} save={save} backup={backup} setBackup={setBackup} backupNow={backupNow} restoreNow={restoreNow} reset={() => { save(emptyData); say('Temiz veri açıldı.'); }} />}
       </Animated.View>
-      {!!message && <Pressable onPress={() => setMessage('')} style={styles.toast}><LinearGradient colors={['#6D5BFF', '#00D4FF']} style={styles.toastInner}><Text style={styles.toastText}>{message}</Text></LinearGradient></Pressable>}
-      <Nav t={t} tab={tab} setTab={setTab} />
-    </SafeAreaView>
+      {!!toast && <Pressable onPress={() => setToast('')} style={styles.toast}><LinearGradient colors={['#2E6BFF', '#8A5CFF']} style={styles.toastInner}><Text style={styles.toastText}>{toast}</Text></LinearGradient></Pressable>}
+      <Nav theme={theme} active={tab} setActive={setTab} />
+    </View>
   );
 }
 
-function mergeData(raw) {
-  const merged = {
-    ...defaultData, ...raw,
-    settings: { ...defaultData.settings, ...(raw.settings || {}), theme: raw.settings?.theme || 'color' },
-    relocation: { ...defaultData.relocation, ...(raw.relocation || {}) },
-    incomes: Array.isArray(raw.incomes) ? raw.incomes : [], expenses: Array.isArray(raw.expenses) ? raw.expenses : [], savings: Array.isArray(raw.savings) ? raw.savings : [], debts: Array.isArray(raw.debts) ? raw.debts : [],
-    items: Array.isArray(raw.items) ? raw.items : defaultData.items,
-    houses: Array.isArray(raw.houses) ? raw.houses : defaultData.houses,
-    schools: Array.isArray(raw.schools) ? raw.schools : defaultData.schools,
-    checklist: Array.isArray(raw.checklist) ? raw.checklist : defaultData.checklist,
-    notes: Array.isArray(raw.notes) ? raw.notes : defaultData.notes
+function cleanMerge(raw) {
+  return {
+    ...emptyData,
+    ...raw,
+    settings: { ...emptyData.settings, ...(raw.settings || {}) },
+    relocation: { ...emptyData.relocation, ...(raw.relocation || {}) },
+    incomes: Array.isArray(raw.incomes) ? raw.incomes : [],
+    expenses: Array.isArray(raw.expenses) ? raw.expenses : [],
+    savings: Array.isArray(raw.savings) ? raw.savings : [],
+    debts: Array.isArray(raw.debts) ? raw.debts : [],
+    items: Array.isArray(raw.items) ? raw.items : [],
+    houses: Array.isArray(raw.houses) ? raw.houses : [],
+    schools: Array.isArray(raw.schools) ? raw.schools : [],
+    checklist: Array.isArray(raw.checklist) ? raw.checklist : [],
+    notes: Array.isArray(raw.notes) ? raw.notes : []
   };
-  return merged;
 }
 
 function getStats(data) {
-  const income = data.incomes.reduce((s, x) => s + num(x.amount), 0);
-  const expense = data.expenses.reduce((s, x) => s + num(x.amount), 0);
-  const saving = data.savings.reduce((s, x) => s + num(x.amount), 0);
-  const debtTotal = data.debts.reduce((s, x) => s + num(x.amount), 0);
-  const debtPaid = data.debts.reduce((s, x) => s + num(x.paid), 0);
-  const itemsTotal = data.items.reduce((s, x) => s + num(x.actual || x.estimate), 0);
-  const bought = data.items.filter((x) => ['Satın Alındı', 'Kuruldu'].includes(x.status)).length;
-  const target = num(data.settings.targetBudget);
+  const income = data.incomes.reduce((s, x) => s + n(x.amount), 0);
+  const expense = data.expenses.reduce((s, x) => s + n(x.amount), 0);
+  const saving = data.savings.reduce((s, x) => s + n(x.amount), 0);
+  const debtTotal = data.debts.reduce((s, x) => s + n(x.amount), 0);
+  const debtPaid = data.debts.reduce((s, x) => s + n(x.paid), 0);
+  const target = n(data.settings.targetBudget);
   const days = daysLeft(data.settings.targetDate);
   const left = Math.max(0, target - saving);
+  const bought = data.items.filter((x) => ['Satın Alındı', 'Kuruldu'].includes(x.status)).length;
+  const itemsTotal = data.items.reduce((s, x) => s + n(x.actual || x.estimate), 0);
   const bestHouse = [...data.houses].sort((a, b) => houseScore(b) - houseScore(a))[0];
   const bestSchool = [...data.schools].sort((a, b) => schoolScore(b) - schoolScore(a))[0];
-  const checklistDone = data.checklist.filter((x) => x.done).length;
-  return { income, expense, saving, net: income - expense, debtTotal, debtPaid, debtLeft: Math.max(0, debtTotal - debtPaid), debtPct: pct(debtPaid, debtTotal), itemsTotal, bought, target, days, left, progress: pct(saving, target), daily: days ? left / days : left, weekly: days ? (left / days) * 7 : left, monthly: days ? (left / days) * 30 : left, bestHouse, bestSchool, checklistDone, checklistPct: pct(checklistDone, data.checklist.length) };
+  const doneTasks = data.checklist.filter((x) => x.done).length;
+  return { income, expense, saving, net: income - expense, debtTotal, debtPaid, debtLeft: Math.max(0, debtTotal - debtPaid), debtPct: percent(debtPaid, debtTotal), target, days, left, progress: percent(saving, target), daily: days ? left / days : left, weekly: days ? (left / days) * 7 : left, monthly: days ? (left / days) * 30 : left, bought, itemsTotal, bestHouse, bestSchool, doneTasks, taskPct: percent(doneTasks, data.checklist.length) };
 }
 
-function palette(mode) {
-  if (mode === 'light') return { mode, status: 'dark-content', bg: '#F8FAFF', bgGradient: ['#F8FAFF', '#EAF2FF', '#FFF3F8'], text: '#14162A', softText: '#4B5568', muted: '#697386', card: 'rgba(255,255,255,0.84)', line: 'rgba(20,22,42,0.10)', nav: 'rgba(255,255,255,0.88)', cyan: '#00B8FF', danger: '#EF476F' };
-  return { mode, status: 'light-content', bg: '#070719', bgGradient: ['#070719', '#111443', '#20103D'], text: '#FFFFFF', softText: '#DDE6FF', muted: '#AAB6D3', card: 'rgba(255,255,255,0.105)', line: 'rgba(255,255,255,0.13)', nav: 'rgba(14,18,48,0.88)', cyan: '#00D4FF', danger: '#FF5470' };
+function getTheme(mode) {
+  if (mode === 'light') return { mode, status: 'dark-content', bg: '#F6F8FF', bgGradient: ['#F7FAFF', '#ECF4FF', '#FFF6F1'], card: 'rgba(255,255,255,0.88)', card2: '#FFFFFF', text: '#111827', muted: '#667085', line: 'rgba(16,24,40,0.10)', nav: 'rgba(255,255,255,0.93)' };
+  return { mode, status: 'light-content', bg: '#08111F', bgGradient: ['#08111F', '#10264A', '#1A1238'], card: 'rgba(255,255,255,0.105)', card2: 'rgba(255,255,255,0.07)', text: '#FFFFFF', muted: '#BAC6DA', line: 'rgba(255,255,255,0.13)', nav: 'rgba(10,21,38,0.92)' };
 }
 
-function Backdrop({ float, pulse }) {
-  const y = float.interpolate({ inputRange: [0, 1], outputRange: [0, -24] });
-  const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.13] });
-  return <View pointerEvents="none" style={StyleSheet.absoluteFillObject}><Animated.View style={[styles.blobA, { transform: [{ translateY: y }, { scale }] }]} /><Animated.View style={[styles.blobB, { transform: [{ translateY: y }, { scale }] }]} /><Animated.View style={[styles.blobC, { transform: [{ translateY: y }] }]} /></View>;
+function Background({ float }) {
+  const y = float.interpolate({ inputRange: [0, 1], outputRange: [0, -22] });
+  return <View pointerEvents="none" style={StyleSheet.absoluteFillObject}>
+    <Animated.View style={[styles.blobOne, { transform: [{ translateY: y }] }]} />
+    <Animated.View style={[styles.blobTwo, { transform: [{ translateY: y }] }]} />
+    <Animated.View style={[styles.blobThree, { transform: [{ translateY: y }] }]} />
+  </View>;
 }
 
-function Header({ t }) {
-  return <View style={styles.header}><View style={styles.brandRow}><LinearGradient colors={['#FF477E', '#6D5BFF', '#00D4FF']} style={styles.logo}><Text style={styles.logoText}>D</Text></LinearGradient><View><Text style={[styles.title, { color: t.text }]}>DraBornLife</Text><Text style={[styles.subtitle, { color: t.muted }]}>Antalya hazırlık modu</Text></View></View><LinearGradient colors={['#20E3B2', '#00D4FF']} style={styles.badge}><Text style={styles.badgeText}>{VERSION}</Text></LinearGradient></View>;
+function Header({ theme }) {
+  return <View style={styles.header}>
+    <View style={styles.brand}><LinearGradient colors={['#2EE6A6', '#2E6BFF']} style={styles.logo}><MaterialCommunityIcons name="palm-tree" size={24} color="white" /></LinearGradient><View><Text style={[styles.appTitle, { color: theme.text }]}>DraBornLife</Text><Text style={[styles.appSub, { color: theme.muted }]}>Temiz veri • premium mobil</Text></View></View>
+    <View style={styles.version}><Text style={styles.versionText}>{VERSION}</Text></View>
+  </View>;
 }
 
-function Dashboard({ t, data, stats, float, pulse }) {
-  const y = float.interpolate({ inputRange: [0, 1], outputRange: [0, -14] });
-  const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
+function Dashboard({ theme, data, stats, float }) {
+  const y = float.interpolate({ inputRange: [0, 1], outputRange: [0, -10] });
   return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-    <LinearGradient colors={['#FF477E', '#7C3AED', '#00D4FF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}><Animated.View style={[styles.sun, { transform: [{ translateY: y }, { scale }] }]} /><Text style={styles.kicker}>ANTALYA v0.2</Text><Text style={styles.heroTitle}>%{stats.progress}</Text><Text style={styles.heroBody}>{stats.days} gün kaldı. Ev, okul, deniz yakınlığı ve taşınma kontrol listesi artık takipte.</Text><Progress value={stats.progress} /><View style={styles.heroGrid}><Mini label="Birikim" value={money(stats.saving)} /><Mini label="Kalan" value={money(stats.left)} /><Mini label="Checklist" value={`%${stats.checklistPct}`} /></View></LinearGradient>
-    <View style={styles.quickRow}><ColorStat colors={['#00D4FF', '#4D7CFF']} icon="home-search" label="En iyi ev" value={stats.bestHouse ? `${stats.bestHouse.region} %${houseScore(stats.bestHouse)}` : 'Yok'} /><ColorStat colors={['#20E3B2', '#29FFC6']} icon="school" label="En iyi okul" value={stats.bestSchool ? `${stats.bestSchool.region} %${schoolScore(stats.bestSchool)}` : 'Yok'} /></View>
-    <View style={styles.quickRow}><ColorStat colors={['#FFB703', '#FF477E']} icon="calendar-week" label="Haftalık gerek" value={money(stats.weekly)} /><ColorStat colors={['#A855F7', '#6D5BFF']} icon="clipboard-check" label="Hazırlık" value={`${stats.checklistDone}/${data.checklist.length}`} /></View>
-    <Glass t={t}><Text style={[styles.cardTitle, { color: t.text }]}>v0.2 akıllı hazırlık özeti</Text><Text style={[styles.body, { color: t.softText }]}>Ev adayları: {data.houses.length}. Okul adayları: {data.schools.length}. En iyi ev/skor: {stats.bestHouse ? `${stats.bestHouse.title} / %${houseScore(stats.bestHouse)}` : 'henüz yok'}. Taşınma durumu: {data.relocation.status}.</Text></Glass>
-    <RegionCompare t={t} houses={data.houses} schools={data.schools} />
+    <LinearGradient colors={['#0FE0A0', '#2E6BFF', '#8A5CFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
+      <Animated.View style={[styles.heroGlow, { transform: [{ translateY: y }] }]} />
+      <Text style={styles.heroKicker}>ANTALYA HEDEF PANELİ</Text>
+      <Text style={styles.heroPercent}>%{stats.progress}</Text>
+      <Text style={styles.heroText}>{stats.days} gün kaldı. Gerçek verilerini ekledikçe hedef paneli dolacak.</Text>
+      <Bar value={stats.progress} />
+      <View style={styles.heroStats}><Mini label="Hedef" value={money(stats.target)} /><Mini label="Birikim" value={money(stats.saving)} /><Mini label="Kalan" value={money(stats.left)} /></View>
+    </LinearGradient>
+    <View style={styles.metricGrid}><Metric colors={['#2E6BFF', '#31B5FF']} icon="wallet" label="Net" value={money(stats.net)} /><Metric colors={['#0FE0A0', '#27D3C3']} icon="calendar-today" label="Günlük gerek" value={money(stats.daily)} /><Metric colors={['#FF9E2C', '#FF4D8D']} icon="cart" label="Alınacak" value={money(stats.itemsTotal)} /><Metric colors={['#8A5CFF', '#FF4D6D']} icon="alert-circle" label="Kalan borç" value={money(stats.debtLeft)} /></View>
+    <Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Temiz başlangıç</Text><Text style={[styles.body, { color: theme.muted }]}>Demo veriler kaldırıldı. Ev, okul, gelir, gider, borç, alınacaklar ve checklist alanlarını kendi gerçek verilerinle doldurmaya başlayabilirsin.</Text></Card>
+    <Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>En iyi adaylar</Text><Text style={[styles.body, { color: theme.muted }]}>Ev: {stats.bestHouse ? `${stats.bestHouse.title} / %${houseScore(stats.bestHouse)}` : 'henüz ev eklenmedi'}{`\n`}Okul: {stats.bestSchool ? `${stats.bestSchool.name} / %${schoolScore(stats.bestSchool)}` : 'henüz okul eklenmedi'}</Text></Card>
   </ScrollView>;
 }
 
-function Finance({ t, data, mode, setMode, form, setForm, add, remove, payments, setPayments, addPayment, stats }) {
+function Finance({ theme, data, mode, setMode, form, setForm, add, payment, setPayment, addDebtPayment, remove, stats }) {
   const key = mode === 'income' ? 'incomes' : mode === 'expense' ? 'expenses' : mode === 'saving' ? 'savings' : 'debts';
-  const active = financeModes.find((m) => m[0] === mode) || financeModes[0];
-  return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}><ScreenTitle t={t} title="Finans Merkezi" sub="Gelir, gider, birikim, borç" /><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.modeRow}>{financeModes.map(([id, label, icon, colors]) => <ModeButton key={id} active={mode === id} label={label} icon={icon} colors={colors} onPress={() => setMode(id)} />)}</ScrollView><Glass t={t}><Text style={[styles.cardTitle, { color: t.text }]}>{active[1]} ekle</Text><Input t={t} label={mode === 'debt' ? 'Borç adı' : 'Başlık'} value={form.title} onChangeText={(v) => setForm({ ...form, title: v })} /><Input t={t} label="Tutar" value={form.amount} onChangeText={(v) => setForm({ ...form, amount: v })} keyboardType="numeric" /><Input t={t} label="Kategori" value={form.category} onChangeText={(v) => setForm({ ...form, category: v })} /><Input t={t} label="Not" value={form.note} onChangeText={(v) => setForm({ ...form, note: v })} /><Primary label="Kaydet" colors={active[3]} onPress={add} /></Glass><View style={styles.quickRow}><ColorStat colors={['#00D4FF', '#4D7CFF']} icon="trending-up" label="Gelir" value={money(stats.income)} /><ColorStat colors={['#FF477E', '#FF9F1C']} icon="trending-down" label="Gider" value={money(stats.expense)} /></View><View style={styles.quickRow}><ColorStat colors={['#20E3B2', '#29FFC6']} icon="piggy-bank" label="Birikim" value={money(stats.saving)} /><ColorStat colors={['#A855F7', '#F43F5E']} icon="alert" label="Borç" value={money(stats.debtLeft)} /></View>{mode === 'debt' && <Glass t={t}><Text style={[styles.cardTitle, { color: t.text }]}>Borç barı</Text><Text style={[styles.body, { color: t.softText }]}>Toplam {money(stats.debtTotal)} • Ödenen {money(stats.debtPaid)} • Kalan {money(stats.debtLeft)}</Text><Progress value={stats.debtPct} /></Glass>}{data[key].map((x) => mode === 'debt' ? <DebtCard key={x.id} t={t} debt={x} payments={payments} setPayments={setPayments} addPayment={addPayment} onDelete={() => remove('debts', x.id)} /> : <ListCard key={x.id} t={t} title={x.title} sub={`${x.category} • ${new Date(x.date).toLocaleDateString('tr-TR')}`} value={money(x.amount)} note={x.note} onDelete={() => remove(key, x.id)} />)}</ScrollView>;
+  const active = financeModes.find((x) => x[0] === mode) || financeModes[0];
+  return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+    <Title theme={theme} title="Finans" sub="Gelir, gider, birikim ve borç" />
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.modeRow}>{financeModes.map(([id, label, icon, colors]) => <Mode key={id} active={mode === id} label={label} icon={icon} colors={colors} onPress={() => setMode(id)} />)}</ScrollView>
+    <Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>{active[1]} ekle</Text><Input theme={theme} label="Başlık" value={form.title} onChangeText={(v) => setForm({ ...form, title: v })} /><Input theme={theme} label="Tutar" value={form.amount} keyboardType="numeric" onChangeText={(v) => setForm({ ...form, amount: v })} /><Input theme={theme} label="Kategori" value={form.category} onChangeText={(v) => setForm({ ...form, category: v })} /><Input theme={theme} label="Not" value={form.note} onChangeText={(v) => setForm({ ...form, note: v })} /><Button label="Kaydet" colors={active[3]} onPress={add} /></Card>
+    <View style={styles.metricGrid}><Metric colors={['#2E6BFF', '#31B5FF']} icon="cash-plus" label="Gelir" value={money(stats.income)} /><Metric colors={['#FF4D8D', '#FF9E2C']} icon="cart-arrow-down" label="Gider" value={money(stats.expense)} /><Metric colors={['#0FE0A0', '#27D3C3']} icon="piggy-bank" label="Birikim" value={money(stats.saving)} /><Metric colors={['#8A5CFF', '#FF4D6D']} icon="alert-circle" label="Borç" value={money(stats.debtLeft)} /></View>
+    {mode === 'debt' && <Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Borç barı</Text><Text style={[styles.body, { color: theme.muted }]}>Toplam {money(stats.debtTotal)} • Ödenen {money(stats.debtPaid)} • Kalan {money(stats.debtLeft)}</Text><Bar value={stats.debtPct} /></Card>}
+    {data[key].length === 0 && <Empty theme={theme} icon="playlist-plus" text="Henüz kayıt yok. İlk gerçek kaydı yukarıdan ekle." />}
+    {data[key].map((x) => mode === 'debt' ? <Debt key={x.id} theme={theme} debt={x} payment={payment} setPayment={setPayment} addDebtPayment={addDebtPayment} onDelete={() => remove('debts', x.id)} /> : <Record key={x.id} theme={theme} title={x.title} sub={`${x.category || 'Genel'} • ${new Date(x.date).toLocaleDateString('tr-TR')}`} value={money(x.amount)} note={x.note} onDelete={() => remove(key, x.id)} />)}
+  </ScrollView>;
 }
 
-function DebtCard({ t, debt, payments, setPayments, addPayment, onDelete }) { const done = pct(num(debt.paid), num(debt.amount)); return <Glass t={t}><View style={styles.listTop}><View style={styles.flex}><Text style={[styles.listTitle, { color: t.text }]}>{debt.title}</Text><Text style={[styles.listSub, { color: t.muted }]}>Kalan {money(num(debt.amount) - num(debt.paid))} • %{done}</Text></View><Text style={[styles.amount, { color: t.text }]}>{money(debt.amount)}</Text></View><Progress value={done} /><Input t={t} label="Ödeme ekle" value={payments[debt.id] || ''} keyboardType="numeric" onChangeText={(v) => setPayments({ ...payments, [debt.id]: v })} /><View style={styles.actions}><SmallButton label="Ödeme işle" colors={['#20E3B2', '#00D4FF']} onPress={() => addPayment(debt.id)} /><Pressable onPress={onDelete}><Text style={[styles.delete, { color: t.danger }]}>Sil</Text></Pressable></View></Glass>; }
-
-function Items({ t, data, item, setItem, addItem, setItemStatus, remove, stats }) {
-  return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}><ScreenTitle t={t} title="Alınacaklar" sub="Ev kurulum, GTA 6 seti, motosiklet" /><Glass t={t}><Input t={t} label="Ürün adı" value={item.name} onChangeText={(v) => setItem({ ...item, name: v })} /><Input t={t} label="Kategori" value={item.category} onChangeText={(v) => setItem({ ...item, category: v })} /><Input t={t} label="Tahmini fiyat" value={item.estimate} keyboardType="numeric" onChangeText={(v) => setItem({ ...item, estimate: v })} /><Input t={t} label="Gerçek fiyat" value={item.actual} keyboardType="numeric" onChangeText={(v) => setItem({ ...item, actual: v })} /><Input t={t} label="Öncelik" value={item.priority} onChangeText={(v) => setItem({ ...item, priority: v })} /><Input t={t} label="Not" value={item.note} onChangeText={(v) => setItem({ ...item, note: v })} /><Primary label="Listeye ekle" colors={['#FF477E', '#6D5BFF', '#00D4FF']} onPress={addItem} /></Glass><View style={styles.quickRow}><ColorStat colors={['#FFB703', '#FF477E']} icon="calculator" label="Toplam" value={money(stats.itemsTotal)} /><ColorStat colors={['#20E3B2', '#00D4FF']} icon="Biten" label="Biten" value={`${stats.bought}/${data.items.length}`} /></View>{data.items.map((x, index) => <ItemCard key={x.id} t={t} item={x} index={index} setStatus={(s) => setItemStatus(x.id, s)} onDelete={() => remove('items', x.id)} />)}</ScrollView>;
+function Debt({ theme, debt, payment, setPayment, addDebtPayment, onDelete }) {
+  const done = percent(n(debt.paid), n(debt.amount));
+  return <Card theme={theme}><View style={styles.rowTop}><View style={styles.flex}><Text style={[styles.itemTitle, { color: theme.text }]}>{debt.title}</Text><Text style={[styles.itemSub, { color: theme.muted }]}>Kalan {money(n(debt.amount) - n(debt.paid))} • %{done}</Text></View><Text style={[styles.itemValue, { color: theme.text }]}>{money(debt.amount)}</Text></View><Bar value={done} /><Input theme={theme} label="Ödeme ekle" value={payment[debt.id] || ''} keyboardType="numeric" onChangeText={(v) => setPayment({ ...payment, [debt.id]: v })} /><Button label="Ödeme işle" colors={['#0FE0A0', '#2E6BFF']} onPress={() => addDebtPayment(debt.id)} /><Delete onPress={onDelete} /></Card>;
 }
 
-function ItemCard({ t, item, index, setStatus, onDelete }) { const colors = [['#FF477E', '#FFB703'], ['#6D5BFF', '#00D4FF'], ['#20E3B2', '#00D4FF'], ['#A855F7', '#F43F5E']][index % 4]; return <Glass t={t}><View style={styles.listTop}><LinearGradient colors={colors} style={styles.itemIcon}><MaterialCommunityIcons name={item.category.includes('Motor') ? 'motorbike' : item.category.includes('GTA') ? 'gamepad-variant' : item.category.includes('Beyaz') ? 'washing-machine' : 'home-heart'} size={23} color="white" /></LinearGradient><View style={styles.flex}><Text style={[styles.listTitle, { color: t.text }]}>{item.name}</Text><Text style={[styles.listSub, { color: t.muted }]}>{item.category} • {item.priority}</Text><Text style={[styles.body, { color: t.softText }]}>{item.note}</Text></View><Text style={[styles.amount, { color: t.text }]}>{money(item.actual || item.estimate)}</Text></View><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>{itemStatuses.map((s) => <Pill key={s} t={t} active={item.status === s} label={s} onPress={() => setStatus(s)} />)}</ScrollView><Pressable onPress={onDelete}><Text style={[styles.delete, { color: t.danger }]}>Sil</Text></Pressable></Glass>; }
-
-function Antalya(props) {
-  const { t, data, save, lifeTab, setLifeTab } = props;
-  return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}><ScreenTitle t={t} title="Antalya Hazırlık v0.2" sub="Ev, okul, bölge, checklist" /><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.modeRow}>{[['ev','Evler','home-search',['#00D4FF','#4D7CFF']],['okul','Okullar','school',['#20E3B2','#29FFC6']],['bolge','Bölge','map',['#FFB703','#FF477E']],['check','Checklist','clipboard-check',['#A855F7','#6D5BFF']],['not','Notlar','notebook-heart',['#FF477E','#00D4FF']]].map(([id,label,icon,colors]) => <ModeButton key={id} active={lifeTab === id} label={label} icon={icon} colors={colors} onPress={() => setLifeTab(id)} />)}</ScrollView>{lifeTab === 'ev' && <Houses {...props} />}{lifeTab === 'okul' && <Schools {...props} />}{lifeTab === 'bolge' && <><LinearGradient colors={['#00D4FF','#20E3B2','#FFB703']} style={styles.routeCard}><Text style={styles.routeTitle}>Muratpaşa • Lara • Konyaaltı</Text><Text style={styles.routeBody}>Ev-okul-deniz üçgeninde adayları karşılaştır. Skor; denize dakika, okula dakika, bina yaşı ve kira yüküne göre hesaplanır.</Text></LinearGradient><RegionCompare t={t} houses={data.houses} schools={data.schools} /><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Taşınma durumu</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>{moveStatuses.map((s) => <Pill key={s} t={t} active={data.relocation.status === s} label={s} onPress={() => save({ ...data, relocation: { ...data.relocation, status: s } })} />)}</ScrollView></Glass></>}{lifeTab === 'check' && <Checklist {...props} />}{lifeTab === 'not' && <Notes {...props} />}</ScrollView>;
+function Shopping({ theme, data, form, setForm, add, remove, save, stats }) {
+  return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+    <Title theme={theme} title="Alınacaklar" sub="Eşyalar, motor, GTA seti" />
+    <Card theme={theme}><Input theme={theme} label="Ürün adı" value={form.name} onChangeText={(v) => setForm({ ...form, name: v })} /><Input theme={theme} label="Kategori" value={form.category} onChangeText={(v) => setForm({ ...form, category: v })} /><Input theme={theme} label="Tahmini fiyat" value={form.estimate} keyboardType="numeric" onChangeText={(v) => setForm({ ...form, estimate: v })} /><Input theme={theme} label="Gerçek fiyat" value={form.actual} keyboardType="numeric" onChangeText={(v) => setForm({ ...form, actual: v })} /><Input theme={theme} label="Öncelik" value={form.priority} onChangeText={(v) => setForm({ ...form, priority: v })} /><Input theme={theme} label="Not" value={form.note} onChangeText={(v) => setForm({ ...form, note: v })} /><Button label="Listeye ekle" colors={['#FF9E2C', '#FF4D8D']} onPress={add} /></Card>
+    <View style={styles.metricGrid}><Metric colors={['#FF9E2C', '#FF4D8D']} icon="calculator" label="Toplam" value={money(stats.itemsTotal)} /><Metric colors={['#0FE0A0', '#2E6BFF']} icon="check-circle" label="Tamamlanan" value={`${stats.bought}/${data.items.length}`} /></View>
+    {data.items.length === 0 && <Empty theme={theme} icon="cart-plus" text="Alınacaklar boş. İlk gerçek ürünü ekle." />}
+    {data.items.map((x) => <Card key={x.id} theme={theme}><View style={styles.rowTop}><BadgeIcon icon="cart" colors={['#FF9E2C', '#FF4D8D']} /><View style={styles.flex}><Text style={[styles.itemTitle, { color: theme.text }]}>{x.name}</Text><Text style={[styles.itemSub, { color: theme.muted }]}>{x.category || 'Kategori yok'} • {x.priority || 'Öncelik yok'}</Text><Text style={[styles.body, { color: theme.muted }]}>{x.note}</Text></View><Text style={[styles.itemValue, { color: theme.text }]}>{money(x.actual || x.estimate)}</Text></View><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>{itemStatuses.map((s) => <Pill key={s} theme={theme} active={x.status === s} label={s} onPress={() => save({ ...data, items: data.items.map((i) => i.id === x.id ? { ...i, status: s } : i) })} />)}</ScrollView><Delete onPress={() => remove('items', x.id)} /></Card>)}
+  </ScrollView>;
 }
 
-function Houses({ t, data, house, setHouse, addHouse, remove }) { return <><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Ev adayı ekle</Text><Input t={t} label="Ev başlığı" value={house.title} onChangeText={(v)=>setHouse({...house,title:v})} /><Input t={t} label="Bölge" value={house.region} onChangeText={(v)=>setHouse({...house,region:v})} /><Input t={t} label="Kira" keyboardType="numeric" value={house.rent} onChangeText={(v)=>setHouse({...house,rent:v})} /><Input t={t} label="Depozito" keyboardType="numeric" value={house.deposit} onChangeText={(v)=>setHouse({...house,deposit:v})} /><View style={styles.quickRow}><InputBox t={t} label="Deniz dk" value={house.seaMin} onChangeText={(v)=>setHouse({...house,seaMin:v})} /><InputBox t={t} label="Okul dk" value={house.schoolMin} onChangeText={(v)=>setHouse({...house,schoolMin:v})} /><InputBox t={t} label="Bina yaşı" value={house.buildingAge} onChangeText={(v)=>setHouse({...house,buildingAge:v})} /></View><Input t={t} label="Not" value={house.note} onChangeText={(v)=>setHouse({...house,note:v})} /><Primary label="Ev adayını kaydet" colors={['#00D4FF','#4D7CFF']} onPress={addHouse} /></Glass>{data.houses.map((h)=><Glass key={h.id} t={t}><View style={styles.listTop}><LinearGradient colors={['#00D4FF','#4D7CFF']} style={styles.itemIcon}><MaterialCommunityIcons name="home-search" size={23} color="white" /></LinearGradient><View style={styles.flex}><Text style={[styles.listTitle,{color:t.text}]}>{h.title}</Text><Text style={[styles.listSub,{color:t.muted}]}>{h.region} • Deniz {h.seaMin} dk • Okul {h.schoolMin} dk • Bina {h.buildingAge} yaş</Text><Text style={[styles.body,{color:t.softText}]}>{h.note}</Text></View><Text style={[styles.score,{color:t.cyan}]}>%{houseScore(h)}</Text></View><Text style={[styles.amount,{color:t.text}]}>Kira {money(h.rent)} • Depozito {money(h.deposit)}</Text><Pressable onPress={()=>remove('houses',h.id)}><Text style={[styles.delete,{color:t.danger}]}>Sil</Text></Pressable></Glass>)}</>; }
+function Antalya({ theme, data, save, lifeTab, setLifeTab, house, setHouse, addHouse, school, setSchool, addSchool, task, setTask, addTask, note, setNote, addNote, remove }) {
+  const tabs = [['ev', 'Evler', 'home-search'], ['okul', 'Okullar', 'school'], ['check', 'Checklist', 'clipboard-check'], ['not', 'Notlar', 'note-text']];
+  return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+    <Title theme={theme} title="Antalya" sub="Ev, okul ve taşınma hazırlığı" />
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.modeRow}>{tabs.map(([id, label, icon]) => <Mode key={id} active={lifeTab === id} label={label} icon={icon} colors={['#0FE0A0', '#2E6BFF']} onPress={() => setLifeTab(id)} />)}</ScrollView>
+    <Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Taşınma durumu</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>{moveStatuses.map((s) => <Pill key={s} theme={theme} active={data.relocation.status === s} label={s} onPress={() => save({ ...data, relocation: { ...data.relocation, status: s } })} />)}</ScrollView></Card>
+    {lifeTab === 'ev' && <Houses theme={theme} houses={data.houses} house={house} setHouse={setHouse} addHouse={addHouse} remove={remove} />}
+    {lifeTab === 'okul' && <Schools theme={theme} schools={data.schools} school={school} setSchool={setSchool} addSchool={addSchool} remove={remove} />}
+    {lifeTab === 'check' && <Checklist theme={theme} data={data} save={save} task={task} setTask={setTask} addTask={addTask} remove={remove} />}
+    {lifeTab === 'not' && <Notes theme={theme} notes={data.notes} note={note} setNote={setNote} addNote={addNote} remove={remove} />}
+  </ScrollView>;
+}
 
-function Schools({ t, data, school, setSchool, addSchool, remove }) { return <><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Okul adayı ekle</Text><Input t={t} label="Okul adı" value={school.name} onChangeText={(v)=>setSchool({...school,name:v})} /><Input t={t} label="Bölge" value={school.region} onChangeText={(v)=>setSchool({...school,region:v})} /><Input t={t} label="Aylık tahmini ücret" keyboardType="numeric" value={school.monthly} onChangeText={(v)=>setSchool({...school,monthly:v})} /><Input t={t} label="Eve uzaklık dakika" keyboardType="numeric" value={school.distanceMin} onChangeText={(v)=>setSchool({...school,distanceMin:v})} /><Input t={t} label="Yaş grubu" value={school.ageGroup} onChangeText={(v)=>setSchool({...school,ageGroup:v})} /><Input t={t} label="Not" value={school.note} onChangeText={(v)=>setSchool({...school,note:v})} /><Primary label="Okul adayını kaydet" colors={['#20E3B2','#00D4FF']} onPress={addSchool} /></Glass>{data.schools.map((s)=><Glass key={s.id} t={t}><View style={styles.listTop}><LinearGradient colors={['#20E3B2','#00D4FF']} style={styles.itemIcon}><MaterialCommunityIcons name="school" size={23} color="white" /></LinearGradient><View style={styles.flex}><Text style={[styles.listTitle,{color:t.text}]}>{s.name}</Text><Text style={[styles.listSub,{color:t.muted}]}>{s.region} • {s.ageGroup} • Uzaklık {s.distanceMin} dk</Text><Text style={[styles.body,{color:t.softText}]}>{s.note}</Text></View><Text style={[styles.score,{color:t.cyan}]}>%{schoolScore(s)}</Text></View><Text style={[styles.amount,{color:t.text}]}>Aylık {money(s.monthly)}</Text><Pressable onPress={()=>remove('schools',s.id)}><Text style={[styles.delete,{color:t.danger}]}>Sil</Text></Pressable></Glass>)}</>; }
+function Houses({ theme, houses, house, setHouse, addHouse, remove }) {
+  return <><Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Ev adayı ekle</Text><Input theme={theme} label="Ev başlığı" value={house.title} onChangeText={(v) => setHouse({ ...house, title: v })} /><Input theme={theme} label="Bölge" value={house.region} onChangeText={(v) => setHouse({ ...house, region: v })} /><Input theme={theme} label="Kira" value={house.rent} keyboardType="numeric" onChangeText={(v) => setHouse({ ...house, rent: v })} /><Input theme={theme} label="Depozito" value={house.deposit} keyboardType="numeric" onChangeText={(v) => setHouse({ ...house, deposit: v })} /><View style={styles.three}><MiniInput theme={theme} label="Deniz dk" value={house.seaMin} onChangeText={(v) => setHouse({ ...house, seaMin: v })} /><MiniInput theme={theme} label="Okul dk" value={house.schoolMin} onChangeText={(v) => setHouse({ ...house, schoolMin: v })} /><MiniInput theme={theme} label="Bina yaşı" value={house.buildingAge} onChangeText={(v) => setHouse({ ...house, buildingAge: v })} /></View><Input theme={theme} label="Not" value={house.note} onChangeText={(v) => setHouse({ ...house, note: v })} /><Button label="Ev kaydet" colors={['#2E6BFF', '#31B5FF']} onPress={addHouse} /></Card>{houses.length === 0 && <Empty theme={theme} icon="home-plus" text="Ev listesi boş. İlk gerçek ev adayını ekle." />}{houses.map((h) => <Card key={h.id} theme={theme}><View style={styles.rowTop}><BadgeIcon icon="home-search" colors={['#2E6BFF', '#31B5FF']} /><View style={styles.flex}><Text style={[styles.itemTitle, { color: theme.text }]}>{h.title}</Text><Text style={[styles.itemSub, { color: theme.muted }]}>{h.region || 'Bölge yok'} • Deniz {h.seaMin || 0} dk • Okul {h.schoolMin || 0} dk</Text><Text style={[styles.body, { color: theme.muted }]}>{h.note}</Text></View><Text style={styles.score}>%{houseScore(h)}</Text></View><Text style={[styles.itemValue, { color: theme.text }]}>Kira {money(h.rent)} • Depozito {money(h.deposit)}</Text><Delete onPress={() => remove('houses', h.id)} /></Card>)}</>;
+}
 
-function Checklist({ t, data, task, setTask, addTask, toggleTask, remove }) { const done = data.checklist.filter((x)=>x.done).length; return <><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Taşınma günü kontrol listesi</Text><Text style={[styles.body,{color:t.softText}]}>{done}/{data.checklist.length} görev tamamlandı.</Text><Progress value={pct(done,data.checklist.length)} /><Input t={t} label="Yeni görev" value={task} onChangeText={setTask} /><Primary label="Görev ekle" colors={['#A855F7','#6D5BFF']} onPress={addTask} /></Glass>{data.checklist.map((x)=><Pressable key={x.id} onPress={()=>toggleTask(x.id)}><Glass t={t}><View style={styles.listTop}><MaterialCommunityIcons name={x.done?'checkbox-marked-circle':'checkbox-blank-circle-outline'} size={28} color={x.done?'#20E3B2':t.muted} /><View style={styles.flex}><Text style={[styles.listTitle,{color:t.text,textDecorationLine:x.done?'line-through':'none'}]}>{x.title}</Text></View><Pressable onPress={()=>remove('checklist',x.id)}><Text style={[styles.delete,{color:t.danger,marginTop:0}]}>Sil</Text></Pressable></View></Glass></Pressable>)}</>; }
+function Schools({ theme, schools, school, setSchool, addSchool, remove }) {
+  return <><Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Okul adayı ekle</Text><Input theme={theme} label="Okul adı" value={school.name} onChangeText={(v) => setSchool({ ...school, name: v })} /><Input theme={theme} label="Bölge" value={school.region} onChangeText={(v) => setSchool({ ...school, region: v })} /><Input theme={theme} label="Aylık tahmini ücret" value={school.monthly} keyboardType="numeric" onChangeText={(v) => setSchool({ ...school, monthly: v })} /><Input theme={theme} label="Eve uzaklık dakika" value={school.distanceMin} keyboardType="numeric" onChangeText={(v) => setSchool({ ...school, distanceMin: v })} /><Input theme={theme} label="Yaş grubu" value={school.ageGroup} onChangeText={(v) => setSchool({ ...school, ageGroup: v })} /><Input theme={theme} label="Not" value={school.note} onChangeText={(v) => setSchool({ ...school, note: v })} /><Button label="Okul kaydet" colors={['#0FE0A0', '#2E6BFF']} onPress={addSchool} /></Card>{schools.length === 0 && <Empty theme={theme} icon="school" text="Okul listesi boş. İlk gerçek okul adayını ekle." />}{schools.map((s) => <Card key={s.id} theme={theme}><View style={styles.rowTop}><BadgeIcon icon="school" colors={['#0FE0A0', '#2E6BFF']} /><View style={styles.flex}><Text style={[styles.itemTitle, { color: theme.text }]}>{s.name}</Text><Text style={[styles.itemSub, { color: theme.muted }]}>{s.region || 'Bölge yok'} • {s.ageGroup || 'Yaş grubu yok'} • {s.distanceMin || 0} dk</Text><Text style={[styles.body, { color: theme.muted }]}>{s.note}</Text></View><Text style={styles.score}>%{schoolScore(s)}</Text></View><Text style={[styles.itemValue, { color: theme.text }]}>Aylık {money(s.monthly)}</Text><Delete onPress={() => remove('schools', s.id)} /></Card>)}</>;
+}
 
-function Notes({ t, data, note, setNote, addNote, remove }) { return <><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Antalya notu ekle</Text><Input t={t} label="Başlık" value={note.title} onChangeText={(v)=>setNote({...note,title:v})} /><Input t={t} label="Kategori" value={note.category} onChangeText={(v)=>setNote({...note,category:v})} /><Input t={t} label="Not" value={note.body} onChangeText={(v)=>setNote({...note,body:v})} multiline /><Primary label="Notu kaydet" colors={['#FF477E','#00D4FF']} onPress={addNote} /></Glass>{data.notes.map((x)=><Glass key={x.id} t={t}><Text style={[styles.listTitle,{color:t.text}]}>{x.title}</Text><Text style={[styles.listSub,{color:t.muted}]}>{x.category} • {new Date(x.date).toLocaleDateString('tr-TR')}</Text><Text style={[styles.body,{color:t.softText}]}>{x.body}</Text><Pressable onPress={()=>remove('notes',x.id)}><Text style={[styles.delete,{color:t.danger}]}>Sil</Text></Pressable></Glass>)}</>; }
+function Checklist({ theme, data, save, task, setTask, addTask, remove }) {
+  const done = data.checklist.filter((x) => x.done).length;
+  return <><Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Taşınma checklist</Text><Text style={[styles.body, { color: theme.muted }]}>{done}/{data.checklist.length} görev tamamlandı.</Text><Bar value={percent(done, data.checklist.length)} /><Input theme={theme} label="Yeni görev" value={task} onChangeText={setTask} /><Button label="Görev ekle" colors={['#8A5CFF', '#2E6BFF']} onPress={addTask} /></Card>{data.checklist.length === 0 && <Empty theme={theme} icon="clipboard-plus" text="Checklist boş. Gerçek taşınma görevlerini ekle." />}{data.checklist.map((x) => <Card key={x.id} theme={theme}><Pressable onPress={() => save({ ...data, checklist: data.checklist.map((i) => i.id === x.id ? { ...i, done: !i.done } : i) })} style={styles.rowTop}><MaterialCommunityIcons name={x.done ? 'check-circle' : 'circle-outline'} size={30} color={x.done ? '#0FE0A0' : theme.muted} /><View style={styles.flex}><Text style={[styles.itemTitle, { color: theme.text, textDecorationLine: x.done ? 'line-through' : 'none' }]}>{x.title}</Text></View></Pressable><Delete onPress={() => remove('checklist', x.id)} /></Card>)}</>;
+}
 
-function RegionCompare({ t, houses, schools }) { return <Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Bölge karşılaştırması</Text>{regions.map((r, i) => { const rh = houses.filter((h)=>h.region.toLowerCase().includes(r.toLowerCase())); const rs = schools.filter((s)=>s.region.toLowerCase().includes(r.toLowerCase())); const avgH = rh.length ? Math.round(rh.reduce((a,b)=>a+houseScore(b),0)/rh.length) : 0; const avgS = rs.length ? Math.round(rs.reduce((a,b)=>a+schoolScore(b),0)/rs.length) : 0; const total = Math.round((avgH + avgS) / (avgH && avgS ? 2 : 1)); const colors = [['#00D4FF','#4D7CFF'],['#FF477E','#FFB703'],['#20E3B2','#00D4FF']][i]; return <View key={r} style={styles.regionRow}><LinearGradient colors={colors} style={styles.regionBadge}><Text style={styles.regionLetter}>{r[0]}</Text></LinearGradient><View style={styles.flex}><Text style={[styles.listTitle,{color:t.text}]}>{r}</Text><Text style={[styles.listSub,{color:t.muted}]}>Ev skoru %{avgH} • Okul skoru %{avgS} • Aday {rh.length + rs.length}</Text><Progress value={total} /></View><Text style={[styles.score,{color:t.cyan}]}>%{total}</Text></View>; })}</Glass>; }
+function Notes({ theme, notes, note, setNote, addNote, remove }) {
+  return <><Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Not ekle</Text><Input theme={theme} label="Başlık" value={note.title} onChangeText={(v) => setNote({ ...note, title: v })} /><Input theme={theme} label="Kategori" value={note.category} onChangeText={(v) => setNote({ ...note, category: v })} /><Input theme={theme} label="Not" value={note.body} onChangeText={(v) => setNote({ ...note, body: v })} multiline /><Button label="Notu kaydet" colors={['#FF4D8D', '#2E6BFF']} onPress={addNote} /></Card>{notes.length === 0 && <Empty theme={theme} icon="note-plus" text="Notlar boş. İlk gerçek notunu ekle." />}{notes.map((x) => <Record key={x.id} theme={theme} title={x.title} sub={`${x.category || 'Genel'} • ${new Date(x.date).toLocaleDateString('tr-TR')}`} note={x.body} onDelete={() => remove('notes', x.id)} />)}</>;
+}
 
-function Settings({ t, data, save, backup, setBackup, makeBackup, restoreBackup, reset }) { return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}><ScreenTitle t={t} title="Kontrol Odası" sub="Tema, hedef, yedekleme" /><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Tema modu</Text><View style={styles.themeGrid}><ThemeButton label="Color" active={data.settings.theme === 'color'} colors={['#FF477E','#6D5BFF','#00D4FF']} onPress={()=>save({...data,settings:{...data.settings,theme:'color'}})} /><ThemeButton label="Light" active={data.settings.theme === 'light'} colors={['#FFFFFF','#EAF2FF']} darkText onPress={()=>save({...data,settings:{...data.settings,theme:'light'}})} /></View></Glass><Glass t={t}><Input t={t} label="Toplam hedef bütçe" value={String(data.settings.targetBudget)} keyboardType="numeric" onChangeText={(v)=>save({...data,settings:{...data.settings,targetBudget:num(v)}})} /><Input t={t} label="Hedef tarih" value={data.settings.targetDate} onChangeText={(v)=>save({...data,settings:{...data.settings,targetDate:v}})} /><Input t={t} label="Motosiklet hedef fiyatı" value={String(data.settings.motorcycleTarget)} keyboardType="numeric" onChangeText={(v)=>save({...data,settings:{...data.settings,motorcycleTarget:num(v)}})} /></Glass><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Yedekleme</Text><Text style={[styles.body,{color:t.softText}]}>v0.2 ev, okul ve checklist verilerini de JSON yedeğe ekler. APK hedefi v1.0.</Text><Primary label="Yedek oluştur" colors={['#6D5BFF','#00D4FF']} onPress={makeBackup} /><Input t={t} label="Yedek JSON" value={backup} onChangeText={setBackup} multiline /><Primary label="Geri yükle" colors={['#20E3B2','#00D4FF']} onPress={restoreBackup} /></Glass><Glass t={t}><Text style={[styles.cardTitle,{color:t.text}]}>Tehlikeli alan</Text><Text style={[styles.body,{color:t.softText}]}>Tüm test verilerini sıfırlar.</Text><Pressable onPress={reset}><Text style={[styles.delete,{color:t.danger}]}>Verileri sıfırla</Text></Pressable></Glass></ScrollView>; }
+function Settings({ theme, data, save, backup, setBackup, backupNow, restoreNow, reset }) {
+  return <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}><Title theme={theme} title="Ayarlar" sub="Tema, hedef, yedek" /><Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Tema</Text><View style={styles.themeRow}><Button label="Dark" colors={['#08111F', '#2E6BFF']} onPress={() => save({ ...data, settings: { ...data.settings, theme: 'dark' } })} /><Button label="Light" colors={['#EAF2FF', '#F6F8FF']} onPress={() => save({ ...data, settings: { ...data.settings, theme: 'light' } })} /></View></Card><Card theme={theme}><Input theme={theme} label="Toplam hedef bütçe" value={String(data.settings.targetBudget)} keyboardType="numeric" onChangeText={(v) => save({ ...data, settings: { ...data.settings, targetBudget: n(v) } })} /><Input theme={theme} label="Hedef tarih" value={data.settings.targetDate} onChangeText={(v) => save({ ...data, settings: { ...data.settings, targetDate: v } })} /><Input theme={theme} label="Motosiklet hedef fiyatı" value={String(data.settings.motorcycleTarget)} keyboardType="numeric" onChangeText={(v) => save({ ...data, settings: { ...data.settings, motorcycleTarget: n(v) } })} /></Card><Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Yedekleme</Text><Text style={[styles.body, { color: theme.muted }]}>Gerçek verilerini JSON olarak dışa aktarabilir, sonra geri yükleyebilirsin.</Text><Button label="Yedek oluştur" colors={['#2E6BFF', '#8A5CFF']} onPress={backupNow} /><Input theme={theme} label="Yedek JSON" value={backup} onChangeText={setBackup} multiline /><Button label="Geri yükle" colors={['#0FE0A0', '#2E6BFF']} onPress={restoreNow} /></Card><Card theme={theme}><Text style={[styles.cardTitle, { color: theme.text }]}>Temizle</Text><Text style={[styles.body, { color: theme.muted }]}>Tüm gerçek verileri sıfırlar.</Text><Pressable onPress={reset}><Text style={styles.deleteText}>Verileri sıfırla</Text></Pressable></Card></ScrollView>;
+}
 
-function ScreenTitle({ t, title, sub }) { return <View style={styles.screenTitle}><Text style={[styles.sectionTitle,{color:t.text}]}>{title}</Text><Text style={[styles.subtitle,{color:t.muted}]}>{sub}</Text></View>; }
-function Glass({ t, children }) { return <View style={[styles.glass,{backgroundColor:t.card,borderColor:t.line}]}>{children}</View>; }
+function Title({ theme, title, sub }) { return <View style={styles.screenTitle}><Text style={[styles.screenText, { color: theme.text }]}>{title}</Text><Text style={[styles.screenSub, { color: theme.muted }]}>{sub}</Text></View>; }
+function Card({ theme, children }) { return <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.line }]}>{children}</View>; }
+function Input({ theme, label, multiline, ...props }) { return <View style={styles.field}><Text style={[styles.label, { color: theme.muted }]}>{label}</Text><TextInput placeholderTextColor="#8CA0BA" style={[styles.input, multiline && styles.multi, { color: theme.text, borderColor: theme.line, backgroundColor: theme.card2 }]} multiline={multiline} {...props} /></View>; }
+function MiniInput(props) { return <View style={styles.miniInput}><Input {...props} keyboardType="numeric" /></View>; }
+function Button({ label, colors, onPress }) { return <Pressable onPress={onPress} style={styles.buttonWrap}><LinearGradient colors={colors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}><Text style={styles.buttonText}>{label}</Text></LinearGradient></Pressable>; }
+function Bar({ value }) { return <View style={styles.track}><LinearGradient colors={['#0FE0A0', '#2E6BFF', '#8A5CFF']} style={[styles.fill, { width: `${Math.max(4, value)}%` }]} /></View>; }
 function Mini({ label, value }) { return <View><Text style={styles.miniLabel}>{label}</Text><Text style={styles.miniValue}>{value}</Text></View>; }
-function Progress({ value }) { return <View style={styles.track}><LinearGradient colors={['#20E3B2','#00D4FF','#FFB703','#FF477E']} style={[styles.fill,{width:`${Math.max(4,value)}%`}]} /></View>; }
-function Pill({ t, label, active, onPress }) { return <Pressable onPress={onPress} style={[styles.pill,{borderColor:active?t.cyan:t.line,backgroundColor:active?'rgba(0,212,255,0.18)':'rgba(255,255,255,0.04)'}]}><Text style={[styles.pillText,{color:active?t.cyan:t.muted}]}>{label}</Text></Pressable>; }
-function Input({ t, label, multiline, ...props }) { return <View style={styles.field}><Text style={[styles.label,{color:t.muted}]}>{label}</Text><TextInput placeholderTextColor="#8E9AC0" style={[styles.input,multiline&&styles.multi,{color:t.text,borderColor:t.line,backgroundColor:t.mode==='light'?'#FFFFFF':'rgba(255,255,255,0.07)'}]} multiline={multiline} {...props} /></View>; }
-function InputBox({ t, label, ...props }) { return <View style={styles.inputBox}><Input t={t} label={label} keyboardType="numeric" {...props} /></View>; }
-function Primary({ label, colors, onPress }) { return <Pressable onPress={onPress} style={styles.primary}><LinearGradient colors={colors} start={{x:0,y:0}} end={{x:1,y:0}} style={styles.primaryInner}><Text style={styles.primaryText}>{label}</Text></LinearGradient></Pressable>; }
-function SmallButton({ label, colors, onPress }) { return <Pressable onPress={onPress} style={styles.smallButtonWrap}><LinearGradient colors={colors} style={styles.smallButton}><Text style={styles.primaryText}>{label}</Text></LinearGradient></Pressable>; }
-function ColorStat({ colors, icon, label, value }) { return <LinearGradient colors={colors} start={{x:0,y:0}} end={{x:1,y:1}} style={styles.colorStat}><View style={styles.colorIcon}><MaterialCommunityIcons name={icon} size={22} color="white" /></View><Text numberOfLines={2} style={styles.colorValue}>{value}</Text><Text style={styles.colorLabel}>{label}</Text></LinearGradient>; }
-function ModeButton({ active, label, icon, colors, onPress }) { return <Pressable onPress={onPress} style={styles.modeButton}><LinearGradient colors={active?colors:['rgba(255,255,255,0.10)','rgba(255,255,255,0.06)']} style={styles.modeGradient}><MaterialCommunityIcons name={icon} size={22} color="white" /><Text style={styles.modeText}>{label}</Text></LinearGradient></Pressable>; }
-function ThemeButton({ label, active, colors, onPress, darkText }) { return <Pressable onPress={onPress} style={[styles.themeButton,active&&styles.themeActive]}><LinearGradient colors={colors} style={styles.themeInner}><Text style={[styles.themeText,darkText&&{color:'#14162A'}]}>{label}</Text></LinearGradient></Pressable>; }
-function ListCard({ t, title, sub, value, note, onDelete }) { return <Glass t={t}><View style={styles.listTop}><View style={styles.flex}><Text style={[styles.listTitle,{color:t.text}]}>{title}</Text><Text style={[styles.listSub,{color:t.muted}]}>{sub}</Text></View><Text style={[styles.amount,{color:t.text}]}>{value}</Text></View>{!!note&&<Text style={[styles.body,{color:t.softText}]}>{note}</Text>}<Pressable onPress={onDelete}><Text style={[styles.delete,{color:t.danger}]}>Sil</Text></Pressable></Glass>; }
-function Nav({ t, tab, setTab }) { const items=[['panel','Panel','home-variant'],['finans','Finans','wallet'],['liste','Liste','cart'],['antalya','Antalya','map-marker-path'],['ayar','Ayar','cog']]; return <View style={[styles.nav,{backgroundColor:t.nav,borderColor:t.line}]}>{items.map(([id,label,icon])=><Pressable key={id} onPress={()=>setTab(id)} style={styles.navItem}>{tab===id?<LinearGradient colors={['#FF477E','#6D5BFF','#00D4FF']} style={styles.navActive}><MaterialCommunityIcons name={icon} size={22} color="white" /></LinearGradient>:<MaterialCommunityIcons name={icon} size={23} color={t.muted} />}<Text style={[styles.navText,{color:tab===id?t.text:t.muted}]}>{label}</Text></Pressable>)}</View>; }
+function Metric({ colors, icon, label, value }) { return <LinearGradient colors={colors} style={styles.metric}><MaterialCommunityIcons name={icon} size={24} color="white" /><Text style={styles.metricValue}>{value}</Text><Text style={styles.metricLabel}>{label}</Text></LinearGradient>; }
+function Mode({ active, label, icon, colors, onPress }) { return <Pressable onPress={onPress} style={styles.mode}><LinearGradient colors={active ? colors : ['rgba(255,255,255,0.11)', 'rgba(255,255,255,0.06)']} style={styles.modeInner}><MaterialCommunityIcons name={icon} size={22} color="white" /><Text style={styles.modeText}>{label}</Text></LinearGradient></Pressable>; }
+function Pill({ theme, active, label, onPress }) { return <Pressable onPress={onPress} style={[styles.pill, { borderColor: active ? '#31B5FF' : theme.line, backgroundColor: active ? 'rgba(49,181,255,0.17)' : 'transparent' }]}><Text style={[styles.pillText, { color: active ? '#31B5FF' : theme.muted }]}>{label}</Text></Pressable>; }
+function BadgeIcon({ icon, colors }) { return <LinearGradient colors={colors} style={styles.badgeIcon}><MaterialCommunityIcons name={icon} size={22} color="white" /></LinearGradient>; }
+function Record({ theme, title, sub, value, note, onDelete }) { return <Card theme={theme}><View style={styles.rowTop}><View style={styles.flex}><Text style={[styles.itemTitle, { color: theme.text }]}>{title}</Text><Text style={[styles.itemSub, { color: theme.muted }]}>{sub}</Text></View>{value ? <Text style={[styles.itemValue, { color: theme.text }]}>{value}</Text> : null}</View>{note ? <Text style={[styles.body, { color: theme.muted }]}>{note}</Text> : null}<Delete onPress={onDelete} /></Card>; }
+function Delete({ onPress }) { return <Pressable onPress={onPress}><Text style={styles.deleteText}>Sil</Text></Pressable>; }
+function Empty({ theme, icon, text }) { return <Card theme={theme}><View style={styles.empty}><MaterialCommunityIcons name={icon} size={30} color="#31B5FF" /><Text style={[styles.emptyText, { color: theme.muted }]}>{text}</Text></View></Card>; }
+function Nav({ theme, active, setActive }) { const items = [['panel', 'Panel', 'home'], ['finans', 'Finans', 'wallet'], ['liste', 'Liste', 'cart'], ['antalya', 'Antalya', 'map-marker'], ['ayar', 'Ayar', 'cog']]; return <View style={[styles.nav, { backgroundColor: theme.nav, borderColor: theme.line }]}>{items.map(([id, label, icon]) => <Pressable key={id} onPress={() => setActive(id)} style={styles.navItem}>{active === id ? <LinearGradient colors={['#0FE0A0', '#2E6BFF']} style={styles.navActive}><MaterialCommunityIcons name={icon} size={21} color="white" /></LinearGradient> : <MaterialCommunityIcons name={icon} size={22} color={theme.muted} />}<Text style={[styles.navLabel, { color: active === id ? theme.text : theme.muted }]}>{label}</Text></Pressable>)}</View>; }
 
 const styles = StyleSheet.create({
-  safe:{flex:1}, flex:{flex:1}, blobA:{position:'absolute',width:260,height:260,borderRadius:130,backgroundColor:'rgba(255,71,126,0.24)',top:-90,right:-90}, blobB:{position:'absolute',width:240,height:240,borderRadius:120,backgroundColor:'rgba(0,212,255,0.20)',top:260,left:-120}, blobC:{position:'absolute',width:180,height:180,borderRadius:90,backgroundColor:'rgba(32,227,178,0.16)',bottom:80,right:-80}, header:{paddingHorizontal:20,paddingTop:18,paddingBottom:8,flexDirection:'row',alignItems:'center',justifyContent:'space-between'}, brandRow:{flexDirection:'row',alignItems:'center',gap:12}, logo:{width:46,height:46,borderRadius:18,alignItems:'center',justifyContent:'center'}, logoText:{color:'white',fontSize:23,fontWeight:'900'}, title:{fontSize:28,fontWeight:'900',letterSpacing:-1}, subtitle:{fontSize:12,fontWeight:'800',marginTop:3}, badge:{borderRadius:99,paddingHorizontal:12,paddingVertical:8}, badgeText:{color:'white',fontWeight:'900'}, scroll:{padding:18,paddingBottom:120}, hero:{borderRadius:34,padding:22,marginBottom:16,overflow:'hidden'}, sun:{position:'absolute',width:150,height:150,borderRadius:75,backgroundColor:'rgba(255,255,255,0.17)',right:-42,top:-42}, kicker:{color:'rgba(255,255,255,0.9)',fontWeight:'900',letterSpacing:1.2}, heroTitle:{color:'white',fontSize:58,fontWeight:'900',letterSpacing:-2.2,marginTop:6}, heroBody:{color:'rgba(255,255,255,0.92)',fontSize:15,lineHeight:22,fontWeight:'800',marginTop:4}, track:{height:14,borderRadius:99,backgroundColor:'rgba(255,255,255,0.22)',overflow:'hidden',marginTop:18}, fill:{height:'100%',borderRadius:99}, heroGrid:{flexDirection:'row',justifyContent:'space-between',marginTop:18}, miniLabel:{color:'rgba(255,255,255,0.74)',fontSize:12,fontWeight:'900'}, miniValue:{color:'white',fontSize:15,fontWeight:'900',marginTop:4}, quickRow:{flexDirection:'row',gap:10,marginBottom:10}, colorStat:{flex:1,minHeight:136,borderRadius:28,padding:15,overflow:'hidden'}, colorIcon:{width:42,height:42,borderRadius:16,backgroundColor:'rgba(255,255,255,0.20)',alignItems:'center',justifyContent:'center'}, colorValue:{color:'white',fontSize:16,fontWeight:'900',marginTop:14}, colorLabel:{color:'rgba(255,255,255,0.82)',fontSize:12,fontWeight:'900',marginTop:4}, glass:{borderWidth:1,borderRadius:28,padding:16,marginBottom:12}, cardTitle:{fontSize:18,fontWeight:'900'}, body:{fontSize:14,lineHeight:21,fontWeight:'700',marginTop:8}, screenTitle:{marginTop:6,marginBottom:12}, sectionTitle:{fontSize:27,fontWeight:'900',letterSpacing:-0.8}, modeRow:{gap:10,paddingBottom:12}, modeButton:{borderRadius:22,overflow:'hidden'}, modeGradient:{minWidth:102,height:74,borderRadius:22,padding:13,justifyContent:'space-between'}, modeText:{color:'white',fontSize:13,fontWeight:'900'}, field:{marginTop:10}, label:{fontSize:12,fontWeight:'900',marginBottom:7}, input:{minHeight:52,borderRadius:19,borderWidth:1,paddingHorizontal:14,fontSize:15,fontWeight:'800'}, inputBox:{flex:1}, multi:{minHeight:132,textAlignVertical:'top',paddingTop:12}, primary:{marginTop:14,borderRadius:21,overflow:'hidden'}, primaryInner:{height:54,alignItems:'center',justifyContent:'center'}, primaryText:{color:'white',fontSize:14,fontWeight:'900'}, smallButtonWrap:{marginTop:12,borderRadius:16,overflow:'hidden'}, smallButton:{height:44,paddingHorizontal:16,alignItems:'center',justifyContent:'center'}, listTop:{flexDirection:'row',alignItems:'flex-start',gap:12}, listTitle:{fontSize:16,fontWeight:'900'}, listSub:{fontSize:12,fontWeight:'800',marginTop:4}, amount:{fontSize:15,fontWeight:'900',marginTop:10}, score:{fontSize:18,fontWeight:'900'}, actions:{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}, delete:{fontSize:13,fontWeight:'900',marginTop:12}, itemIcon:{width:46,height:46,borderRadius:18,alignItems:'center',justifyContent:'center'}, row:{flexDirection:'row',gap:8,paddingVertical:10}, pill:{paddingHorizontal:12,paddingVertical:9,borderRadius:99,borderWidth:1}, pillText:{fontSize:12,fontWeight:'900'}, routeCard:{borderRadius:30,padding:18,marginBottom:12}, routeTitle:{color:'white',fontSize:22,fontWeight:'900'}, routeBody:{color:'rgba(255,255,255,0.92)',fontSize:14,lineHeight:21,fontWeight:'800',marginTop:8}, regionRow:{flexDirection:'row',alignItems:'center',gap:12,marginTop:14}, regionBadge:{width:42,height:42,borderRadius:16,alignItems:'center',justifyContent:'center'}, regionLetter:{color:'white',fontSize:18,fontWeight:'900'}, themeGrid:{flexDirection:'row',gap:10,marginTop:12}, themeButton:{flex:1,height:70,borderRadius:24,overflow:'hidden',borderWidth:2,borderColor:'transparent'}, themeActive:{borderColor:'#00D4FF'}, themeInner:{flex:1,alignItems:'center',justifyContent:'center'}, themeText:{color:'white',fontWeight:'900',fontSize:16}, nav:{position:'absolute',left:14,right:14,bottom:14,height:78,borderRadius:30,borderWidth:1,flexDirection:'row',alignItems:'center',justifyContent:'space-around'}, navItem:{flex:1,alignItems:'center',justifyContent:'center'}, navActive:{width:42,height:34,borderRadius:16,alignItems:'center',justifyContent:'center'}, navText:{fontSize:10.5,fontWeight:'900',marginTop:4}, toast:{position:'absolute',left:18,right:18,bottom:102,borderRadius:20,overflow:'hidden'}, toastInner:{padding:14}, toastText:{color:'white',fontWeight:'900',textAlign:'center'}
+  root: { flex: 1, paddingTop: 34 }, flex: { flex: 1 }, blobOne: { position: 'absolute', width: 250, height: 250, borderRadius: 125, top: -80, right: -100, backgroundColor: 'rgba(46,107,255,0.24)' }, blobTwo: { position: 'absolute', width: 210, height: 210, borderRadius: 105, top: 250, left: -105, backgroundColor: 'rgba(15,224,160,0.17)' }, blobThree: { position: 'absolute', width: 170, height: 170, borderRadius: 85, bottom: 70, right: -70, backgroundColor: 'rgba(138,92,255,0.20)' }, header: { paddingHorizontal: 18, paddingBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, brand: { flexDirection: 'row', alignItems: 'center', gap: 12 }, logo: { width: 46, height: 46, borderRadius: 18, alignItems: 'center', justifyContent: 'center' }, appTitle: { fontSize: 28, fontWeight: '900', letterSpacing: -1 }, appSub: { fontSize: 12, fontWeight: '800', marginTop: 2 }, version: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 99, backgroundColor: 'rgba(255,255,255,0.15)' }, versionText: { color: 'white', fontWeight: '900' }, scroll: { padding: 18, paddingBottom: 118 }, hero: { borderRadius: 34, padding: 22, overflow: 'hidden', marginBottom: 14 }, heroGlow: { position: 'absolute', width: 140, height: 140, borderRadius: 70, backgroundColor: 'rgba(255,255,255,0.18)', right: -40, top: -35 }, heroKicker: { color: 'rgba(255,255,255,0.84)', fontSize: 12, fontWeight: '900', letterSpacing: 1 }, heroPercent: { color: 'white', fontSize: 58, fontWeight: '900', letterSpacing: -2, marginTop: 6 }, heroText: { color: 'rgba(255,255,255,0.92)', fontSize: 15, lineHeight: 22, fontWeight: '800' }, track: { height: 13, borderRadius: 99, backgroundColor: 'rgba(255,255,255,0.22)', overflow: 'hidden', marginTop: 16 }, fill: { height: '100%', borderRadius: 99 }, heroStats: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18 }, miniLabel: { color: 'rgba(255,255,255,0.72)', fontSize: 12, fontWeight: '900' }, miniValue: { color: 'white', fontSize: 15, fontWeight: '900', marginTop: 4 }, metricGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 12 }, metric: { width: '48.5%', minHeight: 126, borderRadius: 28, padding: 15, justifyContent: 'space-between' }, metricValue: { color: 'white', fontSize: 17, fontWeight: '900' }, metricLabel: { color: 'rgba(255,255,255,0.82)', fontSize: 12, fontWeight: '900' }, card: { borderWidth: 1, borderRadius: 28, padding: 16, marginBottom: 12 }, cardTitle: { fontSize: 18, fontWeight: '900' }, body: { fontSize: 14, lineHeight: 21, fontWeight: '700', marginTop: 8 }, screenTitle: { marginBottom: 12 }, screenText: { fontSize: 28, fontWeight: '900', letterSpacing: -0.9 }, screenSub: { fontSize: 13, fontWeight: '800', marginTop: 3 }, modeRow: { gap: 10, paddingBottom: 12 }, mode: { borderRadius: 24, overflow: 'hidden' }, modeInner: { minWidth: 104, height: 74, padding: 13, borderRadius: 24, justifyContent: 'space-between' }, modeText: { color: 'white', fontSize: 13, fontWeight: '900' }, field: { marginTop: 10 }, label: { fontSize: 12, fontWeight: '900', marginBottom: 7 }, input: { minHeight: 52, borderRadius: 19, borderWidth: 1, paddingHorizontal: 14, fontSize: 15, fontWeight: '800' }, multi: { minHeight: 130, textAlignVertical: 'top', paddingTop: 12 }, buttonWrap: { marginTop: 14, borderRadius: 21, overflow: 'hidden' }, button: { height: 54, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14 }, buttonText: { color: 'white', fontSize: 14, fontWeight: '900' }, rowTop: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 }, flex: { flex: 1 }, itemTitle: { fontSize: 16, fontWeight: '900' }, itemSub: { fontSize: 12, fontWeight: '800', marginTop: 4 }, itemValue: { fontSize: 15, fontWeight: '900', marginTop: 10 }, badgeIcon: { width: 46, height: 46, borderRadius: 18, alignItems: 'center', justifyContent: 'center' }, score: { color: '#31B5FF', fontSize: 18, fontWeight: '900' }, pillRow: { flexDirection: 'row', gap: 8, paddingVertical: 10 }, pill: { paddingHorizontal: 12, paddingVertical: 9, borderRadius: 99, borderWidth: 1 }, pillText: { fontSize: 12, fontWeight: '900' }, deleteText: { color: '#FF5A7A', fontSize: 13, fontWeight: '900', marginTop: 12 }, three: { flexDirection: 'row', gap: 8 }, miniInput: { flex: 1 }, empty: { alignItems: 'center', paddingVertical: 8 }, emptyText: { textAlign: 'center', fontSize: 14, lineHeight: 20, fontWeight: '800', marginTop: 8 }, themeRow: { flexDirection: 'row', gap: 10 }, nav: { position: 'absolute', left: 14, right: 14, bottom: 14, height: 78, borderRadius: 31, borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }, navItem: { flex: 1, alignItems: 'center', justifyContent: 'center' }, navActive: { width: 42, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' }, navLabel: { fontSize: 10.5, fontWeight: '900', marginTop: 4 }, toast: { position: 'absolute', left: 18, right: 18, bottom: 102, borderRadius: 20, overflow: 'hidden' }, toastInner: { padding: 14 }, toastText: { color: 'white', fontWeight: '900', textAlign: 'center' }
 });
