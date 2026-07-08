@@ -2,7 +2,7 @@
   "expo": {
     "name": "DraBornLife",
     "slug": "drabornlife",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,7 +17,7 @@
       "edgeToEdgeEnabled": true
     },
     "extra": {
-      "projectPhase": "v0.3.2-dashboard-report-restore",
+      "projectPhase": "v0.3.3-miami-countdown-download-save",
       "apkTarget": "v1.0"
     }
   }
