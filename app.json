@@ -2,7 +2,7 @@
   "expo": {
     "name": "DraBornLife",
     "slug": "drabornlife",
-    "version": "0.3.13",
+    "version": "0.3.14",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,7 +17,7 @@
       "edgeToEdgeEnabled": true
     },
     "extra": {
-      "projectPhase": "v0.3.13-favorite-manual-override",
+      "projectPhase": "v0.3.14-finance-metrics-report-card",
       "apkTarget": "v1.0"
     }
   }
