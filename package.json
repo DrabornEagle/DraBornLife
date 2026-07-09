@@ -1,10 +1,10 @@
 {
   "name": "drabornlife",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "postinstall": "node scripts/apply-v0313-fixes.js",
+    "postinstall": "node scripts/apply-v0314-fixes.js",
     "start": "expo start -c",
     "android": "expo start --android -c",
     "web": "expo start --web -c"
