@@ -35,7 +35,7 @@ if (!src.includes('Save yükleniyor, ekran tek seferde açılacak')) replaceExac
 
 const toastStyle = "toastText: { color: 'white', fontWeight: '900', textAlign: 'center', fontSize: 15 }";
 const bootStyle = "toastText: { color: 'white', fontWeight: '900', textAlign: 'center', fontSize: 15 }, bootScreen: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 26 }, bootLogo: { width: 82, height: 82, borderRadius: 28, alignItems: 'center', justifyContent: 'center', marginBottom: 18 }, bootTitle: { fontSize: 34, fontWeight: '900', letterSpacing: -1 }, bootSub: { marginTop: 8, textAlign: 'center', fontSize: 15, lineHeight: 22, fontWeight: '800' }";
-if (!src.includes('bootScreen')) replaceExact(toastStyle, bootStyle);
+if (!src.includes('bootLogo:')) replaceExact(toastStyle, bootStyle);
 
 if (src !== original) {
   fs.writeFileSync(appPath, src);
