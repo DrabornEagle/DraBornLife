@@ -60,7 +60,7 @@ jobs:
           sha256sum assets/icon-v102.png assets/splash-v102.jpg | tee branding-assets.sha256
           file assets/icon-v102.png assets/splash-v102.jpg | tee branding-assets.txt
           test "$(sha256sum assets/icon-v102.png | cut -d' ' -f1)" = "2c615f590b52f26c7ffc71d663e9f7b2cfc065115a552b57505466db1a8abdd7"
-          test "$(sha256sum assets/splash-v102.jpg | cut -d' ' -f1)" = "213e73f345cf10a71672752d797aa488cb5a28fa64cf3d473c795209fee8ec2c"
+          test "$(sha256sum assets/splash-v102.jpg | cut -d' ' -f1)" = "698f01c8cd8684ed42054c3b7bcbac1843bf195655aaca5a7dc49b6387f2652d"
 
       - name: Validate Expo project
         run: npx expo-doctor 2>&1 | tee expo-doctor.log
