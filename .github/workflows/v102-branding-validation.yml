@@ -1,0 +1,216 @@
+name: DraBornLife v1.0.2 Branding Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drabornlife-v102-branding-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-branding:
+    name: Build and verify icon plus animated splash
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CI: "1"
+      EXPO_NO_TELEMETRY: "1"
+      GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g
+      ANDROID_AVD_HOME: ${{ github.workspace }}/.android/avd
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Enable emulator acceleration
+        shell: bash
+        run: |
+          if [ -e /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm
+            ls -l /dev/kvm
+          else
+            echo "::warning::KVM is unavailable; emulator will use software acceleration."
+          fi
+
+      - name: Accept Android licenses
+        run: yes | sdkmanager --licenses >/dev/null || true
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install dependencies and reconstruct branding assets
+        run: npm install
+
+      - name: Verify approved branding assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s assets/icon-v102.png
+          test -s assets/splash-v102.jpg
+          test "$(sha256sum assets/icon-v102.png | cut -d' ' -f1)" = "2c615f590b52f26c7ffc71d663e9f7b2cfc065115a552b57505466db1a8abdd7"
+          test "$(sha256sum assets/splash-v102.jpg | cut -d' ' -f1)" = "698f01c8cd8684ed42054c3b7bcbac1843bf195655aaca5a7dc49b6387f2652d"
+          file assets/icon-v102.png assets/splash-v102.jpg | tee branding-assets.txt
+
+      - name: Validate Expo project
+        shell: bash
+        run: |
+          set -o pipefail
+          npx expo-doctor 2>&1 | tee expo-doctor.log
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --clean
+
+      - name: Build debug APK
+        working-directory: android
+        shell: bash
+        run: |
+          set -o pipefail
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon --stacktrace 2>&1 | tee "$GITHUB_WORKSPACE/gradle-build.log"
+
+      - name: Prepare validation APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist smoke-test
+          APK_PATH="$(find android/app/build/outputs/apk/debug -type f -name '*.apk' | head -n 1)"
+          test -n "$APK_PATH"
+          cp "$APK_PATH" dist/DraBornLife-v1.0.2-branding-debug.apk
+          sha256sum dist/DraBornLife-v1.0.2-branding-debug.apk > dist/DraBornLife-v1.0.2-branding-debug.apk.sha256
+
+      - name: Install Android emulator image
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ANDROID_AVD_HOME"
+          sdkmanager "emulator" "platform-tools" "system-images;android-30;google_apis;x86_64"
+          echo no | avdmanager create avd \
+            --force \
+            --name drabornlife-v102-test \
+            --package "system-images;android-30;google_apis;x86_64"
+          "$ANDROID_HOME/emulator/emulator" -list-avds | tee smoke-test/avd-list.txt
+          grep -qx "drabornlife-v102-test" smoke-test/avd-list.txt
+
+      - name: Verify animated splash and main screen
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -e /dev/kvm ]; then
+            ACCEL="-accel on"
+          else
+            ACCEL="-accel off"
+          fi
+
+          nohup "$ANDROID_HOME/emulator/emulator" @drabornlife-v102-test \
+            -no-window \
+            -noaudio \
+            -no-boot-anim \
+            -no-snapshot \
+            -wipe-data \
+            -memory 2048 \
+            -cores 2 \
+            -gpu swiftshader_indirect \
+            -camera-back none \
+            $ACCEL \
+            > smoke-test/emulator.log 2>&1 &
+          EMULATOR_PID=$!
+
+          if ! timeout 240 adb wait-for-device; then
+            cat smoke-test/emulator.log || true
+            exit 1
+          fi
+
+          BOOTED=""
+          for attempt in $(seq 1 180); do
+            BOOTED="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
+            [ "$BOOTED" = "1" ] && break
+            if ! kill -0 "$EMULATOR_PID" 2>/dev/null; then
+              cat smoke-test/emulator.log || true
+              exit 1
+            fi
+            sleep 2
+          done
+          test "$BOOTED" = "1"
+
+          adb install -r dist/DraBornLife-v1.0.2-branding-debug.apk
+          adb logcat -c
+          adb shell am force-stop com.draborneagle.drabornlife
+          adb shell am start -W -n com.draborneagle.drabornlife/.MainActivity | tee smoke-test/activity-start.txt
+
+          sleep 1
+          adb exec-out screencap -p > smoke-test/animated-splash.png
+
+          sleep 4
+          adb exec-out screencap -p > smoke-test/main-screen.png
+          adb logcat -d > smoke-test/logcat.txt
+          adb shell uiautomator dump /sdcard/window.xml || true
+          adb pull /sdcard/window.xml smoke-test/window.xml || true
+
+          APP_PID="$(adb shell pidof com.draborneagle.drabornlife | tr -d '\r')"
+          if [ -z "$APP_PID" ]; then
+            grep -E "FATAL EXCEPTION|AndroidRuntime|ReactNativeJS|com.draborneagle.drabornlife" smoke-test/logcat.txt | tail -n 250 || true
+            exit 1
+          fi
+
+          if grep -E "FATAL EXCEPTION.*|Process: com.draborneagle.drabornlife" smoke-test/logcat.txt; then
+            exit 1
+          fi
+
+          test -s smoke-test/animated-splash.png
+          test -s smoke-test/main-screen.png
+          echo "DraBornLife v1.0.2 stayed alive with PID $APP_PID"
+
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: DraBornLife-v1.0.2-branding-validation
+          path: |
+            smoke-test/
+            branding-assets.txt
+            expo-doctor.log
+            gradle-build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload debug APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: DraBornLife-v1.0.2-branding-debug-apk
+          path: dist/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Validation summary
+        run: |
+          {
+            echo "## DraBornLife v1.0.2 Branding"
+            echo ""
+            echo "- Existing approved icon: verified"
+            echo "- Existing approved splash artwork: verified"
+            echo "- Android icon and adaptive icon resources: compiled"
+            echo "- Animated splash screenshot: captured"
+            echo "- Main screen after splash: captured"
+            echo "- Fatal startup crash: none"
+          } >> "$GITHUB_STEP_SUMMARY"
