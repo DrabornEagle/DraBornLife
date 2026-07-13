@@ -1,0 +1,168 @@
+name: DraBornLife v1.0.2 Production APK
+
+on:
+  push:
+    branches:
+      - release/v1.0.2-production-apk
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drabornlife-v102-production-apk
+  cancel-in-progress: true
+
+jobs:
+  build-release-apk:
+    name: Build signed DraBornLife v1.0.2 APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CI: "1"
+      EXPO_NO_TELEMETRY: "1"
+      GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Read release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_VERSION="$(node -p "require('./app.json').expo.version")"
+          VERSION_CODE="$(node -p "require('./app.json').expo.android.versionCode")"
+          test "$APP_VERSION" = "1.0.2"
+          test "$VERSION_CODE" = "3"
+          echo "APP_VERSION=$APP_VERSION" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$VERSION_CODE" >> "$GITHUB_ENV"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android licenses
+        run: yes | sdkmanager --licenses >/dev/null || true
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install dependencies and reconstruct approved assets
+        run: npm install
+
+      - name: Verify approved DraBornLife branding assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s assets/icon-v102.png
+          test -s assets/splash-v102.jpg
+          test "$(sha256sum assets/icon-v102.png | cut -d' ' -f1)" = "2c615f590b52f26c7ffc71d663e9f7b2cfc065115a552b57505466db1a8abdd7"
+          test "$(sha256sum assets/splash-v102.jpg | cut -d' ' -f1)" = "698f01c8cd8684ed42054c3b7bcbac1843bf195655aaca5a7dc49b6387f2652d"
+
+      - name: Validate Expo project
+        shell: bash
+        run: |
+          set -o pipefail
+          npx expo-doctor 2>&1 | tee expo-doctor.log
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --clean
+
+      - name: Load permanent DraBornLife v1.0.1 signing key
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.DRABORNLIFE_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.DRABORNLIFE_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.DRABORNLIFE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.DRABORNLIFE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Permanent DraBornLife signing secrets are missing."
+            exit 1
+          fi
+
+          echo "::add-mask::$STORE_PASSWORD"
+          echo "::add-mask::$KEY_PASSWORD"
+          echo "::add-mask::$KEY_ALIAS"
+
+          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/drabornlife-release.jks"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
+
+          keytool -list \
+            -keystore "$KEYSTORE_PATH" \
+            -storepass "$STORE_PASSWORD" \
+            -alias "$KEY_ALIAS" >/dev/null
+
+          echo "DRABORNLIFE_KEYSTORE_PATH=$KEYSTORE_PATH" >> "$GITHUB_ENV"
+          echo "DRABORNLIFE_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "DRABORNLIFE_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+          echo "DRABORNLIFE_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+
+      - name: Configure Gradle release signing
+        run: node scripts/configure-android-release.js
+
+      - name: Build signed release APK
+        working-directory: android
+        shell: bash
+        run: |
+          set -o pipefail
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace 2>&1 | tee "$GITHUB_WORKSPACE/gradle-build.log"
+
+      - name: Prepare release artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' | head -n 1)"
+          test -n "$APK_PATH"
+          OUTPUT="dist/DraBornLife-v${APP_VERSION}-release.apk"
+          cp "$APK_PATH" "$OUTPUT"
+          sha256sum "$OUTPUT" > "${OUTPUT}.sha256"
+          keytool -list -v \
+            -keystore "$DRABORNLIFE_KEYSTORE_PATH" \
+            -storepass "$DRABORNLIFE_KEYSTORE_PASSWORD" \
+            -alias "$DRABORNLIFE_KEY_ALIAS" > "dist/DraBornLife-v${APP_VERSION}-certificate.txt"
+
+      - name: Upload signed production APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DraBornLife-v1.0.2-production-apk
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: DraBornLife-v1.0.2-production-diagnostics
+          path: |
+            expo-doctor.log
+            gradle-build.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Build summary
+        run: |
+          {
+            echo "## DraBornLife v1.0.2 Production APK"
+            echo "- Package: com.draborneagle.drabornlife"
+            echo "- Version: $APP_VERSION"
+            echo "- Version code: $VERSION_CODE"
+            echo "- Permanent v1.0.1 signing key: verified"
+            echo "- Output: DraBornLife-v${APP_VERSION}-release.apk"
+          } >> "$GITHUB_STEP_SUMMARY"
