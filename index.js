@@ -1,7 +1,6 @@
 import React from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { registerRootComponent } from 'expo';
-import App from './App';
 
 class DraBornLifeErrorBoundary extends React.Component {
   constructor(props) {
@@ -27,20 +26,26 @@ class DraBornLifeErrorBoundary extends React.Component {
         <ScrollView contentContainerStyle={styles.content}>
           <Text style={styles.title}>DraBornLife güvenli mod</Text>
           <Text style={styles.body}>
-            Uygulama açılırken bir arayüz hatası yakalandı. Uygulama artık doğrudan kapanmayacak.
+            Uygulama açılırken bir hata yakalandı. Uygulama doğrudan kapanmak yerine hata bilgisini gösteriyor.
           </Text>
           <Text selectable style={styles.error}>{message}</Text>
-          <Text style={styles.code}>Sürüm: v1.0.1 • Hata kodu: STARTUP-RENDER</Text>
+          <Text style={styles.code}>Sürüm: v1.0.1 • Hata kodu: STARTUP-LOAD</Text>
         </ScrollView>
       </View>
     );
   }
 }
 
+function AppLoader() {
+  const module = require('./App');
+  const DraBornLifeApp = module.default || module;
+  return <DraBornLifeApp />;
+}
+
 function Root() {
   return (
     <DraBornLifeErrorBoundary>
-      <App />
+      <AppLoader />
     </DraBornLifeErrorBoundary>
   );
 }
