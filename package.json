@@ -1,10 +1,10 @@
 {
   "name": "drabornlife",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "main": "index.js",
   "scripts": {
-    "postinstall": "node scripts/apply-v101-startup-fix.js",
+    "postinstall": "node scripts/apply-v102-branding.js",
     "start": "expo start -c",
     "android": "expo start --android -c",
     "web": "expo start --web -c",
