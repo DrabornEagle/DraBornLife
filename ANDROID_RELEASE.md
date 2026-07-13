@@ -1,37 +1,58 @@
 # DraBornLife Android Release
 
-DraBornLife v1.0.1 uses GitHub Actions to generate a signed Android release APK and optionally cold-start it on an Android emulator.
+DraBornLife Android releases are generated through GitHub Actions and must use the permanent v1.0.1 signing key.
 
-## Release identity
+## Current release identity
 
 - Android package: `com.draborneagle.drabornlife`
-- App version: `1.0.1`
-- Android version code: `2`
+- App version: `1.0.2`
+- Android version code: `3`
 - Permanent key alias: `drabornlife`
+- JavaScript engine: Hermes
+- React Native New Architecture: disabled
 
-## Tested first usable release
+## v1.0.2 branding update
 
-The corrected signed APK and its permanent keystore were generated and validated by GitHub Actions run `29266888153`.
+DraBornLife v1.0.2 adds the approved DraBornLife app icon and the approved vertical splash artwork without generating replacement images.
+
+The Android configuration now includes:
+
+- Standard application icon
+- Android adaptive icon
+- Native static splash artwork
+- Animated loading overlay with a rotating cyan/gold ring
+- Pulsing glow
+- Staggered loading dots
+- Entrance movement and a smooth fade into the main application
+
+The application loads underneath the animation, so the animation does not postpone application initialization.
+
+## v1.0.2 validation
+
+GitHub Actions run `29273336569` successfully validated the self-contained release build.
 
 Validation completed successfully:
 
-- Expo Doctor: 18/18 checks passed
-- Android release APK build: passed
-- Signed APK installation: passed
-- Cold start of `com.draborneagle.drabornlife/.MainActivity`: passed
-- App process stayed alive after 20 seconds
+- Approved icon checksum: verified
+- Approved splash checksum: verified
+- Expo Doctor: passed
+- Android native prebuild: passed
+- Self-contained release APK build: passed
+- Bundled JavaScript loaded without Metro
+- Animated splash screenshot captured after one second
+- Main application screenshot captured after the transition
+- Application process remained alive
 - No DraBornLife fatal exception was found in Android logcat
-- Startup screenshot and diagnostic logs were captured
 
-The v1.0.0 APK must not be used. Its startup configuration was defective and it used a different signing key.
+The validation APK uses a temporary test key and must not be distributed as the production update.
 
 ## Permanent signing rule
 
-Every future DraBornLife APK/AAB update must use the v1.0.1 keystore. Generating another key would prevent Android from installing future builds as updates to this tested release.
+Every production DraBornLife APK/AAB update must use the permanent v1.0.1 keystore. Generating another key would prevent Android from installing the build as an update to the current app.
 
-The workflow is stored at `.github/workflows/android-release-apk.yml` and is started manually with `workflow_dispatch`.
+The production workflow is stored at `.github/workflows/android-release-apk.yml` and is started manually with `workflow_dispatch`.
 
-The workflow is locked to the permanent signing secrets. It stops with an error rather than generating a replacement key when any secret is missing.
+The workflow stops with an error rather than generating a replacement key when signing secrets are missing.
 
 ## Required GitHub Actions Secrets
 
@@ -40,4 +61,6 @@ The workflow is locked to the permanent signing secrets. It stops with an error 
 - `DRABORNLIFE_KEY_ALIAS`
 - `DRABORNLIFE_KEY_PASSWORD`
 
-The Base64 and password values are stored in the private `DraBornLife-v1.0.1-keystore-backup.zip` package. The keystore, passwords, private recovery key and Base64 value must never be committed to this public repository.
+The values are stored in the private `DraBornLife-v1.0.1-keystore-backup.zip` package. The keystore, passwords, private recovery key and Base64 value must never be committed to this public repository.
+
+The v1.0.0 APK and its signing key must not be used.
