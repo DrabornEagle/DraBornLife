@@ -52,7 +52,7 @@ jobs:
       - name: Install dependencies and reconstruct assets
         run: npm install
 
-      - name: Verify branding assets
+      - name: Verify approved branding assets
         run: |
           set -euo pipefail
           test -s assets/icon-v102.png
@@ -68,21 +68,48 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Build debug APK
+      - name: Create temporary validation signing key
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/v102-validation.jks"
+          STORE_PASSWORD="DraBornLifeV102ValidationOnly"
+          KEY_ALIAS="drabornlife-validation"
+
+          keytool -genkeypair \
+            -storetype JKS \
+            -keystore "$KEYSTORE_PATH" \
+            -storepass "$STORE_PASSWORD" \
+            -keypass "$STORE_PASSWORD" \
+            -alias "$KEY_ALIAS" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 365 \
+            -dname "CN=DraBornLife v1.0.2 Validation, O=DrabornEagle, C=TR"
+
+          echo "DRABORNLIFE_KEYSTORE_PATH=$KEYSTORE_PATH" >> "$GITHUB_ENV"
+          echo "DRABORNLIFE_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "DRABORNLIFE_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+          echo "DRABORNLIFE_KEY_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+
+      - name: Configure release signing
+        run: node scripts/configure-android-release.js
+
+      - name: Build self-contained release validation APK
         working-directory: android
         run: |
           set -o pipefail
           chmod +x gradlew
-          ./gradlew :app:assembleDebug --no-daemon --stacktrace 2>&1 | tee "$GITHUB_WORKSPACE/gradle-build.log"
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace 2>&1 | tee "$GITHUB_WORKSPACE/gradle-build.log"
 
       - name: Prepare APK
         run: |
           set -euo pipefail
           mkdir -p dist smoke-test
-          APK_PATH="$(find android/app/build/outputs/apk/debug -type f -name '*.apk' | head -n 1)"
+          APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' | head -n 1)"
           test -n "$APK_PATH"
-          cp "$APK_PATH" dist/DraBornLife-v1.0.2-branding-debug.apk
-          sha256sum dist/DraBornLife-v1.0.2-branding-debug.apk > dist/DraBornLife-v1.0.2-branding-debug.apk.sha256
+          cp "$APK_PATH" dist/DraBornLife-v1.0.2-branding-validation.apk
+          sha256sum dist/DraBornLife-v1.0.2-branding-validation.apk > dist/DraBornLife-v1.0.2-branding-validation.apk.sha256
 
       - name: Create Android emulator
         run: |
@@ -93,7 +120,7 @@ jobs:
           "$ANDROID_HOME/emulator/emulator" -list-avds | tee smoke-test/avd-list.txt
           grep -qx "drabornlife-v102-test" smoke-test/avd-list.txt
 
-      - name: Verify animated splash and main screen
+      - name: Verify animated splash and loaded main screen
         run: |
           set -euo pipefail
           if [ -e /dev/kvm ]; then ACCEL="-accel on"; else ACCEL="-accel off"; fi
@@ -114,22 +141,30 @@ jobs:
           done
           test "$BOOTED" = "1"
 
-          adb install -r dist/DraBornLife-v1.0.2-branding-debug.apk
+          adb install -r dist/DraBornLife-v1.0.2-branding-validation.apk
           adb logcat -c
           adb shell am force-stop com.draborneagle.drabornlife
           adb shell am start -W -n com.draborneagle.drabornlife/.MainActivity | tee smoke-test/activity-start.txt
+
           sleep 1
           adb exec-out screencap -p > smoke-test/animated-splash.png
+          adb shell uiautomator dump /sdcard/splash-window.xml || true
+          adb pull /sdcard/splash-window.xml smoke-test/splash-window.xml || true
+
           sleep 4
           adb exec-out screencap -p > smoke-test/main-screen.png
+          adb shell uiautomator dump /sdcard/main-window.xml || true
+          adb pull /sdcard/main-window.xml smoke-test/main-window.xml || true
           adb logcat -d > smoke-test/logcat.txt
 
           APP_PID="$(adb shell pidof com.draborneagle.drabornlife | tr -d '\r')"
           test -n "$APP_PID"
           ! grep -E "FATAL EXCEPTION.*|Process: com.draborneagle.drabornlife" smoke-test/logcat.txt
+          ! grep -qi "Unable to load script" smoke-test/logcat.txt
+          ! grep -qi "Unable to load script" smoke-test/main-window.xml
           test -s smoke-test/animated-splash.png
           test -s smoke-test/main-screen.png
-          echo "DraBornLife v1.0.2 stayed alive with PID $APP_PID"
+          echo "DraBornLife v1.0.2 loaded its bundled JavaScript and stayed alive with PID $APP_PID"
 
       - name: Upload validation evidence
         if: always()
@@ -147,11 +182,11 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Upload debug APK
+      - name: Upload validation APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: DraBornLife-v1.0.2-branding-debug-apk
+          name: DraBornLife-v1.0.2-validation-apk
           path: dist/
           if-no-files-found: warn
           retention-days: 14
@@ -160,8 +195,9 @@ jobs:
         run: |
           {
             echo "## DraBornLife v1.0.2 Branding"
-            echo "- Existing icon and splash assets verified"
-            echo "- Android icon resources compiled"
-            echo "- Animated splash and main screen captured"
-            echo "- No fatal startup crash"
+            echo "- Approved icon and splash assets verified"
+            echo "- Self-contained release bundle compiled"
+            echo "- Animated splash captured at 1 second"
+            echo "- Loaded main screen captured after animation"
+            echo "- No Metro dependency or fatal startup crash"
           } >> "$GITHUB_STEP_SUMMARY"
