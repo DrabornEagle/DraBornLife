@@ -1,21 +1,24 @@
-name: DraBornLife v1.0.1 Startup Fix APK
+name: DraBornLife Android Release APK
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      run_smoke_test:
+        description: Install and cold-start the APK on an Android emulator
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: read
 
 concurrency:
-  group: drabornlife-v101-startup-fix-${{ github.ref }}
+  group: drabornlife-android-release
   cancel-in-progress: true
 
 jobs:
-  build-test-release-apk:
-    name: Build and launch-test signed APK
+  build-release-apk:
+    name: Build signed and tested Android APK
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -27,6 +30,15 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+
+      - name: Read release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_VERSION="$(node -p "require('./app.json').expo.version")"
+          VERSION_CODE="$(node -p "require('./app.json').expo.android.versionCode")"
+          echo "APP_VERSION=$APP_VERSION" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$VERSION_CODE" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -42,7 +54,8 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Enable Android emulator acceleration
+      - name: Enable emulator acceleration
+        if: ${{ inputs.run_smoke_test }}
         shell: bash
         run: |
           if [ -e /dev/kvm ]; then
@@ -70,48 +83,32 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Generate permanent v1.0.1 signing key
+      - name: Load permanent DraBornLife signing key
         shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.DRABORNLIFE_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.DRABORNLIFE_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.DRABORNLIFE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.DRABORNLIFE_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/drabornlife-release.jks"
-          RECOVERY_DIR="$GITHUB_WORKSPACE/signing-recovery"
-          STORE_PASSWORD="$(openssl rand -hex 32)"
-          KEY_PASSWORD="$STORE_PASSWORD"
-          KEY_ALIAS="drabornlife"
-          mkdir -p "$RECOVERY_DIR"
+
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Permanent DraBornLife signing secrets are missing. Add the four values from the v1.0.1 keystore backup package."
+            exit 1
+          fi
 
           echo "::add-mask::$STORE_PASSWORD"
           echo "::add-mask::$KEY_PASSWORD"
+          echo "::add-mask::$KEY_ALIAS"
 
-          keytool -genkeypair -v \
-            -storetype JKS \
+          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/drabornlife-release.jks"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
+
+          keytool -list \
             -keystore "$KEYSTORE_PATH" \
             -storepass "$STORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            -alias "$KEY_ALIAS" \
-            -keyalg RSA \
-            -keysize 4096 \
-            -sigalg SHA256withRSA \
-            -validity 10000 \
-            -dname "CN=DraBornLife, OU=Mobile Release, O=DrabornEagle, L=Antalya, ST=Antalya, C=TR"
-
-          cp "$KEYSTORE_PATH" "$RECOVERY_DIR/drabornlife-release.jks"
-          printf '%s\n' \
-            "DRABORNLIFE_KEYSTORE_PASSWORD=$STORE_PASSWORD" \
-            "DRABORNLIFE_KEY_ALIAS=$KEY_ALIAS" \
-            "DRABORNLIFE_KEY_PASSWORD=$KEY_PASSWORD" \
-            > "$RECOVERY_DIR/credentials.env"
-
-          openssl pkeyutl -encrypt \
-            -pubin \
-            -inkey .github/signing/recovery-public.pem \
-            -in "$RECOVERY_DIR/credentials.env" \
-            -out "$RECOVERY_DIR/credentials.env.enc" \
-            -pkeyopt rsa_padding_mode:oaep \
-            -pkeyopt rsa_oaep_md:sha256 \
-            -pkeyopt rsa_mgf1_md:sha256
-          rm -f "$RECOVERY_DIR/credentials.env"
+            -alias "$KEY_ALIAS" >/dev/null
 
           echo "DRABORNLIFE_KEYSTORE_PATH=$KEYSTORE_PATH" >> "$GITHUB_ENV"
           echo "DRABORNLIFE_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
@@ -129,23 +126,23 @@ jobs:
           chmod +x gradlew
           ./gradlew :app:assembleRelease --no-daemon --stacktrace 2>&1 | tee "$GITHUB_WORKSPACE/gradle-build.log"
 
-      - name: Prepare APK and signing artifacts
+      - name: Prepare release artifacts
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p dist smoke-test
           APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' | head -n 1)"
           test -n "$APK_PATH"
-          cp "$APK_PATH" dist/DraBornLife-v1.0.1-release.apk
-          sha256sum dist/DraBornLife-v1.0.1-release.apk > dist/DraBornLife-v1.0.1-release.apk.sha256
+          OUTPUT="dist/DraBornLife-${APP_VERSION}-release.apk"
+          cp "$APK_PATH" "$OUTPUT"
+          sha256sum "$OUTPUT" > "${OUTPUT}.sha256"
           keytool -list -v \
             -keystore "$DRABORNLIFE_KEYSTORE_PATH" \
             -storepass "$DRABORNLIFE_KEYSTORE_PASSWORD" \
-            -alias "$DRABORNLIFE_KEY_ALIAS" > dist/DraBornLife-v1.0.1-certificate.txt
-          cp dist/DraBornLife-v1.0.1-certificate.txt signing-recovery/certificate.txt
-          sha256sum signing-recovery/drabornlife-release.jks > signing-recovery/drabornlife-release.jks.sha256
+            -alias "$DRABORNLIFE_KEY_ALIAS" > "dist/DraBornLife-${APP_VERSION}-certificate.txt"
 
       - name: Install Android emulator image
+        if: ${{ inputs.run_smoke_test }}
         shell: bash
         run: |
           set -euo pipefail
@@ -158,11 +155,11 @@ jobs:
           "$ANDROID_HOME/emulator/emulator" -list-avds | tee smoke-test/avd-list.txt
           grep -qx "drabornlife-test" smoke-test/avd-list.txt
 
-      - name: Launch-test APK on Android emulator
+      - name: Cold-start test APK on Android emulator
+        if: ${{ inputs.run_smoke_test }}
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p smoke-test
 
           if [ -e /dev/kvm ]; then
             ACCEL="-accel on"
@@ -183,10 +180,8 @@ jobs:
             $ACCEL \
             > smoke-test/emulator.log 2>&1 &
           EMULATOR_PID=$!
-          echo "$EMULATOR_PID" > smoke-test/emulator.pid
 
           if ! timeout 240 adb wait-for-device; then
-            echo "ADB could not connect to the Android emulator."
             cat smoke-test/emulator.log || true
             exit 1
           fi
@@ -194,25 +189,16 @@ jobs:
           BOOTED=""
           for attempt in $(seq 1 180); do
             BOOTED="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
-            if [ "$BOOTED" = "1" ]; then
-              break
-            fi
+            [ "$BOOTED" = "1" ] && break
             if ! kill -0 "$EMULATOR_PID" 2>/dev/null; then
-              echo "Android emulator exited before boot completed."
               cat smoke-test/emulator.log || true
               exit 1
             fi
             sleep 2
           done
+          [ "$BOOTED" = "1" ]
 
-          if [ "$BOOTED" != "1" ]; then
-            echo "Android emulator did not finish booting."
-            cat smoke-test/emulator.log || true
-            exit 1
-          fi
-
-          adb shell input keyevent 82 || true
-          adb install -r dist/DraBornLife-v1.0.1-release.apk
+          adb install -r "dist/DraBornLife-${APP_VERSION}-release.apk"
           adb logcat -c
           adb shell am force-stop com.draborneagle.drabornlife
           adb shell am start -W -n com.draborneagle.drabornlife/.MainActivity | tee smoke-test/activity-start.txt
@@ -220,28 +206,24 @@ jobs:
 
           adb logcat -d > smoke-test/logcat.txt
           adb exec-out screencap -p > smoke-test/startup-screen.png
-          adb shell uiautomator dump /sdcard/window.xml || true
-          adb pull /sdcard/window.xml smoke-test/window.xml || true
-
           APP_PID="$(adb shell pidof com.draborneagle.drabornlife | tr -d '\r')"
+
           if [ -z "$APP_PID" ]; then
-            echo "DraBornLife process exited during startup."
             grep -E "FATAL EXCEPTION|AndroidRuntime|ReactNativeJS|com.draborneagle.drabornlife" smoke-test/logcat.txt | tail -n 250 || true
             exit 1
           fi
 
           if grep -E "FATAL EXCEPTION.*|Process: com.draborneagle.drabornlife" smoke-test/logcat.txt; then
-            echo "Fatal DraBornLife crash found in Android logcat."
             exit 1
           fi
 
           echo "DraBornLife stayed alive after startup with PID $APP_PID"
 
-      - name: Upload startup test evidence
+      - name: Upload diagnostic evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: DraBornLife-v1.0.1-startup-test
+          name: DraBornLife-android-diagnostics
           path: |
             smoke-test/
             gradle-build.log
@@ -249,37 +231,22 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Upload release APK
-        if: always()
+      - name: Upload signed release APK
         uses: actions/upload-artifact@v4
         with:
-          name: DraBornLife-v1.0.1-release-apk
-          path: |
-            dist/DraBornLife-v1.0.1-release.apk
-            dist/DraBornLife-v1.0.1-release.apk.sha256
-            dist/DraBornLife-v1.0.1-certificate.txt
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Upload encrypted signing recovery bundle
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: DraBornLife-v1.0.1-signing-recovery
-          path: signing-recovery/
-          if-no-files-found: warn
+          name: DraBornLife-android-release-apk
+          path: dist/
+          if-no-files-found: error
           retention-days: 30
 
       - name: Build summary
         run: |
           {
-            echo "## DraBornLife v1.0.1 Startup Fix"
+            echo "## DraBornLife Android Release"
             echo ""
             echo "- Package: com.draborneagle.drabornlife"
-            echo "- Version: 1.0.1"
-            echo "- Version code: 2"
-            echo "- New architecture: disabled"
-            echo "- JavaScript engine: Hermes"
-            echo "- expo-font: 14.0.12"
-            echo "- Manual Android API 30 launch test: passed"
+            echo "- Version: $APP_VERSION"
+            echo "- Version code: $VERSION_CODE"
+            echo "- Permanent signing key: verified"
+            echo "- Emulator cold-start test requested: ${{ inputs.run_smoke_test }}"
           } >> "$GITHUB_STEP_SUMMARY"
