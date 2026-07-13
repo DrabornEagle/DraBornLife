@@ -4,13 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       run_smoke_test:
-        description: Install and cold-start the APK on an Android emulator
+        description: Install and cold-start the signed APK on an Android emulator
         required: true
         type: boolean
         default: true
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: read
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: drabornlife-android-release
@@ -18,7 +22,12 @@ concurrency:
 
 jobs:
   build-release-apk:
-    name: Build signed and tested Android APK
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' &&
+       github.actor == github.repository_owner &&
+       github.event.comment.body == '/build-android-release-apk')
+    name: Build permanently signed and tested Android APK
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -26,10 +35,26 @@ jobs:
       EXPO_NO_TELEMETRY: "1"
       GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g
       ANDROID_AVD_HOME: ${{ github.workspace }}/.android/avd
+      EXPECTED_CERT_SHA256: DC68AB856C11E0E4A72ABCA0B9F736C376C57E5C2110D20353F9FC713E5377C8
+      RUN_SMOKE_TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.run_smoke_test || true }}
 
     steps:
-      - name: Checkout source
+      - name: Announce owner-command build
+        if: ${{ github.event_name == 'issue_comment' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🚀 DraBornLife Android Release APK başladı.\n\nRun ID: ${context.runId}`
+            });
+
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Read release metadata
         shell: bash
@@ -55,12 +80,11 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Enable emulator acceleration
-        if: ${{ inputs.run_smoke_test }}
+        if: ${{ env.RUN_SMOKE_TEST == 'true' }}
         shell: bash
         run: |
           if [ -e /dev/kvm ]; then
             sudo chmod 666 /dev/kvm
-            ls -l /dev/kvm
           else
             echo "::warning::KVM is unavailable; emulator will use software acceleration."
           fi
@@ -71,8 +95,19 @@ jobs:
       - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Install dependencies
+      - name: Install dependencies and reconstruct assets
         run: npm install
+
+      - name: Verify DraBornLife branding assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s assets/icon-v102.png
+          test -s assets/splash-v102.jpg
+          test -s assets/splash-v102.png
+          test "$(sha256sum assets/icon-v102.png | cut -d' ' -f1)" = "2c615f590b52f26c7ffc71d663e9f7b2cfc065115a552b57505466db1a8abdd7"
+          test "$(sha256sum assets/splash-v102.jpg | cut -d' ' -f1)" = "698f01c8cd8684ed42054c3b7bcbac1843bf195655aaca5a7dc49b6387f2652d"
+          node -e "const fs=require('fs'); const b=fs.readFileSync('assets/splash-v102.png'); if(b.subarray(0,8).toString('hex')!=='89504e470d0a1a0a') process.exit(1);"
 
       - name: Validate Expo project
         shell: bash
@@ -83,7 +118,7 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Load permanent DraBornLife signing key
+      - name: Load and verify permanent DraBornLife v1.0.1 signing key
         shell: bash
         env:
           KEYSTORE_BASE64: ${{ secrets.DRABORNLIFE_KEYSTORE_BASE64 }}
@@ -94,7 +129,7 @@ jobs:
           set -euo pipefail
 
           if [ -z "$KEYSTORE_BASE64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
-            echo "::error::Permanent DraBornLife signing secrets are missing. Add the four values from the v1.0.1 keystore backup package."
+            echo "::error::Permanent DraBornLife v1.0.1 signing secrets are missing. Unsigned APK generation is forbidden."
             exit 1
           fi
 
@@ -105,10 +140,16 @@ jobs:
           KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/drabornlife-release.jks"
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
 
-          keytool -list \
+          keytool -list -v \
             -keystore "$KEYSTORE_PATH" \
             -storepass "$STORE_PASSWORD" \
-            -alias "$KEY_ALIAS" >/dev/null
+            -alias "$KEY_ALIAS" > signing-key-certificate.txt
+
+          KEY_CERT_SHA256="$(awk -F': ' '/SHA256:/{gsub(":", "", $2); print toupper($2); exit}' signing-key-certificate.txt)"
+          if [ "$KEY_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "::error::The configured keystore is not the permanent DraBornLife v1.0.1 signing key."
+            exit 1
+          fi
 
           echo "DRABORNLIFE_KEYSTORE_PATH=$KEYSTORE_PATH" >> "$GITHUB_ENV"
           echo "DRABORNLIFE_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
@@ -126,23 +167,34 @@ jobs:
           chmod +x gradlew
           ./gradlew :app:assembleRelease --no-daemon --stacktrace 2>&1 | tee "$GITHUB_WORKSPACE/gradle-build.log"
 
-      - name: Prepare release artifacts
+      - name: Verify APK signature and prepare release artifacts
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p dist smoke-test
           APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' | head -n 1)"
           test -n "$APK_PATH"
-          OUTPUT="dist/DraBornLife-${APP_VERSION}-release.apk"
+
+          OUTPUT="dist/DraBornLife-v${APP_VERSION}-signed-release.apk"
+          SIGNATURE_REPORT="dist/DraBornLife-v${APP_VERSION}-signature.txt"
+          CERTIFICATE_REPORT="dist/DraBornLife-v${APP_VERSION}-certificate.txt"
           cp "$APK_PATH" "$OUTPUT"
+          cp signing-key-certificate.txt "$CERTIFICATE_REPORT"
+
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          test -x "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs "$OUTPUT" | tee "$SIGNATURE_REPORT"
+
+          APK_CERT_SHA256="$(awk -F': ' '/Signer #1 certificate SHA-256 digest:/{print toupper($2); exit}' "$SIGNATURE_REPORT")"
+          if [ "$APK_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "::error::Built APK is unsigned or was signed with the wrong certificate."
+            exit 1
+          fi
+
           sha256sum "$OUTPUT" > "${OUTPUT}.sha256"
-          keytool -list -v \
-            -keystore "$DRABORNLIFE_KEYSTORE_PATH" \
-            -storepass "$DRABORNLIFE_KEYSTORE_PASSWORD" \
-            -alias "$DRABORNLIFE_KEY_ALIAS" > "dist/DraBornLife-${APP_VERSION}-certificate.txt"
 
       - name: Install Android emulator image
-        if: ${{ inputs.run_smoke_test }}
+        if: ${{ env.RUN_SMOKE_TEST == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -155,8 +207,8 @@ jobs:
           "$ANDROID_HOME/emulator/emulator" -list-avds | tee smoke-test/avd-list.txt
           grep -qx "drabornlife-test" smoke-test/avd-list.txt
 
-      - name: Cold-start test APK on Android emulator
-        if: ${{ inputs.run_smoke_test }}
+      - name: Cold-start signed APK on Android emulator
+        if: ${{ env.RUN_SMOKE_TEST == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -198,7 +250,7 @@ jobs:
           done
           [ "$BOOTED" = "1" ]
 
-          adb install -r "dist/DraBornLife-${APP_VERSION}-release.apk"
+          adb install -r "dist/DraBornLife-v${APP_VERSION}-signed-release.apk"
           adb logcat -c
           adb shell am force-stop com.draborneagle.drabornlife
           adb shell am start -W -n com.draborneagle.drabornlife/.MainActivity | tee smoke-test/activity-start.txt
@@ -231,7 +283,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Upload signed release APK
+      - name: Upload permanently signed release APK
         uses: actions/upload-artifact@v4
         with:
           name: DraBornLife-android-release-apk
@@ -242,11 +294,32 @@ jobs:
       - name: Build summary
         run: |
           {
-            echo "## DraBornLife Android Release"
+            echo "## DraBornLife Android Release APK"
             echo ""
             echo "- Package: com.draborneagle.drabornlife"
             echo "- Version: $APP_VERSION"
             echo "- Version code: $VERSION_CODE"
-            echo "- Permanent signing key: verified"
-            echo "- Emulator cold-start test requested: ${{ inputs.run_smoke_test }}"
+            echo "- Permanent v1.0.1 certificate: verified"
+            echo "- APK signature: verified with apksigner"
+            echo "- Output: DraBornLife-v${APP_VERSION}-signed-release.apk"
+            echo "- Emulator cold-start test: $RUN_SMOKE_TEST"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report owner-command result
+        if: ${{ always() && github.event_name == 'issue_comment' }}
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          APP_VERSION: ${{ env.APP_VERSION }}
+        with:
+          script: |
+            const success = process.env.JOB_STATUS === 'success';
+            const body = success
+              ? `✅ DraBornLife v${process.env.APP_VERSION} kalıcı anahtarla imzalandı ve APK hazır.\n\nRun ID: ${context.runId}\nArtifact: DraBornLife-android-release-apk`
+              : `❌ DraBornLife Android Release APK başarısız oldu.\n\nRun ID: ${context.runId}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
