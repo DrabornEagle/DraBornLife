@@ -35,7 +35,7 @@ jobs:
       EXPO_NO_TELEMETRY: "1"
       GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g
       ANDROID_AVD_HOME: ${{ github.workspace }}/.android/avd
-      EXPECTED_CERT_SHA256: DC68AB856C11E0E4A72ABCA0B9F736C376C57E5C2110D20353F9FC713E5377C8
+      EXPECTED_CERT_SHA256: 60FFE546614C88E608AF1B543FA70665416B624AA511416CF4421AAAA69C8840
       RUN_SMOKE_TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.run_smoke_test || true }}
 
     steps:
@@ -132,7 +132,7 @@ jobs:
 
           if [ -z "$KEYSTORE_BASE64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
             echo "SIGNING_STATUS=missing-signing-secrets" >> "$GITHUB_ENV"
-            echo "::error::Permanent DraBornLife signing secrets are missing. Unsigned APK generation is forbidden."
+            echo "::error::DraBornLife signing secrets are missing. Unsigned APK generation is forbidden."
             exit 1
           fi
 
@@ -204,16 +204,16 @@ jobs:
 
           sha256sum "$OUTPUT" > "${OUTPUT}.sha256"
 
-      - name: Enforce permanent DraBornLife v1.0.1 certificate
+      - name: Enforce current DraBornLife signing certificate
         shell: bash
         run: |
           set -euo pipefail
           if [ "$LOADED_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
-            echo "SIGNING_STATUS=wrong-permanent-certificate" >> "$GITHUB_ENV"
-            echo "::error::The configured key is valid but is not the permanent DraBornLife v1.0.1 certificate."
+            echo "SIGNING_STATUS=wrong-current-certificate" >> "$GITHUB_ENV"
+            echo "::error::The configured key is valid but is not the current DraBornLife signing certificate."
             exit 1
           fi
-          echo "SIGNING_STATUS=permanent-v1.0.1-certificate-verified" >> "$GITHUB_ENV"
+          echo "SIGNING_STATUS=current-certificate-verified" >> "$GITHUB_ENV"
 
       - name: Install Android emulator image
         if: ${{ env.RUN_SMOKE_TEST == 'true' }}
@@ -324,7 +324,7 @@ jobs:
             echo "- Package: com.draborneagle.drabornlife"
             echo "- Version: $APP_VERSION"
             echo "- Version code: $VERSION_CODE"
-            echo "- Permanent v1.0.1 certificate: verified"
+            echo "- Current signing certificate: verified"
             echo "- APK signature: verified with apksigner"
             echo "- Output: DraBornLife-v${APP_VERSION}-signed-release.apk"
             echo "- Emulator cold-start test: $RUN_SMOKE_TEST"
