@@ -166,7 +166,7 @@ jobs:
             ACCEL="-accel off"
           fi
 
-          nohup emulator @drabornlife-test \
+          nohup "$ANDROID_HOME/emulator/emulator" @drabornlife-test \
             -no-window \
             -noaudio \
             -no-boot-anim \
