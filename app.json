@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
-    "jsEngine": "jsc",
+    "jsEngine": "hermes",
     "splash": {
       "backgroundColor": "#070719"
     },
@@ -19,7 +19,7 @@
       "edgeToEdgeEnabled": false
     },
     "extra": {
-      "projectPhase": "v1.0.1-startup-crash-fix",
+      "projectPhase": "v1.0.1-expo-font-startup-fix",
       "apkTarget": "v1.0.1"
     }
   }
