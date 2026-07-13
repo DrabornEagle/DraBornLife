@@ -1,0 +1,6 @@
+DraBornLife current signing certificate
+SHA-256: 60:FF:E5:46:61:4C:88:E6:08:AF:1B:54:3F:A7:06:65:41:6B:62:4A:A5:11:41:6C:F4:42:1A:AA:A6:9C:88:40
+Alias: drabornlife
+Valid until: 2053-11-28
+
+The private keystore and passwords must never be committed to this public repository.
