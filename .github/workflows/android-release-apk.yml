@@ -1,16 +1,13 @@
 name: DraBornLife v1.0 Release APK
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: drabornlife-android-release-${{ github.ref }}
+  group: drabornlife-android-release
   cancel-in-progress: true
 
 jobs:
@@ -53,72 +50,32 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Prepare release signing
-        id: signing
+      - name: Load permanent release signing key
         shell: bash
         env:
           KEYSTORE_BASE64: ${{ secrets.DRABORNLIFE_KEYSTORE_BASE64 }}
-          SECRET_STORE_PASSWORD: ${{ secrets.DRABORNLIFE_KEYSTORE_PASSWORD }}
-          SECRET_KEY_ALIAS: ${{ secrets.DRABORNLIFE_KEY_ALIAS }}
-          SECRET_KEY_PASSWORD: ${{ secrets.DRABORNLIFE_KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.DRABORNLIFE_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.DRABORNLIFE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.DRABORNLIFE_KEY_PASSWORD }}
         run: |
           set -euo pipefail
 
-          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/drabornlife-release.jks"
-          RECOVERY_DIR="$GITHUB_WORKSPACE/signing-recovery"
-          mkdir -p "$RECOVERY_DIR"
-
-          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$SECRET_STORE_PASSWORD" ] && [ -n "$SECRET_KEY_ALIAS" ] && [ -n "$SECRET_KEY_PASSWORD" ]; then
-            echo "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
-            STORE_PASSWORD="$SECRET_STORE_PASSWORD"
-            KEY_ALIAS="$SECRET_KEY_ALIAS"
-            KEY_PASSWORD="$SECRET_KEY_PASSWORD"
-            SIGNING_MODE="stable-secrets"
-          else
-            STORE_PASSWORD="$(openssl rand -hex 32)"
-            KEY_PASSWORD="$STORE_PASSWORD"
-            KEY_ALIAS="drabornlife"
-            SIGNING_MODE="bootstrap-generated"
-
-            echo "::add-mask::$STORE_PASSWORD"
-            echo "::add-mask::$KEY_PASSWORD"
-
-            keytool -genkeypair -v \
-              -storetype JKS \
-              -keystore "$KEYSTORE_PATH" \
-              -storepass "$STORE_PASSWORD" \
-              -keypass "$KEY_PASSWORD" \
-              -alias "$KEY_ALIAS" \
-              -keyalg RSA \
-              -keysize 4096 \
-              -sigalg SHA256withRSA \
-              -validity 10000 \
-              -dname "CN=DraBornLife, OU=Mobile Release, O=DrabornEagle, L=Antalya, ST=Antalya, C=TR"
-
-            cp "$KEYSTORE_PATH" "$RECOVERY_DIR/drabornlife-release.jks"
-            printf '%s\n' \
-              "DRABORNLIFE_KEYSTORE_PASSWORD=$STORE_PASSWORD" \
-              "DRABORNLIFE_KEY_ALIAS=$KEY_ALIAS" \
-              "DRABORNLIFE_KEY_PASSWORD=$KEY_PASSWORD" \
-              > "$RECOVERY_DIR/credentials.env"
-
-            openssl pkeyutl -encrypt \
-              -pubin \
-              -inkey .github/signing/recovery-public.pem \
-              -in "$RECOVERY_DIR/credentials.env" \
-              -out "$RECOVERY_DIR/credentials.env.enc" \
-              -pkeyopt rsa_padding_mode:oaep \
-              -pkeyopt rsa_oaep_md:sha256 \
-              -pkeyopt rsa_mgf1_md:sha256
-            rm -f "$RECOVERY_DIR/credentials.env"
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Permanent DraBornLife signing secrets are missing. Use the v1.0.0 keystore backup values."
+            exit 1
           fi
+
+          echo "::add-mask::$STORE_PASSWORD"
+          echo "::add-mask::$KEY_PASSWORD"
+
+          KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/drabornlife-release.jks"
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
 
           echo "DRABORNLIFE_KEYSTORE_PATH=$KEYSTORE_PATH" >> "$GITHUB_ENV"
           echo "DRABORNLIFE_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
           echo "DRABORNLIFE_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "DRABORNLIFE_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
-          echo "DRABORNLIFE_SIGNING_MODE=$SIGNING_MODE" >> "$GITHUB_ENV"
-          echo "mode=$SIGNING_MODE" >> "$GITHUB_OUTPUT"
+          echo "DRABORNLIFE_SIGNING_MODE=stable-secrets" >> "$GITHUB_ENV"
 
       - name: Configure Gradle release signing
         run: node scripts/configure-android-release.js
@@ -140,15 +97,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Upload encrypted signing recovery bundle
-        if: always() && steps.signing.outputs.mode == 'bootstrap-generated'
-        uses: actions/upload-artifact@v4
-        with:
-          name: DraBornLife-v1.0.0-signing-recovery
-          path: signing-recovery/
-          if-no-files-found: error
-          retention-days: 30
-
       - name: Prepare release artifacts
         shell: bash
         run: |
@@ -162,11 +110,6 @@ jobs:
             -keystore "$DRABORNLIFE_KEYSTORE_PATH" \
             -storepass "$DRABORNLIFE_KEYSTORE_PASSWORD" \
             -alias "$DRABORNLIFE_KEY_ALIAS" > dist/DraBornLife-v1.0.0-certificate.txt
-
-          if [ "$DRABORNLIFE_SIGNING_MODE" = "bootstrap-generated" ]; then
-            cp dist/DraBornLife-v1.0.0-certificate.txt signing-recovery/certificate.txt
-            sha256sum signing-recovery/drabornlife-release.jks > signing-recovery/drabornlife-release.jks.sha256
-          fi
 
       - name: Upload release APK
         uses: actions/upload-artifact@v4
@@ -187,6 +130,6 @@ jobs:
             echo "- Package: com.draborneagle.drabornlife"
             echo "- Version: 1.0.0"
             echo "- Version code: 1"
-            echo "- Signing mode: $DRABORNLIFE_SIGNING_MODE"
+            echo "- Signing mode: stable-secrets"
             echo "- Output: DraBornLife-v1.0.0-release.apk"
           } >> "$GITHUB_STEP_SUMMARY"
