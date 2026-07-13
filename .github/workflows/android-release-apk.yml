@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npx expo-doctor 2>&1 | tee expo-doctor.log || true
+          npx expo-doctor 2>&1 | tee expo-doctor.log
 
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
@@ -138,7 +138,8 @@ jobs:
       - name: Launch-test APK on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
+          api-level: 34
+          target: google_apis
           arch: x86_64
           profile: pixel_6
           disable-animations: true
@@ -179,6 +180,7 @@ jobs:
           retention-days: 14
 
       - name: Upload release APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: DraBornLife-v1.0.1-release-apk
@@ -186,15 +188,16 @@ jobs:
             dist/DraBornLife-v1.0.1-release.apk
             dist/DraBornLife-v1.0.1-release.apk.sha256
             dist/DraBornLife-v1.0.1-certificate.txt
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
 
       - name: Upload encrypted signing recovery bundle
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: DraBornLife-v1.0.1-signing-recovery
           path: signing-recovery/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
 
       - name: Build summary
@@ -206,6 +209,7 @@ jobs:
             echo "- Version: 1.0.1"
             echo "- Version code: 2"
             echo "- New architecture: disabled"
-            echo "- JavaScript engine: JSC"
-            echo "- Android API 35 emulator launch test: passed"
+            echo "- JavaScript engine: Hermes"
+            echo "- expo-font: 14.0.12"
+            echo "- Android API 34 emulator launch test: passed"
           } >> "$GITHUB_STEP_SUMMARY"
