@@ -22,6 +22,7 @@ jobs:
       CI: "1"
       EXPO_NO_TELEMETRY: "1"
       GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g
+      ANDROID_AVD_HOME: ${{ github.workspace }}/.android/avd
 
     steps:
       - name: Checkout source
@@ -148,11 +149,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p "$ANDROID_AVD_HOME"
           sdkmanager "emulator" "platform-tools" "system-images;android-30;google_apis;x86_64"
           echo no | avdmanager create avd \
             --force \
             --name drabornlife-test \
             --package "system-images;android-30;google_apis;x86_64"
+          "$ANDROID_HOME/emulator/emulator" -list-avds | tee smoke-test/avd-list.txt
+          grep -qx "drabornlife-test" smoke-test/avd-list.txt
 
       - name: Launch-test APK on Android emulator
         shell: bash
