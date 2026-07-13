@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const jpeg = require('jpeg-js');
+const { PNG } = require('pngjs');
 
 try {
   require('./apply-v101-startup-fix');
@@ -37,8 +39,35 @@ function decodeAssetChunks(prefix, outputName) {
   );
 }
 
+function createNativeSplashPng() {
+  const jpegPath = path.join(assetsDirectory, 'splash-v102.jpg');
+  const pngPath = path.join(assetsDirectory, 'splash-v102.png');
+  const decoded = jpeg.decode(fs.readFileSync(jpegPath), {
+    useTArray: true,
+    formatAsRGBA: true,
+  });
+
+  if (!decoded.width || !decoded.height || !decoded.data) {
+    throw new Error('DraBornLife splash JPEG could not be decoded.');
+  }
+
+  const pngBuffer = PNG.sync.write({
+    width: decoded.width,
+    height: decoded.height,
+    data: Buffer.from(decoded.data),
+  });
+
+  fs.writeFileSync(pngPath, pngBuffer);
+
+  const signature = fs.readFileSync(pngPath).subarray(0, 8).toString('hex');
+  if (signature !== '89504e470d0a1a0a') {
+    throw new Error('DraBornLife native splash PNG generation failed.');
+  }
+}
+
 decodeAssetChunks('icon', 'icon-v102.png');
 decodeAssetChunks('splash', 'splash-v102.jpg');
+createNativeSplashPng();
 
 const appPath = path.join(root, 'App.js');
 let source = fs.readFileSync(appPath, 'utf8');
@@ -59,4 +88,4 @@ if (source !== original) {
   fs.writeFileSync(appPath, source);
 }
 
-console.log('DraBornLife v1.0.2 branding assets and version applied.');
+console.log('DraBornLife v1.0.2 branding assets and native splash PNG applied.');
