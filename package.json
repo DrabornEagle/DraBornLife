@@ -1,13 +1,14 @@
 {
   "name": "drabornlife",
-  "version": "0.3.16",
+  "version": "1.0.0",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "postinstall": "node scripts/apply-v0316-fixes.js",
+    "postinstall": "node scripts/apply-v100-release.js",
     "start": "expo start -c",
     "android": "expo start --android -c",
-    "web": "expo start --web -c"
+    "web": "expo start --web -c",
+    "release:android": "expo prebuild --platform android --clean"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
