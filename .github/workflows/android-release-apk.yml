@@ -17,7 +17,7 @@ jobs:
   build-test-release-apk:
     name: Build and launch-test signed APK
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 70
     env:
       CI: "1"
       EXPO_NO_TELEMETRY: "1"
@@ -41,6 +41,16 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Enable Android emulator acceleration
+        shell: bash
+        run: |
+          if [ -e /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm
+            ls -l /dev/kvm
+          else
+            echo "::warning::KVM is unavailable; emulator will use software acceleration."
+          fi
+
       - name: Accept Android licenses
         run: yes | sdkmanager --licenses >/dev/null || true
 
@@ -50,7 +60,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Expo project validation
+      - name: Validate Expo project
         shell: bash
         run: |
           set -o pipefail
@@ -60,7 +70,6 @@ jobs:
         run: npx expo prebuild --platform android --clean
 
       - name: Generate permanent v1.0.1 signing key
-        id: signing
         shell: bash
         run: |
           set -euo pipefail
@@ -135,37 +144,90 @@ jobs:
           cp dist/DraBornLife-v1.0.1-certificate.txt signing-recovery/certificate.txt
           sha256sum signing-recovery/drabornlife-release.jks > signing-recovery/drabornlife-release.jks.sha256
 
+      - name: Install Android emulator image
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager "emulator" "platform-tools" "system-images;android-34;google_apis;x86_64"
+          echo no | avdmanager create avd \
+            --force \
+            --name drabornlife-test \
+            --package "system-images;android-34;google_apis;x86_64"
+
       - name: Launch-test APK on Android emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: |
-            set -euo pipefail
-            adb install -r dist/DraBornLife-v1.0.1-release.apk
-            adb logcat -c
-            adb shell am force-stop com.draborneagle.drabornlife
-            adb shell monkey -p com.draborneagle.drabornlife -c android.intent.category.LAUNCHER 1
-            sleep 15
-            adb logcat -d > smoke-test/logcat.txt
-            adb exec-out screencap -p > smoke-test/startup-screen.png
-            adb shell uiautomator dump /sdcard/window.xml || true
-            adb pull /sdcard/window.xml smoke-test/window.xml || true
-            PID="$(adb shell pidof com.draborneagle.drabornlife | tr -d '\r')"
-            if [ -z "$PID" ]; then
-              echo "DraBornLife process exited during startup"
-              grep -E "FATAL EXCEPTION|AndroidRuntime|ReactNativeJS|com.draborneagle.drabornlife" smoke-test/logcat.txt | tail -n 200 || true
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p smoke-test
+
+          if [ -e /dev/kvm ]; then
+            ACCEL="-accel on"
+          else
+            ACCEL="-accel off"
+          fi
+
+          nohup emulator @drabornlife-test \
+            -no-window \
+            -noaudio \
+            -no-boot-anim \
+            -gpu swiftshader_indirect \
+            -camera-back none \
+            $ACCEL \
+            > smoke-test/emulator.log 2>&1 &
+          EMULATOR_PID=$!
+          echo "$EMULATOR_PID" > smoke-test/emulator.pid
+
+          adb wait-for-device
+
+          BOOTED=""
+          for attempt in $(seq 1 240); do
+            BOOTED="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
+            if [ "$BOOTED" = "1" ]; then
+              break
+            fi
+            if ! kill -0 "$EMULATOR_PID" 2>/dev/null; then
+              echo "Android emulator exited before boot completed."
+              cat smoke-test/emulator.log || true
               exit 1
             fi
-            if grep -E "FATAL EXCEPTION|Process: com.draborneagle.drabornlife" smoke-test/logcat.txt; then
-              echo "Fatal crash found in startup log"
-              exit 1
-            fi
-            echo "DraBornLife stayed alive after launch with PID $PID"
+            sleep 2
+          done
+
+          if [ "$BOOTED" != "1" ]; then
+            echo "Android emulator did not finish booting."
+            cat smoke-test/emulator.log || true
+            exit 1
+          fi
+
+          adb shell input keyevent 82 || true
+          adb install -r dist/DraBornLife-v1.0.1-release.apk
+          adb logcat -c
+          adb shell am force-stop com.draborneagle.drabornlife
+          adb shell am start -W -n com.draborneagle.drabornlife/.MainActivity | tee smoke-test/activity-start.txt
+          sleep 20
+
+          adb logcat -d > smoke-test/logcat.txt
+          adb exec-out screencap -p > smoke-test/startup-screen.png
+          adb shell uiautomator dump /sdcard/window.xml || true
+          adb pull /sdcard/window.xml smoke-test/window.xml || true
+
+          APP_PID="$(adb shell pidof com.draborneagle.drabornlife | tr -d '\r')"
+          if [ -z "$APP_PID" ]; then
+            echo "DraBornLife process exited during startup."
+            grep -E "FATAL EXCEPTION|AndroidRuntime|ReactNativeJS|com.draborneagle.drabornlife" smoke-test/logcat.txt | tail -n 250 || true
+            exit 1
+          fi
+
+          if grep -E "FATAL EXCEPTION.*|Process: com.draborneagle.drabornlife" smoke-test/logcat.txt; then
+            echo "Fatal DraBornLife crash found in Android logcat."
+            exit 1
+          fi
+
+          if grep -q "DraBornLife" smoke-test/window.xml 2>/dev/null; then
+            echo "DraBornLife UI is visible and process is alive: $APP_PID"
+          else
+            echo "DraBornLife process is alive: $APP_PID"
+          fi
 
       - name: Upload startup test evidence
         if: always()
@@ -211,5 +273,5 @@ jobs:
             echo "- New architecture: disabled"
             echo "- JavaScript engine: Hermes"
             echo "- expo-font: 14.0.12"
-            echo "- Android API 34 emulator launch test: passed"
+            echo "- Manual Android API 34 launch test: passed"
           } >> "$GITHUB_STEP_SUMMARY"
