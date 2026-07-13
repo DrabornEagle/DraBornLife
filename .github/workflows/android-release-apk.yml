@@ -39,7 +39,7 @@ jobs:
       RUN_SMOKE_TEST: ${{ github.event_name == 'issue_comment' || inputs.run_smoke_test }}
 
     steps:
-      - name: Announce owner-command build
+      - name: Announce build
         if: ${{ github.event_name == 'issue_comment' }}
         uses: actions/github-script@v7
         with:
@@ -60,10 +60,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          APP_VERSION="$(node -p "require('./app.json').expo.version")"
-          VERSION_CODE="$(node -p "require('./app.json').expo.android.versionCode")"
-          echo "APP_VERSION=$APP_VERSION" >> "$GITHUB_ENV"
-          echo "VERSION_CODE=$VERSION_CODE" >> "$GITHUB_ENV"
+          echo "APP_VERSION=$(node -p "require('./app.json').expo.version")" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$(node -p "require('./app.json').expo.android.versionCode")" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -85,7 +83,6 @@ jobs:
         run: |
           if [ -e /dev/kvm ]; then
             sudo chmod 666 /dev/kvm
-            ls -l /dev/kvm
           else
             echo "::warning::KVM is unavailable; emulator will use software acceleration."
           fi
@@ -108,7 +105,7 @@ jobs:
           test -s assets/splash-v102.png
           test "$(sha256sum assets/icon-v102.png | cut -d' ' -f1)" = "2c615f590b52f26c7ffc71d663e9f7b2cfc065115a552b57505466db1a8abdd7"
           test "$(sha256sum assets/splash-v102.jpg | cut -d' ' -f1)" = "698f01c8cd8684ed42054c3b7bcbac1843bf195655aaca5a7dc49b6387f2652d"
-          node -e "const fs=require('fs'); const b=fs.readFileSync('assets/splash-v102.png'); if(b.subarray(0,8).toString('hex')!=='89504e470d0a1a0a') process.exit(1);"
+          node -e "const fs=require('fs');const b=fs.readFileSync('assets/splash-v102.png');if(b.subarray(0,8).toString('hex')!=='89504e470d0a1a0a')process.exit(1)"
 
       - name: Validate Expo project
         shell: bash
@@ -119,7 +116,7 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Load configured DraBornLife signing key
+      - name: Load and verify DraBornLife signing key
         shell: bash
         env:
           KEYSTORE_BASE64: ${{ secrets.DRABORNLIFE_KEYSTORE_BASE64 }}
@@ -132,7 +129,7 @@ jobs:
 
           if [ -z "$KEYSTORE_BASE64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
             echo "SIGNING_STATUS=missing-signing-secrets" >> "$GITHUB_ENV"
-            echo "::error::DraBornLife signing secrets are missing. Unsigned APK generation is forbidden."
+            echo "::error::DraBornLife signing secrets are missing."
             exit 1
           fi
 
@@ -148,12 +145,7 @@ jobs:
             -storepass "$STORE_PASSWORD" \
             -alias "$KEY_ALIAS" > signing-key-certificate.txt
 
-          KEY_CERT_SHA256="$(awk -F': ' '/SHA256:/{gsub(":", "", $2); gsub(/[[:space:]]/, "", $2); print toupper($2); exit}' signing-key-certificate.txt)"
-          if [ -z "$KEY_CERT_SHA256" ]; then
-            echo "SIGNING_STATUS=certificate-fingerprint-unreadable" >> "$GITHUB_ENV"
-            exit 1
-          fi
-
+          KEY_CERT_SHA256="$(sed -n -E 's/^[[:space:]]*SHA256:[[:space:]]*//p' signing-key-certificate.txt | head -n1 | tr -d ':[:space:]' | tr '[:lower:]' '[:upper:]')"
           if [ "$KEY_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
             echo "SIGNING_STATUS=wrong-current-certificate" >> "$GITHUB_ENV"
             echo "::error::The configured key is not the current DraBornLife signing certificate."
@@ -183,7 +175,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist smoke-test
-          APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' | head -n 1)"
+          APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' | head -n1)"
           test -n "$APK_PATH"
 
           OUTPUT="dist/DraBornLife-v${APP_VERSION}-signed-release.apk"
@@ -192,18 +184,17 @@ jobs:
           cp "$APK_PATH" "$OUTPUT"
           cp signing-key-certificate.txt "$CERTIFICATE_REPORT"
 
-          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
-          test -x "$APKSIGNER"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)"
           "$APKSIGNER" verify --verbose --print-certs "$OUTPUT" | tee "$SIGNATURE_REPORT"
 
-          APK_CERT_SHA256="$(awk -F': ' '/certificate SHA-256 digest:/{gsub(/[[:space:]]/, "", $2); print toupper($2); exit}' "$SIGNATURE_REPORT")"
+          APK_CERT_SHA256="$(sed -n -E 's/.*certificate SHA-256 digest:[[:space:]]*([0-9a-fA-F]+).*/\1/p' "$SIGNATURE_REPORT" | head -n1 | tr '[:lower:]' '[:upper:]')"
           if [ -z "$APK_CERT_SHA256" ]; then
             echo "::error::APK certificate fingerprint could not be read from apksigner output."
             exit 1
           fi
 
           if [ "$APK_CERT_SHA256" != "$LOADED_CERT_SHA256" ] || [ "$APK_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
-            echo "::error::Built APK does not match the current DraBornLife signing certificate."
+            echo "::error::Built APK does not match the current DraBornLife certificate."
             exit 1
           fi
 
@@ -225,10 +216,7 @@ jobs:
           set -euo pipefail
           mkdir -p "$ANDROID_AVD_HOME"
           sdkmanager "emulator" "platform-tools" "system-images;android-30;google_apis;x86_64"
-          echo no | avdmanager create avd \
-            --force \
-            --name drabornlife-test \
-            --package "system-images;android-30;google_apis;x86_64"
+          echo no | avdmanager create avd --force --name drabornlife-test --package "system-images;android-30;google_apis;x86_64"
           "$ANDROID_HOME/emulator/emulator" -list-avds | tee smoke-test/avd-list.txt
           grep -qx "drabornlife-test" smoke-test/avd-list.txt
 
@@ -237,37 +225,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
-          if [ -e /dev/kvm ]; then
-            ACCEL="-accel on"
-          else
-            ACCEL="-accel off"
-          fi
+          if [ -e /dev/kvm ]; then ACCEL="-accel on"; else ACCEL="-accel off"; fi
 
           nohup "$ANDROID_HOME/emulator/emulator" @drabornlife-test \
-            -no-window \
-            -noaudio \
-            -no-boot-anim \
-            -no-snapshot \
-            -wipe-data \
-            -memory 2048 \
-            -cores 2 \
-            -gpu swiftshader_indirect \
-            -camera-back none \
-            $ACCEL \
-            > smoke-test/emulator.log 2>&1 &
+            -no-window -noaudio -no-boot-anim -no-snapshot -wipe-data \
+            -memory 2048 -cores 2 -gpu swiftshader_indirect -camera-back none \
+            $ACCEL > smoke-test/emulator.log 2>&1 &
           EMULATOR_PID=$!
 
           timeout 240 adb wait-for-device
-
           BOOTED=""
           for attempt in $(seq 1 180); do
             BOOTED="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
             [ "$BOOTED" = "1" ] && break
-            if ! kill -0 "$EMULATOR_PID" 2>/dev/null; then
-              cat smoke-test/emulator.log || true
-              exit 1
-            fi
+            kill -0 "$EMULATOR_PID" 2>/dev/null || { cat smoke-test/emulator.log; exit 1; }
             sleep 2
           done
           [ "$BOOTED" = "1" ]
@@ -277,21 +248,12 @@ jobs:
           adb shell am force-stop com.draborneagle.drabornlife
           adb shell am start -W -n com.draborneagle.drabornlife/.MainActivity | tee smoke-test/activity-start.txt
           sleep 20
-
           adb logcat -d > smoke-test/logcat.txt
           adb exec-out screencap -p > smoke-test/startup-screen.png
+
           APP_PID="$(adb shell pidof com.draborneagle.drabornlife | tr -d '\r')"
-
-          if [ -z "$APP_PID" ]; then
-            grep -E "FATAL EXCEPTION|AndroidRuntime|ReactNativeJS|com.draborneagle.drabornlife" smoke-test/logcat.txt | tail -n 250 || true
-            exit 1
-          fi
-
-          if grep -E "FATAL EXCEPTION.*|Process: com.draborneagle.drabornlife" smoke-test/logcat.txt; then
-            exit 1
-          fi
-
-          echo "DraBornLife stayed alive after startup with PID $APP_PID"
+          test -n "$APP_PID"
+          ! grep -E "FATAL EXCEPTION.*|Process: com.draborneagle.drabornlife" smoke-test/logcat.txt
 
       - name: Upload diagnostic evidence
         if: always()
@@ -317,10 +279,10 @@ jobs:
             echo "- Package: com.draborneagle.drabornlife"
             echo "- Version: ${APP_VERSION:-unknown}"
             echo "- Version code: ${VERSION_CODE:-unknown}"
-            echo "- Signing status: ${SIGNING_STATUS:-not-reached}"
-            echo "- Expected certificate: $EXPECTED_CERT_SHA256"
-            echo "- Output: DraBornLife-v${APP_VERSION:-unknown}-signed-release.apk"
-            echo "- Emulator cold-start test: $RUN_SMOKE_TEST"
+            echo "- Signing: ${SIGNING_STATUS:-not-reached}"
+            echo "- Certificate: $EXPECTED_CERT_SHA256"
+            echo "- APK: DraBornLife-v${APP_VERSION:-unknown}-signed-release.apk"
+            echo "- Emulator test: $RUN_SMOKE_TEST"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Report owner-command result
@@ -335,7 +297,7 @@ jobs:
             const success = process.env.JOB_STATUS === 'success';
             const body = success
               ? `✅ DraBornLife v${process.env.APP_VERSION} imzalandı, test edildi ve APK hazır.\n\nRun ID: ${context.runId}\nArtifact: DraBornLife-android-release-apk\nSigning: ${process.env.SIGNING_STATUS}`
-              : `❌ DraBornLife Android Release APK çalışması başarısız oldu.\n\nRun ID: ${context.runId}\nSigning: ${process.env.SIGNING_STATUS || 'not-reached'}\nNot: İmza doğrulandıysa APK artifact emülatör testinden önce yüklenmiş olabilir.`;
+              : `❌ DraBornLife Android Release APK çalışması başarısız oldu.\n\nRun ID: ${context.runId}\nSigning: ${process.env.SIGNING_STATUS || 'not-reached'}\nİmza doğrulandıysa APK artifact emülatör testinden önce yüklenmiş olabilir.`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
