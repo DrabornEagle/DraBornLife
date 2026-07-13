@@ -26,7 +26,7 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issue_comment' &&
        github.actor == github.repository_owner &&
-       github.event.comment.body == '/build-android-release-apk')
+       github.event.comment.body == 'DraBornLife APK Build')
     name: Build permanently signed and tested Android APK
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -36,7 +36,7 @@ jobs:
       GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g
       ANDROID_AVD_HOME: ${{ github.workspace }}/.android/avd
       EXPECTED_CERT_SHA256: 60FFE546614C88E608AF1B543FA70665416B624AA511416CF4421AAAA69C8840
-      RUN_SMOKE_TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.run_smoke_test || true }}
+      RUN_SMOKE_TEST: ${{ github.event_name == 'issue_comment' || inputs.run_smoke_test }}
 
     steps:
       - name: Announce owner-command build
@@ -141,22 +141,22 @@ jobs:
           echo "::add-mask::$KEY_ALIAS"
 
           KEYSTORE_PATH="$GITHUB_WORKSPACE/android/app/drabornlife-release.jks"
-          if ! printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"; then
-            echo "SIGNING_STATUS=invalid-keystore-base64" >> "$GITHUB_ENV"
-            exit 1
-          fi
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
 
-          if ! keytool -list -v \
+          keytool -list -v \
             -keystore "$KEYSTORE_PATH" \
             -storepass "$STORE_PASSWORD" \
-            -alias "$KEY_ALIAS" > signing-key-certificate.txt; then
-            echo "SIGNING_STATUS=invalid-keystore-password-or-alias" >> "$GITHUB_ENV"
+            -alias "$KEY_ALIAS" > signing-key-certificate.txt
+
+          KEY_CERT_SHA256="$(awk -F': ' '/SHA256:/{gsub(":", "", $2); gsub(/[[:space:]]/, "", $2); print toupper($2); exit}' signing-key-certificate.txt)"
+          if [ -z "$KEY_CERT_SHA256" ]; then
+            echo "SIGNING_STATUS=certificate-fingerprint-unreadable" >> "$GITHUB_ENV"
             exit 1
           fi
 
-          KEY_CERT_SHA256="$(awk -F': ' '/SHA256:/{gsub(":", "", $2); print toupper($2); exit}' signing-key-certificate.txt)"
-          if [ -z "$KEY_CERT_SHA256" ]; then
-            echo "SIGNING_STATUS=certificate-fingerprint-unreadable" >> "$GITHUB_ENV"
+          if [ "$KEY_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "SIGNING_STATUS=wrong-current-certificate" >> "$GITHUB_ENV"
+            echo "::error::The configured key is not the current DraBornLife signing certificate."
             exit 1
           fi
 
@@ -196,24 +196,27 @@ jobs:
           test -x "$APKSIGNER"
           "$APKSIGNER" verify --verbose --print-certs "$OUTPUT" | tee "$SIGNATURE_REPORT"
 
-          APK_CERT_SHA256="$(awk -F': ' '/Signer #1 certificate SHA-256 digest:/{print toupper($2); exit}' "$SIGNATURE_REPORT")"
-          if [ -z "$APK_CERT_SHA256" ] || [ "$APK_CERT_SHA256" != "$LOADED_CERT_SHA256" ]; then
-            echo "::error::Built APK is unsigned or does not match the configured signing key."
+          APK_CERT_SHA256="$(awk -F': ' '/certificate SHA-256 digest:/{gsub(/[[:space:]]/, "", $2); print toupper($2); exit}' "$SIGNATURE_REPORT")"
+          if [ -z "$APK_CERT_SHA256" ]; then
+            echo "::error::APK certificate fingerprint could not be read from apksigner output."
             exit 1
           fi
 
+          if [ "$APK_CERT_SHA256" != "$LOADED_CERT_SHA256" ] || [ "$APK_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "::error::Built APK does not match the current DraBornLife signing certificate."
+            exit 1
+          fi
+
+          echo "SIGNING_STATUS=current-certificate-verified" >> "$GITHUB_ENV"
           sha256sum "$OUTPUT" > "${OUTPUT}.sha256"
 
-      - name: Enforce current DraBornLife signing certificate
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "$LOADED_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
-            echo "SIGNING_STATUS=wrong-current-certificate" >> "$GITHUB_ENV"
-            echo "::error::The configured key is valid but is not the current DraBornLife signing certificate."
-            exit 1
-          fi
-          echo "SIGNING_STATUS=current-certificate-verified" >> "$GITHUB_ENV"
+      - name: Upload permanently signed release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DraBornLife-android-release-apk
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Install Android emulator image
         if: ${{ env.RUN_SMOKE_TEST == 'true' }}
@@ -255,10 +258,7 @@ jobs:
             > smoke-test/emulator.log 2>&1 &
           EMULATOR_PID=$!
 
-          if ! timeout 240 adb wait-for-device; then
-            cat smoke-test/emulator.log || true
-            exit 1
-          fi
+          timeout 240 adb wait-for-device
 
           BOOTED=""
           for attempt in $(seq 1 180); do
@@ -308,25 +308,18 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Upload permanently signed release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: DraBornLife-android-release-apk
-          path: dist/
-          if-no-files-found: error
-          retention-days: 30
-
       - name: Build summary
+        if: always()
         run: |
           {
             echo "## DraBornLife Android Release APK"
             echo ""
             echo "- Package: com.draborneagle.drabornlife"
-            echo "- Version: $APP_VERSION"
-            echo "- Version code: $VERSION_CODE"
-            echo "- Current signing certificate: verified"
-            echo "- APK signature: verified with apksigner"
-            echo "- Output: DraBornLife-v${APP_VERSION}-signed-release.apk"
+            echo "- Version: ${APP_VERSION:-unknown}"
+            echo "- Version code: ${VERSION_CODE:-unknown}"
+            echo "- Signing status: ${SIGNING_STATUS:-not-reached}"
+            echo "- Expected certificate: $EXPECTED_CERT_SHA256"
+            echo "- Output: DraBornLife-v${APP_VERSION:-unknown}-signed-release.apk"
             echo "- Emulator cold-start test: $RUN_SMOKE_TEST"
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -337,15 +330,12 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           APP_VERSION: ${{ env.APP_VERSION }}
           SIGNING_STATUS: ${{ env.SIGNING_STATUS }}
-          LOADED_CERT_SHA256: ${{ env.LOADED_CERT_SHA256 }}
         with:
           script: |
             const success = process.env.JOB_STATUS === 'success';
-            const status = process.env.SIGNING_STATUS || 'not-reached';
-            const fingerprint = process.env.LOADED_CERT_SHA256 || 'unavailable';
             const body = success
-              ? `✅ DraBornLife v${process.env.APP_VERSION} kalıcı anahtarla imzalandı ve APK hazır.\n\nRun ID: ${context.runId}\nArtifact: DraBornLife-android-release-apk\nSigning: ${status}`
-              : `❌ DraBornLife Android Release APK başarısız oldu.\n\nRun ID: ${context.runId}\nSigning: ${status}\nLoaded certificate SHA-256: ${fingerprint}`;
+              ? `✅ DraBornLife v${process.env.APP_VERSION} imzalandı, test edildi ve APK hazır.\n\nRun ID: ${context.runId}\nArtifact: DraBornLife-android-release-apk\nSigning: ${process.env.SIGNING_STATUS}`
+              : `❌ DraBornLife Android Release APK çalışması başarısız oldu.\n\nRun ID: ${context.runId}\nSigning: ${process.env.SIGNING_STATUS || 'not-reached'}\nNot: İmza doğrulandıysa APK artifact emülatör testinden önce yüklenmiş olabilir.`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
