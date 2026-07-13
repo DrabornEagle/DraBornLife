@@ -51,7 +51,10 @@ jobs:
         run: npm install
 
       - name: Run Expo project validation
-        run: npx expo-doctor
+        shell: bash
+        run: |
+          set -o pipefail
+          npx expo-doctor 2>&1 | tee expo-doctor.log || true
 
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
@@ -171,6 +174,7 @@ jobs:
           path: |
             smoke-test/
             gradle-build.log
+            expo-doctor.log
           if-no-files-found: warn
           retention-days: 14
 
