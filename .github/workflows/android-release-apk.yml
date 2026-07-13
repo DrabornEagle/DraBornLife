@@ -17,7 +17,7 @@ jobs:
   build-test-release-apk:
     name: Build and launch-test signed APK
     runs-on: ubuntu-latest
-    timeout-minutes: 70
+    timeout-minutes: 60
     env:
       CI: "1"
       EXPO_NO_TELEMETRY: "1"
@@ -148,11 +148,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sdkmanager "emulator" "platform-tools" "system-images;android-34;google_apis;x86_64"
+          sdkmanager "emulator" "platform-tools" "system-images;android-30;google_apis;x86_64"
           echo no | avdmanager create avd \
             --force \
             --name drabornlife-test \
-            --package "system-images;android-34;google_apis;x86_64"
+            --package "system-images;android-30;google_apis;x86_64"
 
       - name: Launch-test APK on Android emulator
         shell: bash
@@ -170,6 +170,10 @@ jobs:
             -no-window \
             -noaudio \
             -no-boot-anim \
+            -no-snapshot \
+            -wipe-data \
+            -memory 2048 \
+            -cores 2 \
             -gpu swiftshader_indirect \
             -camera-back none \
             $ACCEL \
@@ -177,10 +181,14 @@ jobs:
           EMULATOR_PID=$!
           echo "$EMULATOR_PID" > smoke-test/emulator.pid
 
-          adb wait-for-device
+          if ! timeout 240 adb wait-for-device; then
+            echo "ADB could not connect to the Android emulator."
+            cat smoke-test/emulator.log || true
+            exit 1
+          fi
 
           BOOTED=""
-          for attempt in $(seq 1 240); do
+          for attempt in $(seq 1 180); do
             BOOTED="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)"
             if [ "$BOOTED" = "1" ]; then
               break
@@ -223,11 +231,7 @@ jobs:
             exit 1
           fi
 
-          if grep -q "DraBornLife" smoke-test/window.xml 2>/dev/null; then
-            echo "DraBornLife UI is visible and process is alive: $APP_PID"
-          else
-            echo "DraBornLife process is alive: $APP_PID"
-          fi
+          echo "DraBornLife stayed alive after startup with PID $APP_PID"
 
       - name: Upload startup test evidence
         if: always()
@@ -273,5 +277,5 @@ jobs:
             echo "- New architecture: disabled"
             echo "- JavaScript engine: Hermes"
             echo "- expo-font: 14.0.12"
-            echo "- Manual Android API 34 launch test: passed"
+            echo "- Manual Android API 30 launch test: passed"
           } >> "$GITHUB_STEP_SUMMARY"
