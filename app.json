@@ -2,25 +2,32 @@
   "expo": {
     "name": "DraBornLife",
     "slug": "drabornlife",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "jsEngine": "hermes",
+    "icon": "./assets/icon-v102.png",
     "splash": {
-      "backgroundColor": "#070719"
+      "image": "./assets/splash-v102.jpg",
+      "resizeMode": "cover",
+      "backgroundColor": "#020817"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "android": {
       "package": "com.draborneagle.drabornlife",
-      "versionCode": 2,
-      "edgeToEdgeEnabled": false
+      "versionCode": 3,
+      "edgeToEdgeEnabled": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon-v102.png",
+        "backgroundColor": "#041226"
+      }
     },
     "extra": {
-      "projectPhase": "v1.0.1-expo-font-startup-fix",
-      "apkTarget": "v1.0.1"
+      "projectPhase": "v1.0.2-branding-animated-splash",
+      "apkTarget": "v1.0.2"
     }
   }
 }
