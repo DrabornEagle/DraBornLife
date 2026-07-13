@@ -2,7 +2,7 @@
   "expo": {
     "name": "DraBornLife",
     "slug": "drabornlife",
-    "version": "0.3.16",
+    "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,11 +14,12 @@
     ],
     "android": {
       "package": "com.draborneagle.drabornlife",
+      "versionCode": 1,
       "edgeToEdgeEnabled": true
     },
     "extra": {
-      "projectPhase": "v0.3.16-ui-label-startup-fix",
-      "apkTarget": "v1.0"
+      "projectPhase": "v1.0.0-release-apk",
+      "apkTarget": "v1.0.0"
     }
   }
 }
