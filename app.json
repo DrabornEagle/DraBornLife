@@ -2,10 +2,11 @@
   "expo": {
     "name": "DraBornLife",
     "slug": "drabornlife",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
+    "jsEngine": "hermes",
     "splash": {
       "backgroundColor": "#070719"
     },
@@ -14,12 +15,12 @@
     ],
     "android": {
       "package": "com.draborneagle.drabornlife",
-      "versionCode": 1,
-      "edgeToEdgeEnabled": true
+      "versionCode": 2,
+      "edgeToEdgeEnabled": false
     },
     "extra": {
-      "projectPhase": "v1.0.0-release-apk",
-      "apkTarget": "v1.0.0"
+      "projectPhase": "v1.0.1-expo-font-startup-fix",
+      "apkTarget": "v1.0.1"
     }
   }
 }
