@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - release/v1.0.2-production-apk
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
